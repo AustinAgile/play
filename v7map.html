@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+path {
+  stroke: white;
+  stroke-width: 0.25px;
+  fill: grey;
+}
+</style>
+<body>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+<script>
+var width = 1000,
+    height = 1000;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var grat = svg.append("g");
+var coun = svg.append("g");
+var ph = d3.scaleLinear()
+    .domain([0, height])
+    .range([270, -270]);
+
+// load and display the World
+// d3.json("world-110m2.json").then(function(topology) {
+// d3.json("data/world-110m.json").then(function(topology) {
+d3.json("data/world-50m.json").then(function(topology) {
+  console.log(topology);
+  var countries = topojson.feature(topology, topology.objects.countries);
+
+  var water = [];
+  topology.objects.land.arcs.forEach(function(d) {
+    water = water.concat(d[0]);
+  });
+  // var water = topojson.feature(topology, {type: "Polygon", arcs: water.map(function(arc) { console.log(arc[0]);return ~arc[0]; }).reverse()});
+  console.log(water);
+
+  // var projection = d3.geoMercator()
+  // var projection = d3.geoBerghaus()
+  var projection = d3.geoOrthographic()
+  // var projection = d3.geoGilbert()
+      .center([0, 0])
+      .rotate([0, 0])
+//      .tilt(25)
+//      .distance(1.2)
+      //.scale(1000)
+//      .clipAngle(Math.acos(1 / 1.1) * 180 / Math.PI)
+      // .fitSize([width, height], countries);
+  ;
+  var path = d3.geoPath().projection(projection);
+  var graticule = d3.geoGraticule()
+    .step([5, 5])
+  ;
+  grat.append("path")
+    .datum(graticule.outline())
+    .attr("d", path)
+    .style("fill", "#006994")
+    .style("fill-opacity", 1)
+    .style("stroke", "#000000")
+  ;
+  projection.rotate([90, -30, 0]);
+  coun.selectAll("path")
+    .data(countries.features)
+    .enter().append("path")
+      .attr("d", path)
+      .attr("class", "crap")
+      .style("fill", "#c6ab72")
+      .style("stroke", "#3e3f2f")
+  ;
+  svg.append("g").append("path")
+    .attr("class", "crap")
+    .datum(graticule)
+    .attr("d", path)
+    .style("fill", "none")
+    .style("stroke", "#000000")
+  ;
+
+  d3.timer(function(elapsed) {
+    projection.rotate([.001 * elapsed + 90, .001 * elapsed - 30, .001 * elapsed]);
+    svg.selectAll(".crap").attr("d", path);
+  });
+
+});
+
+
+
+</script>
+</body>
+</html>

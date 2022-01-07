@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Spilhaus Shoreline Map XI</title>
+<style>
+@import url(css/maps.css);
+@import url(css/spilhaus.css);
+</style>
+
+<h1>Spilhaus Shoreline Map XI</h1>
+<div id="map"></div>
+
+<script src="js/d3.min.js"></script>
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3@7"></script> -->
+<script src="js/topojson.min.js?1.0.0pre"></script>
+<script src="js/d3.geo.projection.min.js"></script>
+<script>
+
+var ε = 1e-6,
+    width = 960,
+    height = 900;
+
+var path = d3.geo.path().projection(d3.geo.stereographic()
+    .translate([width / 2, height / 2])
+    .center([0, 0])
+    .rotate([0, 0])
+    .scale(100)
+    .clipAngle(160));
+
+var graticule = d3.geo.graticule().minorExtent([[-180, -75], [180, 75 + ε]]).minorStep([15, 15]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("defs").append("clipPath")
+      .attr("id", "clip")
+    .append("use")
+      .attr("xlink:href", "#boundary");
+
+d3.json("data/world-50m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land);
+  // console.log(land);
+  // console.log(world.objects.land.arcs);
+  // Find the longest coastline: Asia.  Here we assume line segments are
+  // roughly equal in size, so we can just count the number of segments as a
+  // shortcut.
+  var asia = [];
+  world.objects.land.arcs.forEach(function(d) {
+    //console.log(d[0].length);
+    if (d[0].length > asia.length) {
+//      console.log(d);
+      asia = d[0];
+    }
+  });
+  console.log(asia);
+  asia = topojson.feature(world, {type: "Polygon", arcs: [asia.map(function(arc) { return ~arc; }).reverse()]});
+  console.log(asia);
+
+  var boundary = svg.append("path")
+      .datum(asia)
+      .attr("class", "sea")
+      .attr("id", "boundary")
+      .attr("d", path)
+  ;
+  svg.append("path")
+      .datum(graticule)
+      .attr("clip-path", "url(#clip)")
+      .attr("d", path)
+  ;
+  svg.append("path")
+      .datum(land)
+      .attr("class", "land")
+     .attr("clip-path", "url(#clip)")
+      .attr("d", path)
+  ;
+});
+</script>

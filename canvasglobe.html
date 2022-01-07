@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.title {
+  display: inline-block;
+  font-size: 48px;
+  line-height: 90px;
+  text-align: center;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var diameter = 960 / 3,
+    radius = diameter / 2,
+    velocity = 0.01;
+
+var projection = d3.geoOrthographic()
+    .scale(radius - 2)
+    .translate([radius, radius])
+    .clipAngle(90)
+    .precision(0);
+
+d3.select("body").selectAll(".title")
+  .data(["λ", "φ", "γ"]).enter().append("div")
+    .attr("class", "title")
+    .style("width", diameter + "px")
+    .text(function(d) { return d; })
+;
+
+// var svg = d3.select("body").append("svg")
+//   .attr("width", "1000px")
+//   .attr("height", "1000px")
+// ;
+//
+// var foreignObject = svg.append("g").append("foreignObject")
+//   .attr("x", 0)
+//   .attr("y", 0)
+//   .attr("width", 3*diameter+100)
+//   .attr("height", diameter)
+// ;
+//
+// // Add embedded body to foreign object
+// var foBody = foreignObject.append("xhtml:body")
+//   .style("margin", "0px")
+//   .style("padding", "0px")
+//   .style("background-color", "none")
+//   .style("width", 3*diameter+100)
+//   .style("height", diameter)
+//   .style("border", "1px solid lightgray")
+// ;
+
+var canvas = d3.select("body").selectAll("canvas")
+// var canvas = foBody.selectAll("canvas")
+  .data(d3.range(3)).enter().append("canvas")
+    .datum(function() { return this.getContext("2d"); })
+    .attr("width", diameter)
+    .attr("height", diameter)
+;
+
+var path = d3.geoPath().projection(projection);
+
+// d3.json("data/world-110m.json", function(error, world) {
+d3.json("data/world-50m.json", function(error, world) {
+  if (error) throw error;
+
+  var land = topojson.feature(world, world.objects.land);
+  var globe = {type: "Sphere"};
+  var graticule = d3.geoGraticule()
+    .step([15, 15])
+  ;
+
+
+  function draw(elapsed) {
+    var angle = velocity * elapsed;
+    canvas.each(function(context, i) {
+      var rotate = [0, 0, 0];
+      rotate[i] = rotate[i]+angle;
+      projection.rotate(rotate);
+      context.clearRect(0, 0, diameter, diameter);
+      path.context(context);
+      context.beginPath(), path(land), context.fillStyle="#c6ab72", context.fill();
+      // context.beginPath(), path(globe), context.stroke();
+      context.beginPath(), path(graticule.outline()), context.strokeStyle="#000", context.stroke();
+    });
+  }
+
+  draw(0);
+
+  d3.timer(function(elapsed) {
+    draw(elapsed);
+  });
+});
+
+</script>

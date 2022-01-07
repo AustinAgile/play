@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<body>
+  <!-- <canvas id="c"></canvas> -->
+
+  <script type="module">
+    import * as THREE from './js/three/build/three.module.js';
+    var renderer, pScene, oScene, pCam, oCam, frontPlane, backPlane, circle;
+
+      var init = function () {
+        // pScene = new THREE.Scene();
+        oScene = new THREE.Scene();
+
+        // pCam = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 1000);
+        // pCam.position.set(0, 40, 50);
+        // pCam.lookAt(new THREE.Vector3(0, 0, -50));
+
+        // oCam = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 500);
+        oCam = new THREE.OrthographicCamera(-200, 600, 300, -300, 1, 3000);
+        oCam.position.set(0, 0, 500);
+
+        // pScene.add(pCam);
+        // pScene.add(new THREE.AmbientLight(0xFFFFFF));
+
+        oScene.add(oCam);
+        oScene.add(new THREE.AmbientLight(0xFFFFFF));
+
+
+        // frontPlane = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshBasicMaterial( { color: 0x990000 }));
+        // frontPlane.position.z = -50;
+        // pScene.add(frontPlane);
+
+        // backPlane = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshBasicMaterial( { color: 0x009900 }));
+        // backPlane.position.z = -100;
+        // pScene.add(backPlane);
+
+        circle = new THREE.Mesh(new THREE.CircleGeometry(40, 40), new THREE.MeshBasicMaterial( { color: 0x000099 }));
+        circle.position.z = 0;
+
+
+        //Transform position from perspective camera to orthogonal camera -> doesn't work, the circle is displayed in front
+        // pCam.updateMatrixWorld ( false );
+        oCam.updateMatrixWorld ( false );
+        // circle.position.project(pCam).unproject(oCam);
+
+        oScene.add(circle);
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+      };
+
+      var render = function () {
+
+        renderer.autoClear = false;
+        renderer.render(oScene, oCam);
+        // renderer.render(pScene, pCam);
+      };
+
+      var animate = function () {
+          requestAnimationFrame(animate);
+          //controls.update();
+          render();
+      };
+
+
+      init();
+      animate();
+  </script>
+
+</body>

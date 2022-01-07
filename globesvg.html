@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+path {
+  stroke: white;
+  stroke-width: 0.25px;
+  fill: grey;
+}
+</style>
+<body>
+<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<!-- <script src="https://d3js.org/topojson.v1.min.js"></script> -->
+<script src="https://unpkg.com/topojson@3"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+<script>
+
+var diameter = 960 / 3,
+    radius = diameter / 2,
+    velocity = 0.01;
+
+var projection = d3.geoOrthographic()
+  // .scale(radius - 2)
+  // .translate([200+radius, 200+radius])
+  // .clipAngle(90)
+  // .precision(0)
+;
+
+
+var svg = d3.select("body").append("svg")
+  .attr("width", "1000px")
+  .attr("height", "1000px")
+;
+
+var globes = svg.selectAll("g").data(d3.range(2)).enter().append("g")
+  .attr("class", "globe")
+  .attr("transform", function(d,i) {return "translate("+i*diameter+",0)";})
+;
+
+var path = d3.geoPath().projection(projection);
+console.log("here1");
+// d3.json("data/world-110m.json", function(error, world) {
+// d3.json("data/world-50m.json", function(error, world) {
+d3.json("data/world-50m.json").then(function(topology) {
+  console.log("data");
+  // if (error) throw error;
+
+  var land = topojson.feature(topology, topology.objects.land);
+  var countries = topojson.feature(topology, topology.objects.countries);
+  var graticule = d3.geoGraticule().step([5, 5]);
+
+  projection.fitHeight(diameter, land);
+  // projection.reflectX(true);
+  // console.log(projection);
+  console.log(path.bounds(land));
+
+
+  globes.append("g")
+    .attr("class", "outline").append("path")
+      .datum(graticule.outline())
+      .attr("d", path)
+      .style("fill", "#006994")
+      .style("fill-opacity", 1)
+      .style("stroke", "#000000")
+  ;
+  globes.append("g")
+    .attr("class", "countries").selectAll("path").data(countries.features).enter().append("path")
+        .attr("d", path)
+        .style("fill", "#c6ab72")
+        .style("stroke", "#3e3f2f")
+  ;
+  globes.append("g")
+    .attr("class", "graticule").append("path")
+      .datum(graticule)
+      .attr("d", path)
+      .style("fill", "none")
+      .style("stroke", "#000000")
+  ;
+
+  function draw(elapsed) {
+    var angle = velocity * elapsed;
+    globes.each(function(d, i) {
+      var rotate = [0, 0, 0];
+      rotate[i] = rotate[i]+angle;
+      projection.rotate(rotate);
+      d3.select(this).selectAll(".countries path,.graticule path").attr("d", path);
+    });
+  }
+
+  draw(0);
+
+  // d3.timer(function(elapsed) {
+  //   draw(elapsed);
+  // });
+});
+
+console.log("here2");
+
+</script>

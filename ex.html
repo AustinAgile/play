@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <style>
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</head>
+<body>
+<script>
+  const svg = d3.create("svg:svg")
+    .attr("xmlns", "http://www.w3.org/2000/svg")
+    .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+    .attr("width", 500)
+    .attr("height", 500)
+    .style("position", "absolute")
+    .style("left", "50")
+    .style("top", "50")
+    .style("background-color", "gold")
+    ;
+
+  const g = d3.create("svg:g")
+    .attr("transform", "translate(250,250) rotate(-135) skewY(0)")
+    ;
+
+  const rect = d3.create("svg:rect")
+    .attr("height", 50)
+    .attr("width", 50)
+    .style("stroke", "#00ffff")
+    .style("fill", "#0000ff")
+    ;
+
+  d3.select("body").append(() => svg.node())
+  svg.append(() => g.node());
+  g.append(() => rect.node());
+
+  function rotTween() {
+    var r = d3.interpolate(-135, 225);
+    var s = d3.piecewise([-15, 50, -15]);
+    return function(t) {
+//      return "translate(250,250) rotate(" + r(t) + ") skewY("+(100*Math.abs(t-Math.floor(t+0.5))-20)+")";
+      return "translate(250,250) rotate(" + r(t) + ") skewY("+s(t)+")";
+    };
+  }
+
+  function an() {
+    g.transition()
+    .duration(10000)
+    .ease(d3.easeLinear)
+    .attrTween("transform", rotTween)
+    .on("end", an)
+    ;
+  }
+
+  //an();
+
+  var blood = [
+//    {atp: 0, adp: 0, amp: 0},
+    {amp: {n:5,color:"gray"}, adp: {n:10,color:"pink"}, atp: {n:200,color:"red"}}
+  ];
+
+  const stack = d3.stack()
+    .keys(["amp", "adp", "atp"])
+    .value(function(d,i) {return d[i].n;})
+    .order(d3.stackOrderNone)
+    .offset(d3.stackOffsetNone)
+    ;
+  var series = stack(blood);
+  console.log(series);
+
+  const area = d3.area()
+  .x0(function(d) {return d.x;})
+  .x1(function(d) {return d.x;})
+    .y0(function(d) {
+//      console.log(d);
+      return d.y0;
+    })
+    .y1(function(d) {return d.y1;})
+  ;
+
+  function shape(d) {
+    var width=100;
+    return area([
+      {x:0, y0:d[0][0], x:0, y1:d[0][1]},
+      {x:width, y0:d[0][0], x:width, y1:d[0][1]}
+    ]);
+  };
+  var width=100;
+  function outline(d) {
+    return area([
+      {x:0, y0:d[0][0], x:0, y1:d[0][1]},
+      {x:width, y0:d[0][0], x:width, y1:d[0][1]}
+    ]);
+  };
+
+  svg.append("svg:g")
+    .attr("class", "mito")
+    .attr("transform", "translate(300,100)")
+    .selectAll(".a").data(series).enter().append("svg:path")
+      .attr("class", "a")
+      .attr("d", shape)
+      .attr("fill", function(d) {console.log(d);return d[0].data[d.key].color;})
+  ;
+  d3.selectAll(".mito").append("svg:path")
+    .attr("class", "outline")
+    .attr("d", area([
+      {x:0, y0:0, y1:_.last(series)[0][1]},
+      {x:width, y0:0, y1:_.last(series)[0][1]}
+    ]))
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    ;
+
+var blood = [
+  {atp: {n:50,color:"red"}, adp: {n:100,color:"pink"}, amp: {n:25,color:"gray"}}
+];
+series = stack(blood);
+d3.selectAll(".mito .a").data(series).join(function(enter) {}, function(update) {
+  update.transition()
+    .duration(5000)
+    .ease(d3.easeLinear)
+    .attr("d", shape)
+});
+d3.selectAll(".mito .outline").transition()
+    .duration(5000)
+    .ease(d3.easeLinear)
+    .attr("d", function() {console.log(_.last(series)); var shit= area([
+      {x:0, y0:0, y1:_.last(series)[0][1]},
+      {x:width, y0:0, y1:_.last(series)[0][1]}
+    ]); console.log(shit);return shit;})
+;
+
+</script>
+</body>
+</html>

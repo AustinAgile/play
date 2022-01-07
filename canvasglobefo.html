@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.title {
+  display: inline-block;
+  font-size: 48px;
+  line-height: 90px;
+  text-align: center;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+<script>
+
+var diameter = 1800 / 3,
+    radius = diameter / 2,
+    velocity = 0.01;
+
+var distance = 100;
+
+// var projection = d3.geoOrthographic()
+// var projection = d3.geoSatellite()
+var projection = d3.geoGingery()
+  .scale(.5*radius - 2)
+  .translate([radius, radius])
+  // .clipAngle(180*Math.acos(1/distance)/Math.PI)
+  // .distance(distance)
+  .precision(0.1)
+
+console.log(projection.clipAngle());
+
+// d3.select("body").selectAll(".title")
+//   .data(["λ", "φ", "γ"]).enter().append("div")
+//     .attr("class", "title")
+//     .style("width", diameter + "px")
+//     .text(function(d) { return d; })
+// ;
+
+var svg = d3.select("body").append("svg")
+  .attr("width", "1000")
+  .attr("height", "1000")
+;
+
+var foreignObject = svg.append("g").append("foreignObject")
+  .attr("x", 0)
+  .attr("y", 0)
+  .attr("width", "100%")
+  .attr("height", "100%")
+  // .attr("width", 3*diameter+10)
+  // .attr("height", diameter+6)
+;
+
+// Add embedded body to foreign object
+var foBody = foreignObject.append("xhtml:body")
+  .style("margin", "0px")
+  .style("padding", "0px")
+  .style("background-color", "none")
+  // .style("width", 3*diameter+100)
+  // .style("height", diameter)
+  // .style("border", "1px solid black")
+;
+
+// var canvas = d3.select("body").selectAll("canvas")
+var canvas = foBody.selectAll("canvas").data(d3.range(1)).enter().append("canvas")
+  .datum(function() {return this.getContext("2d"); })
+  .attr("width", diameter)
+  .attr("height", diameter)
+;
+
+var path = d3.geoPath().projection(projection);
+
+// d3.json("data/world-110m.json", function(error, world) {
+d3.json("data/world-50m.json", function(error, world) {
+  if (error) throw error;
+
+  var land = topojson.feature(world, world.objects.land);
+  var globe = {type: "Sphere"};
+  var graticule = d3.geoGraticule()
+    .step([15, 15])
+  ;
+
+  function draw(elapsed) {
+    var angle = velocity * elapsed;
+    canvas.each(function(context, i) {
+      var rotate = [0, 0, 0];
+      rotate[i] = rotate[i]+angle;
+      projection.rotate(rotate);
+      context.clearRect(0, 0, diameter, diameter);
+      path.context(context);
+
+      //The globe
+      context.beginPath();
+      path(globe);
+      context.fillStyle="#006994";
+      context.fill();
+
+      //The land
+      context.beginPath();
+      path(land);
+      context.fillStyle="#c6ab72";
+      context.fill();
+      // context.beginPath(), path(globe), context.stroke();
+
+      //The graticule
+      context.beginPath();
+      path(graticule());
+      context.strokeStyle="#888888";
+      context.stroke();
+    });
+  }
+
+draw(0);
+  // d3.timer(function(elapsed) {
+  //   draw(elapsed);
+  // });
+});
+
+</script>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+path {
+  stroke: white;
+  stroke-width: 0.25px;
+  fill: grey;
+}
+</style>
+<body>
+<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<!-- <script src="https://d3js.org/topojson.v1.min.js"></script> -->
+<script src="https://unpkg.com/topojson@3"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+<script>
+
+var diameter = 500,
+    radius = diameter / 2,
+    velocity = 0.01;
+
+var projections = [];
+projections.push(d3.geoOrthographic()
+  // .scale(radius - 2)
+  // .translate([0, 100])
+  // .translate([200+radius, 200+radius])
+  // .clipAngle(90)
+  // .precision(0)
+);
+projections.push(d3.geoMercator()
+);
+projections.push(d3.geoInterruptedHomolosine()
+);
+
+
+var svg = d3.select("body").append("svg")
+  .attr("width", "1000px")
+  .attr("height", "1000px")
+;
+var defs = svg.append("defs");
+
+var paths = projections.map(function(projection) {
+  return d3.geoPath().projection(projection);
+});
+
+// paths[0] = d3.geoPath().projection(projections[0]);
+// paths[1] = d3.geoPath().projection(projections[1]);
+// d3.json("data/world-110m.json", function(error, world) {
+// d3.json("data/world-50m.json", function(error, world) {
+d3.json("./data/world-50m.json").then(function(topology) {
+  // if (error) throw error;
+
+  var land = topojson.feature(topology, topology.objects.land);
+  var countries = topojson.feature(topology, topology.objects.countries);
+  var graticule = d3.geoGraticule().step([15, 15]);
+
+  // projections[0].fitHeight(diameter, land);
+  // projection.reflectX(true);
+  // console.log(projection);
+  // var bounds = path.bounds(land);
+var left = 0;
+  var maps = svg.selectAll("g").data(d3.range(3)).enter().append("g")
+    .attr("class", "map")
+    .attr("transform", function(d,i) {
+      projections[i].fitHeight(diameter, graticule());
+      var translate = "translate("+left+",10)";
+      console.log(paths[i].bounds(land));
+      left += paths[i].bounds(land)[1][0]+20;
+      return translate;
+    })
+    .each(function(d,i) {
+      defs.append("path")
+        .datum({type: "Sphere"})
+        .attr("id", "sphere"+i)
+        .attr("d", paths[i])
+      ;
+      defs.append("clipPath")
+        .attr("id", "clip"+i)
+        .append("use")
+          .attr("xlink:href", "#sphere"+i)
+      ;
+    })
+  ;
+  svg.attr("width", left);
+
+  maps.append("g")
+    .attr("class", "outline").append("path")
+      .datum(graticule.outline())
+      // .attr("d", function(d,i) {console.log(i);return paths[i]();})
+      .attr("d", function(d,i) {return paths[i](d);})
+      .style("fill", "#006994")
+      .style("fill-opacity", 1)
+      .style("stroke", "#000000")
+      .attr("clip-path", function(d,i) {return "url(#clip"+i+")";})
+  ;
+  maps.append("g")
+    .attr("class", "countries").each(function(d,i) {
+      d3.select(this).selectAll("path").data(countries.features).enter().append("path")
+        // .attr("d", function(d) {return paths[i](d);})
+        .style("fill", "#c6ab72")
+        .style("stroke", "#3e3f2f")
+        .attr("clip-path", function(d) {return "url(#clip"+i+")";})
+    })
+  ;
+  maps.append("g")
+    .attr("class", "graticule").append("path")
+      .datum(graticule)
+      // .attr("d", function(d,i) {return paths[i](d);})
+      .style("fill", "none")
+      .style("stroke", "#000000")
+      .attr("clip-path", function(d,i) {return "url(#clip"+i+")";})
+  ;
+
+  function draw(elapsed) {
+    var angle = velocity * elapsed;
+    maps.each(function(d, i) {
+      // var rotate = [0, 0, 0];
+      // rotate[i] = rotate[i]+angle;
+      var rotate = [angle, 0, 0];
+      projections[i].rotate(rotate);
+      d3.select(this).selectAll(".countries path,.graticule path").attr("d", paths[i]);
+    });
+  }
+
+  draw(0);
+
+  // d3.timer(function(elapsed) {
+  //   draw(elapsed);
+  // });
+});
+
+console.log("here2");
+
+</script>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<body>
+<style>
+
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+
+circle {
+  fill: steelblue;
+  stroke: #fff;
+  stroke-width: 3px;
+}
+
+</style>
+<!--<script src="js/d3.v3.min.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+
+var points = [
+  [480, 200],
+  [580, 400],
+  [680, 100],
+  [780, 300],
+  [180, 300],
+  [280, 100],
+  [250, 580],
+  [350, 420]
+];
+// var points = [
+//   [200, 200],
+//   [220, 200],
+//   [350, 300],
+//   [400, 380],
+//   [400, 400]
+// ];
+
+var svg = d3.select("body").append("svg")
+    .attr("width", 960)
+    .attr("height", 500);
+
+var path = svg.append("path")
+    .data([points])
+    .attr("d", d3.line()
+//    .curve(d3.curveCatmullRomClosed.alpha(0)) // Catmull–Rom
+//    .curve(d3.curveCardinalClosed.tension(-2)) // Catmull–Rom
+//      .curve(d3.curveCardinalOpen.tension(0)) // Catmull–Rom
+//    .curve(d3.curveCatmullRomOpen.alpha(0)) // Catmull–Rom
+//    .curve(d3.curveStep) // Catmull–Rom
+//    .curve(d3.curveNatural) // Catmull–Rom
+//    .curve(d3.curveMonotoneX) // Catmull–Rom
+//    .curve(d3.curveMonotoneY) // Catmull–Rom
+    .curve(d3.curveBasis) // Catmull–Rom
+);
+    console.log(path);
+
+svg.selectAll(".point")
+   .data(points)
+ .enter().append("circle")
+   .attr("r", 4)
+   .attr("transform", function(d) { return "translate(" + d + ")"; });
+
+//var circle = svg.append("circle")
+//    .attr("r", 13)
+//    .attr("transform", "translate(" + points[0] + ")");
+
+//transition();
+
+//function transition() {
+//  circle.transition()
+//      .duration(10000)
+//      .attrTween("transform", translateAlong(path.node()))
+//      .each("end", transition);
+//}
+
+  svg.append("rect")
+    .attr("width", 50)
+    .attr("height", 100)
+    .attr("transform", "translate("+[480-50/2, 200-100]+")")
+    .style("stroke", "red")
+    .style("fill", "red")
+    ;
+// Returns an attrTween for translating along the specified path element.
+function translateAlong(path) {
+  var l = path.getTotalLength();
+  return function(d, i, a) {
+    return function(t) {
+      var p = path.getPointAtLength(t * l);
+      return "translate(" + p.x + "," + p.y + ")";
+    };
+  };
+}
+
+</script>
