@@ -46,7 +46,7 @@
         }
       );
 
-      const fov = 60;
+      const fov = 20;
       const aspect = 2;  // the canvas default
       const near = 1;
       const far = 7000;
@@ -141,15 +141,16 @@
 
       //East wall
       var h = 0;
-      var wallH = 1033
-      shaper.planeX([1500,  0, wallH],[  0,   0,   0], 0xfcd690);
+      var wallH = 1033;
+      var wallW = 1500;
+      shaper.planeX([wallW,  0, wallH],[  0,   0,   0], 0xfcd690);
       h+=wallH;
 
       //East cornice
       var corniceW = 0;
 
-      shaper.planeX([1505,  5,    0],[ -5,  -5,   h], 0xfffdf2);
-      shaper.planeX([1505,  0,    8],[ -5,  -5,   h], 0xfffdf2);
+      shaper.planeX([wallW+5,  5,    0],[ -5,  -5,   h], 0xfffdf2);
+      shaper.planeX([wallW+5,  0,    8],[ -5,  -5,   h], 0xfffdf2);
       h+=8;
       corniceW+=5;
 
@@ -184,8 +185,9 @@
       corniceW+=40;
 
       var corniceH = h-wallH;
-      // shaper.planeX([1563,  corniceW,    0],[ -63,  -corniceW,   h], 0xfffdf2);
-      // shaper.planeX([1500,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
+      console.log(corniceW);
+      shaper.trapX([[wallW+corniceW,  0,    0],[1568,  corniceW,    0],[corniceW,  corniceW,    0]],[ -68,  -corniceW,   h], 0xfffdf2);
+      shaper.planeX([wallW,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
 
       //South Side
       var h = 0;
@@ -224,8 +226,9 @@
       shaper.planeY([1078,  0,   18],[-68, -68,   h], 0xfffdf2);
       h+=18;
 
-      // shaper.planeY([1068,  corniceW,    0],[ -63,  -corniceW,   h], 0xfffdf2);
-      // shaper.planeY([942,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
+      console.log(corniceW);
+      shaper.trapY([[1078,  0,    0],[1078-corniceW,  corniceW,    0],[corniceW,  corniceW,  0]],[ -68,  -corniceW,   h], 0xfffdf2);
+      shaper.planeY([942,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
 
       //South Side Kitchen
       var h = 0;
@@ -236,12 +239,12 @@
 
       //West Side
       shaper.addHole([133, 5], [110, 214]);//door
-      shaper.planeX([900,  0, 340],[  600,   942,   290], 0xfcd690, false, -10);//Lower wall
+      shaper.planeX([900,  0, 340],[  600,   942,   290], 0xfcd690);//Lower wall
 
       shaper.addHole([733, 100], [90, 125]);//door
-      shaper.planeX([1500,  0, 403],[  0,   942,   630], 0xfcd690, false, -10);//Upper wall
+      shaper.planeX([1500,  0, 403],[  0,   942,   630], 0xfcd690);//Upper wall
 
-      shaper.planeX([1440,  0, corniceH],[  60,   942,   wallH], 0xfcd690, false, -10);//Top wall// attempt to rotate this wall a bit more
+      shaper.planeX([1440,  0, corniceH],[  60,   942,   wallH], 0xfcd690);//Top wall// attempt to rotate this wall a bit more
 
       //West Cornice
       shaper.planeX([65,  5,    0],[ -5,  942,   h], 0xfffdf2);
@@ -269,8 +272,8 @@
       shaper.planeX([128,  0,   18],[-68, 1010,   h], 0xfffdf2);
       h+=18;
 
-      // shaper.planeY([1068,  corniceW,    0],[ -63,  -corniceW,   h], 0xfffdf2);
-      // shaper.planeY([952,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
+      shaper.trapX([[60,  0,    0],[60,  corniceW,    0],[-68,  corniceW,    0]],[ 0,  942,   h], 0xfffdf2);
+      shaper.planeX([60,  0,    corniceH],[ 0,  942,   wallH], 0xfffdf2);
 
       //heart
       // scene.add(sh.main(-.5,-.5));
@@ -382,25 +385,26 @@
         var axis = new THREE.Vector3( 0, 0, 1 );
         var angle = rot+3.5*Math.PI/2;
 
-        // angle = .8*Math.PI/1;//look at back corner
-        // angle = .3*Math.PI/1;//Look at frnt left cornice
+        // angle = .6*Math.PI/1;//look at back corner
+        // angle = .26*Math.PI/1;//Look at frnt left cornice
         // angle = -.1*Math.PI/1;//Look at frnt right cornice
+        // angle = 1.65*Math.PI;//Look at frnt right cornice
         // angle = 0;
         vector.applyAxisAngle( axis, angle );
         // console.log(vector);
         // camera.position.set(vector.x,vector.y,vector.z);
 
         var dist = -2200;
-        camera.position.set(750+dist*Math.sin(angle),750+dist*Math.cos(angle),800);//450
+        camera.position.set(750+dist*Math.sin(angle),750+dist*Math.cos(angle),1000);//450
 
-        camera.lookAt(750,400,600);
+        camera.lookAt(750,500,1033);
         // console.log(camera.position);
         // vector.applyAxisAngle( axis, angle );
         // camera.translateOnAxis(vector, 7);
 
         // renderer.render(scene, camera);
         composer.render();
-        requestAnimationFrame(render);
+        // requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
       // renderer.render(scene, camera);
