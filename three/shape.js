@@ -13,33 +13,144 @@ function shaper() {
     this.scene = scene;
   };
 
-  this.plane = function(points, origin, color, more) {
-    if (points[2] == 0) {
-      this.main([points[0], points[1]], origin, [0,0,0], color);
+  function size2points(size) {
+    return [[size[0],0],[size[0],size[1]],[0,size[1]]];
+  }
+
+  this.planeX = function(size, origin, color, more, xtraAngle) {
+    if (size[2] == 0) {
+      // this.main(size, origin, [0,0,0], color);
+      this.main2(size2points(size), origin, [0,0,0], color);
     } else {
-      var radians = Math.atan(points[2]/points[1]);
+      var radians = Math.atan(size[2]/size[1]);
       if (more) {
         radians = Math.PI - radians;
       };
       var angle = 180*radians/Math.PI;
-      this.main([points[0], Math.sqrt(Math.pow(points[1],2)+Math.pow(points[2],2))], origin, [angle,0,0], color);
-      this.h += points[2];
+      size[1] = Math.sqrt(Math.pow(size[1],2)+Math.pow(size[2],2));
+      // this.main(size, origin, [angle,0,0], color);
+      var rotation = [angle,0,0];
+      if (xtraAngle) {
+        rotation[1] += xtraAngle;
+        console.log(rotation);
+      }
+      this.main2(size2points(size), origin, rotation, color);
+      this.h += size[2];
     }
   };
-  this.plane2 = function(points, origin, color, more) {
-    if (points[2] == 0) {
-      origin[1] = origin[1] + points[0];
-      this.main([points[0], points[1]], origin, [0,0,270], color);
+  this.planeY = function(size, origin, color, more) {
+    if (size[2] == 0) {
+      origin[1] += size[0];
+      // this.main(size, origin, [0,0,270], color);
+      this.main2(size2points(size), origin, [0,0,270], color);
     } else {
-      var radians = Math.atan(points[2]/points[1]);
+      var radians = Math.atan(size[2]/size[1]);
       if (more) {
         radians = Math.PI - radians;
       };
       var angle = 180*radians/Math.PI;
-      this.main([points[0], Math.sqrt(Math.pow(points[1],2)+Math.pow(points[2],2))], [origin[0],origin[1]+points[0],origin[2]], [0,-angle,270], color);
-      this.h += points[2];
+      size[1] = Math.sqrt(Math.pow(size[1],2)+Math.pow(size[2],2));
+      origin[1] += size[0];
+      // this.main(size, origin, [0,-angle,270], color);
+      this.main2(size2points(size), origin, [0,-angle,270], color);
+      this.h += size[2];
     }
   };
+  this.trapX = function(points, origin, color, more) {
+    if (points[1][2] == 0) {
+      this.main2(points, origin, [0,0,0], color);
+    } else {
+      var radians = Math.atan(points[1][2]/points[1][1]);
+      if (more) {
+        radians = Math.PI - radians;
+      };
+      var angle = 180*radians/Math.PI;
+      points[1][1] = Math.sqrt(Math.pow(points[1][1],2)+Math.pow(points[1][2],2));
+      points[2][1] = points[1][1];
+      this.main2(points, origin, [angle,0,0], color);
+    }
+  };
+  this.trapY = function(points, origin, color, more) {
+    if (points[1][2] == 0) {
+      origin[1] += points[0][0];
+      this.main2(points, origin, [0,0,270], color);
+    } else {
+      var radians = Math.atan(points[1][2]/points[1][1]);
+      if (more) {
+        radians = Math.PI - radians;
+      };
+      var angle = 180*radians/Math.PI;
+      points[1][1] = Math.sqrt(Math.pow(points[1][1],2)+Math.pow(points[1][2],2));
+      points[2][1] = points[1][1];
+      origin[1] += points[0][0];
+      this.main2(points, origin, [0,-angle,270], color);
+    }
+  };
+
+  this.main2 = function(points, origin, rotate, color) {
+    var shape = new _3js.Shape();
+    shape.moveTo(0,0);
+    shape.lineTo(points[0][0],points[0][1]);
+    shape.lineTo(points[1][0],points[1][1]);
+    shape.lineTo(points[2][0],points[2][1]);
+    shape.holes = this.holes;
+    this.holes = [];
+//    console.log(shape.extractPoints());
+
+    var shapeGeometry = new _3js.ShapeGeometry( shape );
+
+    var planeMat = new _3js.MeshLambertMaterial({
+      color: color,
+      opacity: 0.6,
+      // transparent: true,
+      side: _3js.DoubleSide
+    });
+    var planeMatBack = new _3js.MeshLambertMaterial({
+      color: 0xff0000,
+      opacity: 0.6,
+      // transparent: true,
+      side: _3js.BackSide
+    });
+    var plane = new _3js.Mesh(shapeGeometry, planeMat);
+    plane.castShadow = true;
+    plane.receiveShadow = true;
+
+    var rot = {
+      vector: [0,0,0],
+      angle: [0,0,0]
+    }
+    if(rotate[0]>0) {
+      rot.vector[0] = 1;
+      rot.angle[0] = rotate[0]*Math.PI/180;
+    }
+    if(rotate[1]>0) {
+      rot.vector[1] = 1;
+      rot.angle[1] = rotate[1]*Math.PI/180;
+    }
+    if(rotate[2]>0) {
+      rot.vector[2] = 1;
+      rot.angle[2] = rotate[2]*Math.PI/180;
+    }
+
+    plane.setRotationFromEuler(new _3js.Euler(rotate[0]*Math.PI/180,rotate[1]*Math.PI/180,rotate[2]*Math.PI/180));
+    plane.position.set(origin[0], origin[1], origin[2]);
+    // shapeGeometry.rotateX(rotate[0]*Math.PI/180);
+    // shapeGeometry.rotateY(rotate[1]*Math.PI/180);
+    // shapeGeometry.rotateZ(rotate[2]*Math.PI/180);
+    // shapeGeometry.translate(origin[0], origin[1], origin[2]);
+    //
+    // var plane = new _3js.Mesh(shapeGeometry, planeMat);
+    // var group = new _3js.Group();
+    // group.add(plane);
+    // group.add(new _3js.Mesh(shapeGeometry, planeMatBack));
+    // plane.castShadow = true;
+    // plane.receiveShadow = true;
+    // this.scene.add(group);
+
+    this.scene.add(plane);
+
+    return plane;
+  }
 
   this.main = function(size, origin, rotate, color) {
     var shape = new _3js.Shape();
