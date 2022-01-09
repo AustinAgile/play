@@ -74,11 +74,16 @@ function shaper() {
     }
   }
 
-  this.planeWall = function(points, origin, rotate, color) {
+  this.planeWall = function(size, origin, rotate, color, mirror) {
+    var points = [[size[0],0,0],[size[0],size[1],0],[0,size[1],0]];
+    return this.bevelWall(points, origin, rotate, color, mirror);
+  }
+
+  this.bevelWall = function(points, origin, rotate, color, mirror) {
     var geoRotate = this.planeTransforms.geoRotate;
     var geoTranslate = this.planeTransforms.geoTranslate;
     if (points[1][2] == 0) {
-      this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
+      // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
     } else {
       var radians = Math.atan(points[1][2]/points[1][1]);
       var angle = 180*radians/Math.PI;
@@ -89,8 +94,9 @@ function shaper() {
       } else {
         rotate[0] += angle;
       }
-      this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
+      // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
     }
+    this.main3(geoRotate, geoTranslate, points, origin, rotate, color, mirror);
 }
 
   this.frontWall = function(points, origin, rotate, color) {
@@ -116,7 +122,7 @@ function shaper() {
     return this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
   }
 
-  this.main3 = function(geoRotate, geoTranslate, points, origin, rotate, color) {
+  this.main3 = function(geoRotate, geoTranslate, points, origin, rotate, color, mirror) {
     var shape = new _3js.Shape();
     shape.moveTo(0,0);
     shape.lineTo(points[0][0],points[0][1]);
@@ -134,17 +140,21 @@ function shaper() {
     // shapeGeometry.translate(geoTranslate[0], geoTranslate[1], geoTranslate[2]);
 
     var planeMat = new _3js.MeshLambertMaterial({
-      color: color,
-      opacity: 0.6,
-      // transparent: true,
-      side: _3js.DoubleSide
+      color: color.f,
+      opacity: 0.5,
+      transparent: true,
+      // side: _3js.BackSide
+      side: (mirror ?_3js.BackSide : _3js.FrontSide)
     });
     var planeMatBack = new _3js.MeshLambertMaterial({
-      color: 0xff0000,
-      opacity: 0.6,
-      // transparent: true,
-      side: _3js.BackSide
+      color: color.b,
+      opacity: 0.5,
+      transparent: true,
+      // side: _3js.FrontSide
+      side: (mirror ? _3js.FrontSide : _3js.BackSide)
     });
+    // if (mirror) {console.log(planeMatBack);}
+    // var planeMat = getMaterial(mirror, color, 0xff0000);
     // var plane = new _3js.Mesh(shapeGeometry, planeMat);
     // plane.castShadow = true;
     // plane.receiveShadow = true;
@@ -175,18 +185,30 @@ function shaper() {
     }
 
     var plane = new _3js.Mesh(shapeGeometry, planeMat);
+    // plane.castShadow = true;
+    // plane.receiveShadow = true;
     var group = new _3js.Group();
     group.add(plane);
     group.add(new _3js.Mesh(shapeGeometry, planeMatBack));
-    plane.castShadow = true;
-    plane.receiveShadow = true;
     this.scene.add(group);
 
     // this.scene.add(plane);
 
     return plane;
-  }
+  };
 
+  this.addWindowHole = function(window) {
+    this.addHole([window.offset.x, window.offset.y], [window.size.w, window.size.h]);
+  };
+  this.planeWallx = function(wall) {
+    var size = [wall.size.w, wall.size.h];
+    var offset = [wall.offset.x, wall.offset.z, wall.offset.y];
+    var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
+    return this.planeWall(size, offset, rotate, wall.color, wall.mirror);
+  }
+  this.addWindowHolex = function(window, wall) {
+    this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.y], [window.size.w, window.size.h]);
+  };
   this.addHole = function(origin, size) {
     var hole = new _3js.Shape();
     hole.moveTo( origin[0], origin[1] );
@@ -194,6 +216,13 @@ function shaper() {
     hole.lineTo( origin[0]+size[0], origin[1]+size[1] );
     hole.lineTo( origin[0], origin[1]+size[1] );
     this.holes.push(hole);
+  };
+
+  this.window = function(points, size, depth, color) {
+    this.bevelWall([[depth,0,0],[depth, size[1],0],[0,size[1],0]],[ points[0], 0, points[1]], [ 0, 0, 90], color);
+    this.bevelWall([[size[0],0,0],[size[0],depth,0],[0,depth,0]],[ points[0], 0, points[1]], [ -90, 0, 0], color);
+    this.bevelWall([[depth,0,0],[depth,size[1],0],[0,size[1],0]],[ points[0]+size[0], -depth, points[1]], [ 0, 0, -90], color);
+    this.bevelWall([[size[0],0,0],[size[0],depth,0],[0,depth,0]],[ points[0], -depth, points[1]+size[1]], [ 90, 0, 0], color);
   }
 }
 
