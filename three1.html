@@ -14,6 +14,7 @@
     import {line} from "./three/line.js";
     import * as shit from './three/plane1.js';
     import * as alt from './three/shape.js';
+    import * as alt0 from './three/shape0.js';
     // import * as zzz from './three/view.js';
     // import * as sq from './three/square.js';
     // import * as ex from './three/extrude.js';
@@ -21,7 +22,9 @@
     // var view = new zzz.view();
     var builder = new shit.builder();
     var shaper = new alt.shaper();
+    var shaper0 = new alt0.shaper();
     shaper.constructor();
+    shaper0.constructor();
 
     function main() {
       // const canvas = document.querySelector('#c');
@@ -46,7 +49,7 @@
         }
       );
 
-      const fov = 20;
+      const fov = 50;
       const aspect = 2;  // the canvas default
       const near = 1;
       const far = 7000;
@@ -81,210 +84,265 @@
       // composer.addPass(effectFXAA);
 
       shaper.setScene(scene);
+      shaper0.setScene(scene);
 
-      // var plane = new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), 3 );
-      // const helper = new THREE.PlaneHelper( plane, 5, 0xffff00 );
-      // scene.add( helper );
-      // scene.add(pl.main([10,10],[0,90,0], 0xffff00));
-      // pl.x([1500, 5, 5]);
-      // pl.x([1500, 5, 0]);
-      // pl.x([1500,0,1033]);
+      // //East windows level 0
+      // var l = 172;
+      // shaper.addHole([l,150], [70, 60]);//door
+      // l+=70;
+      // l+=210;
+      // shaper.addHole([l,150], [60, 60]);//door
+      // l = 703;
+      // shaper.addHole([l,10], [113, 224]);//door
+      // l+=113;
+      // l+=210;
+      // shaper.addHole([l,153], [40, 50]);//door
+      // l+=40;
+      // l+=195;
+      // shaper.addHole([l,10], [75, 193]);//door
+      //
+      // //East windows level 1
+      // var l = 165;
+      // var w = 90;
+      // shaper.addHole([l,385], [w, 190]);
+      // l+=w
+      // l+=165
+      // shaper.addHole([l,290], [w, 285]);
+      // l+=w
+      // l+=186
+      // shaper.addHole([l,385], [w, 190]);
+      // l+=w
+      // l+=186
+      // shaper.addHole([l,290], [w, 285]);
+      // l+=w
+      // l+=165
+      // shaper.addHole([l,385], [w, 190]);
+      //
+      // //East windows level 2
+      // var l = 165;
+      // var w = 90;
+      // shaper.addHole([l,750], [w, 190]);
+      // l+=w
+      // l+=165
+      // shaper.addHole([l,750], [w, 190]);
+      // l+=w
+      // l+=186
+      // shaper.addHole([l,750], [w, 190]);
+      // l+=w
+      // l+=186
+      // shaper.addHole([l,750], [w, 190]);
+      // l+=w
+      // l+=165
+      // shaper.addHole([l,750], [w, 190]);
+      //
+      // //East wall
+      // var h = 0;
+      // var wallH = 1033;
+      // var wallW = 1500;
+      // shaper.planeX([wallW,  0, wallH],[  0,   0,   0], 0xfcd690);
+      // h+=wallH;
+      //
+      // //East cornice
+      // var corniceW = 0;
+      //
+      // shaper.planeX([wallW+5,  5,    0],[ -5,  -5,   h], 0xfffdf2);
+      // shaper.planeX([wallW+5,  0,    8],[ -5,  -5,   h], 0xfffdf2);
+      // h+=8;
+      // corniceW+=5;
+      //
+      // shaper.planeX([1510,  5,    0],[-10, -10,   h], 0xfffdf2);
+      // shaper.planeX([1510,  0,   18],[-10, -10,   h], 0xfffdf2);
+      // h+=18;
+      // corniceW+=5;
+      //
+      // // shaper.planeX([1510,  5,    5],[-10, -10,   h], 0xfffdf2, true);//bevel 1
+      // shaper.trapX([[1510,  0,    0],[1510,  5,    5],[-5,  5,    5]],[-10, -10,   h], 0xfffdf2, true);//bevel 1
+      // h += 5;
+      // corniceW+=5;
+      //
+      // shaper.planeX([1520,  5,    0],[-20, -20,   h], 0xfffdf2);
+      // shaper.planeX([1520,  0,    6],[-20, -20,   h], 0xfffdf2);
+      // h += 6;
+      // corniceW+=5;
+      //
+      // // shaper.planeX([1520,  8,    6],[-20, -20,   h], 0xfffdf2, true);//bevel 2
+      // shaper.trapX([[1520,  0,    0],[1520,  8,    6],[-8,  8,    6]],[-20, -20,   h], 0xfffdf2, true);//bevel 2
+      // h += 6;
+      // // shaper.planeX([1530,  0,    6],[-15, -28,   h], 0xfffdf2);
+      // shaper.planeX([1528,  0,    6],[-28, -28,   h], 0xfffdf2);
+      // h += 6;
+      // corniceW+=8;
+      //
+      // // shaper.planeX([1568, 40,    0],[-68, -68,   h], 0xfffdf2);
+      // shaper.trapX([[1568, 0,    0],[1568, 40,    0],[40, 40,    0]],[-68, -68,   h], 0xfffdf2);
+      // shaper0.planeX([1568,  0,   18],[-68, -68,   h], 0xff4444);
+      // // shaper.trapX([[1568, 0,   0],[1568,  0,   18],[0,  0,   18]],[-68, -68,   h], 0xfffdf2);
+      // h += 18;
+      // corniceW+=40;
+      //
+      // var corniceH = h-wallH;
+      // console.log(corniceW);
+      // shaper.trapX([[wallW+corniceW,  0,    0],[1568,  corniceW,    0],[corniceW,  corniceW,    0]],[ -68,  -corniceW,   h], 0xfffdf2);
+      // shaper.planeX([wallW,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
+      //
+      // //South Side
+      // var h = 0;
+      // shaper.addHole([157, 385], [90, 185]);//
+      // shaper.addHole([714, 385], [90, 185]);//
+      // shaper.addHole([157, 750], [90, 185]);//
+      // shaper.addHole([714, 750], [90, 185]);//
+      // shaper.planeY([942,  0, 1033],[  0,   0,   0], 0xfcd690);
+      // h+=wallH;
+      //
+      // //Cornice
+      // shaper.planeY([952,  5,    0],[ -5,  -5,   h], 0xfffdf2);
+      // shaper.planeY([952,  0,    8],[ -5,  -5,   h], 0xfffdf2);
+      // h+=8;
+      //
+      // shaper.planeY([962,  5,    0],[-10, -10,   h], 0xfffdf2);
+      // shaper.planeY([962,  0,   18],[-10, -10,   h], 0xfffdf2);
+      // h+=18;
+      //
+      // // shaper.planeY([962,  5,    5],[-10, -10,   h], 0xfffdf2, true);//bevel 1
+      // shaper.trapY([[962,0,0],[967,5,5],[-5,5,5]],[-10, -10,   h], 0xfffdf2, true);//bevel 1
+      // h += 5;
+      //
+      // shaper.planeY([982,  5,    0],[-20, -20,   h], 0xfffdf2);
+      // shaper.planeY([982,  0,    6],[-20, -20,   h], 0xfffdf2);
+      // h += 6;
+      //
+      // // shaper.planeY([982,  8,    6],[-20, -20,   h], 0xffff00, true);//bevel 2
+      // shaper.trapY([[982,  0,    0],[990,  8,    6],[-8,  8,    6]],[-20, -20,   h], 0xfffdf2, true);//bevel 2????
+      // h += 6;
+      // shaper.planeY([998,  0,    6],[-28, -28,   h], 0xfffdf2);
+      // h+=6;
+      //
+      // // shaper.planeY([1078, 40,    0],[-68, -68,   h], 0xff0000);
+      // shaper.trapY([[1078, 0,    0],[1038, 40,    0],[40, 40,    0]],[-68, -68,   h], 0xfffdf2);//????
+      // shaper.planeY([1078,  0,   18],[-68, -68,   h], 0xfffdf2);
+      // h+=18;
+      //
+      // console.log(corniceW);
+      // shaper.trapY([[1078,  0,    0],[1078-corniceW,  corniceW,    0],[corniceW,  corniceW,  0]],[ -68,  -corniceW,   h], 0xfffdf2);
+      // shaper.planeY([942,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
+      //
+      // //South Side Kitchen
+      // var h = 0;
+      // shaper.addHole([70, 400], [30, 30]);//door
+      // shaper.addHole([293, 385], [90, 135]);//door
+      // shaper.planeY([393,  0, 630],[  0,   942,   0], 0xfcd690);
+      // h+=wallH;
+      //
+      // //West Side
+      // shaper.addHole([133, 5], [110, 214]);//door
+      // shaper.planeX([900,  0, 340],[  600,   942,   290], 0xfcd690);//Lower wall
+      //
+      // shaper.addHole([733, 100], [90, 125]);//door
+      // shaper.planeX([1500,  0, 403],[  0,   942,   630], 0xfcd690);//Upper wall
+      //
+      // shaper.planeX([1440,  0, corniceH],[  60,   942,   wallH], 0xfcd690);//Top wall// attempt to rotate this wall a bit more
+      //
+      // //West Cornice
+      // shaper.planeX([65,  5,    0],[ -5,  942,   h], 0xfffdf2);
+      // shaper.planeX([65,  0,    8],[ -5,  947,   h], 0xfffdf2);
+      // h+=8;
+      // shaper.planeX([70,  5,    0],[-10, 947,   h], 0xfffdf2);
+      // shaper.planeX([70,  0,   18],[-10, 952,   h], 0xfffdf2);
+      // h+=18;
+      // // shaper.planeX([70,  5,    5],[-10, 952,   h], 0xfffdf2, false);//bevel 1
+      // shaper.trapX([[70,  0,    0],[70,  5,    5],[-5,  5,    5]],[-10, 952,   h], 0xfffdf2, false);//bevel 1
+      // h += 5;
+      //
+      // shaper.planeX([80,  5,    0],[-20, 957,   h], 0xfffdf2);
+      // shaper.planeX([80,  0,    6],[-20, 962,   h], 0xfffdf2);
+      // h += 6;
+      //
+      // // shaper.planeX([80,  8,    6],[-20, 962,   h], 0xfffdf2, false);//bevel 2
+      // shaper.trapX([[80,  0,    0],[80,  8,    6],[-8,  8,    6]],[-20, 962,   h], 0xfffdf2, false);//bevel 2
+      // h += 6;
+      // shaper.planeX([88,  0,    6],[-28, 970,   h], 0xfffdf2);
+      // h+=6;
+      //
+      // // shaper.planeX([128, 40,    0],[-68, 970,   h], 0xff0000);
+      // shaper.trapX([[88, 0,    0],[88, 40,    0],[-40, 40,    0]],[-28, 970,   h], 0xfffdf2);
+      // shaper.planeX([128,  0,   18],[-68, 1010,   h], 0xfffdf2);
+      // h+=18;
+      //
+      // shaper.trapX([[60,  0,    0],[60,  corniceW,    0],[-68,  corniceW,    0]],[ 0,  942,   h], 0xfffdf2);
+      // shaper.planeX([60,  0,    corniceH],[ 0,  942,   wallH], 0xfffdf2);
 
-      //East windows level 0
-      var l = 172;
-      shaper.addHole([l,150], [70, 60]);//door
-      l+=70;
-      l+=210;
-      shaper.addHole([l,150], [60, 60]);//door
-      l = 703;
-      shaper.addHole([l,10], [113, 224]);//door
-      l+=113;
-      l+=210;
-      shaper.addHole([l,153], [40, 50]);//door
-      l+=40;
-      l+=195;
-      shaper.addHole([l,10], [75, 193]);//door
+      // shaper0.addHole([200, 100], [200, 100]);//door
+      // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 0], 0xfffdf2);
 
-      //East windows level 1
-      var l = 165;
-      var w = 90;
-      shaper.addHole([l,385], [w, 190]);
-      l+=w
-      l+=165
-      shaper.addHole([l,290], [w, 285]);
-      l+=w
-      l+=186
-      shaper.addHole([l,385], [w, 190]);
-      l+=w
-      l+=186
-      shaper.addHole([l,290], [w, 285]);
-      l+=w
-      l+=165
-      shaper.addHole([l,385], [w, 190]);
+      // Front Wall.
+      shaper0.addHole([200, 100], [200, 100]);//door
+      shaper0.addHole([500, 100], [100, 50]);//door
+      // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 0], 0xfffdf2);
+      // // shaper0.frontWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // shaper0.frontWall([[200,0,0],[200,100,0],[0,100,0]],[ 901, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.setPlane([0,-1,0],[0,0,0]);
+      shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
+      // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 551], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], 0xfffdf2);
 
-      //East windows level 2
-      var l = 165;
-      var w = 90;
-      shaper.addHole([l,750], [w, 190]);
-      l+=w
-      l+=165
-      shaper.addHole([l,750], [w, 190]);
-      l+=w
-      l+=186
-      shaper.addHole([l,750], [w, 190]);
-      l+=w
-      l+=186
-      shaper.addHole([l,750], [w, 190]);
-      l+=w
-      l+=165
-      shaper.addHole([l,750], [w, 190]);
+      // Front horizontal surface.
+      // shaper0.addHole([200, 100], [200, 100]);//door
+      // shaper0.addHole([500, 100], [100, 50]);//door
+      // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 0], 0xfffdf2);
+      // shaper0.frontWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.frontWall([[200,0,0],[200,100,0],[0,100,0]],[ 901, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.setPlane([0,-1,0],[0,0,0]);
+      // shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 0, 0, 0], [ 45, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 45, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 551], [ 45, 0, 0], 0xfffdf2);
 
-      //East wall
-      var h = 0;
-      var wallH = 1033;
-      var wallW = 1500;
-      shaper.planeX([wallW,  0, wallH],[  0,   0,   0], 0xfcd690);
-      h+=wallH;
+      //Back Wall
+      shaper0.addHole([200, 100], [200, 100]);//door
+      shaper0.addHole([500, 100], [100, 50]);//door
+      // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 900, 0, 0], [ -90, 180, 0], 0xfffdf2);
+      // // shaper0.backWall([[900,0,0],[900,500,0],[0,500,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // shaper0.backWall([[200,0,0],[200,100,0],[0,100,0]],[ 900-900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // shaper0.setPlane([-Math.PI/2,Math.PI,0],[900,0,0]);
+      shaper0.setPlane([0,1,0],[900,900,0]);
+      shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 555], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xfffdf2);
 
-      //East cornice
-      var corniceW = 0;
+      //Left Wall.
+      shaper0.addHole([200, 100], [200, 100]);//door
+      shaper0.addHole([500, 100], [100, 50]);//door
+      // // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 900, 0], [ 90, 0, -90], 0xfffdf2);
+      // // // shaper0.leftWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.setPlane([-1,0,0],[0,900,0]);
+      shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ 0, -100, 555], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // shaper0.planeWall([[1100,0,0],[1000,50,-50],[100,50,-50]],[ -50, -100, 550], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
 
-      shaper.planeX([wallW+5,  5,    0],[ -5,  -5,   h], 0xfffdf2);
-      shaper.planeX([wallW+5,  0,    8],[ -5,  -5,   h], 0xfffdf2);
-      h+=8;
-      corniceW+=5;
+      // //Right Wall.
+      shaper0.addHole([200, 100], [200, 100]);//door
+      shaper0.addHole([500, 100], [100, 50]);//door
+      // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 90], 0xfffdf2);
+      shaper0.setPlane([1,0,0],[900,0,0]);
+      shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ 0, -100, 555], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // shaper0.planeWall([[1100,0,0],[1000,50,-50],[100,50,-50]],[ 50, -100, 550], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
 
-      shaper.planeX([1510,  5,    0],[-10, -10,   h], 0xfffdf2);
-      shaper.planeX([1510,  0,   18],[-10, -10,   h], 0xfffdf2);
-      h+=18;
-      corniceW+=5;
-
-      // shaper.planeX([1510,  5,    5],[-10, -10,   h], 0xfffdf2, true);//bevel 1
-      shaper.trapX([[1510,  0,    0],[1510,  5,    5],[-5,  5,    5]],[-10, -10,   h], 0xfffdf2, true);//bevel 1
-      h += 5;
-      corniceW+=5;
-
-      shaper.planeX([1520,  5,    0],[-20, -20,   h], 0xfffdf2);
-      shaper.planeX([1520,  0,    6],[-20, -20,   h], 0xfffdf2);
-      h += 6;
-      corniceW+=5;
-
-      // shaper.planeX([1520,  8,    6],[-20, -20,   h], 0xfffdf2, true);//bevel 2
-      shaper.trapX([[1520,  0,    0],[1520,  8,    6],[-8,  8,    6]],[-20, -20,   h], 0xfffdf2, true);//bevel 2
-      h += 6;
-      // shaper.planeX([1530,  0,    6],[-15, -28,   h], 0xfffdf2);
-      shaper.planeX([1528,  0,    6],[-28, -28,   h], 0xfffdf2);
-      h += 6;
-      corniceW+=8;
-
-      // shaper.planeX([1568, 40,    0],[-68, -68,   h], 0xfffdf2);
-      shaper.trapX([[1568, 0,    0],[1568, 40,    0],[40, 40,    0]],[-68, -68,   h], 0xfffdf2);
-      shaper.planeX([1568,  0,   18],[-68, -68,   h], 0xfffdf2);
-      // shaper.trapX([[1568, 0,   0],[1568,  0,   18],[0,  0,   18]],[-68, -68,   h], 0xfffdf2);
-      h += 18;
-      corniceW+=40;
-
-      var corniceH = h-wallH;
-      console.log(corniceW);
-      shaper.trapX([[wallW+corniceW,  0,    0],[1568,  corniceW,    0],[corniceW,  corniceW,    0]],[ -68,  -corniceW,   h], 0xfffdf2);
-      shaper.planeX([wallW,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
-
-      //South Side
-      var h = 0;
-      shaper.addHole([157, 385], [90, 185]);//
-      shaper.addHole([714, 385], [90, 185]);//
-      shaper.addHole([157, 750], [90, 185]);//
-      shaper.addHole([714, 750], [90, 185]);//
-      shaper.planeY([942,  0, 1033],[  0,   0,   0], 0xfcd690);
-      h+=wallH;
-
-      //Cornice
-      shaper.planeY([952,  5,    0],[ -5,  -5,   h], 0xfffdf2);
-      shaper.planeY([952,  0,    8],[ -5,  -5,   h], 0xfffdf2);
-      h+=8;
-
-      shaper.planeY([962,  5,    0],[-10, -10,   h], 0xfffdf2);
-      shaper.planeY([962,  0,   18],[-10, -10,   h], 0xfffdf2);
-      h+=18;
-
-      // shaper.planeY([962,  5,    5],[-10, -10,   h], 0xfffdf2, true);//bevel 1
-      shaper.trapY([[962,0,0],[967,5,5],[-5,5,5]],[-10, -10,   h], 0xfffdf2, true);//bevel 1
-      h += 5;
-
-      shaper.planeY([982,  5,    0],[-20, -20,   h], 0xfffdf2);
-      shaper.planeY([982,  0,    6],[-20, -20,   h], 0xfffdf2);
-      h += 6;
-
-      // shaper.planeY([982,  8,    6],[-20, -20,   h], 0xffff00, true);//bevel 2
-      shaper.trapY([[982,  0,    0],[990,  8,    6],[-8,  8,    6]],[-20, -20,   h], 0xfffdf2, true);//bevel 2????
-      h += 6;
-      shaper.planeY([998,  0,    6],[-28, -28,   h], 0xfffdf2);
-      h+=6;
-
-      // shaper.planeY([1078, 40,    0],[-68, -68,   h], 0xff0000);
-      shaper.trapY([[1078, 0,    0],[1038, 40,    0],[40, 40,    0]],[-68, -68,   h], 0xfffdf2);//????
-      shaper.planeY([1078,  0,   18],[-68, -68,   h], 0xfffdf2);
-      h+=18;
-
-      console.log(corniceW);
-      shaper.trapY([[1078,  0,    0],[1078-corniceW,  corniceW,    0],[corniceW,  corniceW,  0]],[ -68,  -corniceW,   h], 0xfffdf2);
-      shaper.planeY([942,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
-
-      //South Side Kitchen
-      var h = 0;
-      shaper.addHole([70, 400], [30, 30]);//door
-      shaper.addHole([293, 385], [90, 135]);//door
-      shaper.planeY([393,  0, 630],[  0,   942,   0], 0xfcd690);
-      h+=wallH;
-
-      //West Side
-      shaper.addHole([133, 5], [110, 214]);//door
-      shaper.planeX([900,  0, 340],[  600,   942,   290], 0xfcd690);//Lower wall
-
-      shaper.addHole([733, 100], [90, 125]);//door
-      shaper.planeX([1500,  0, 403],[  0,   942,   630], 0xfcd690);//Upper wall
-
-      shaper.planeX([1440,  0, corniceH],[  60,   942,   wallH], 0xfcd690);//Top wall// attempt to rotate this wall a bit more
-
-      //West Cornice
-      shaper.planeX([65,  5,    0],[ -5,  942,   h], 0xfffdf2);
-      shaper.planeX([65,  0,    8],[ -5,  947,   h], 0xfffdf2);
-      h+=8;
-      shaper.planeX([70,  5,    0],[-10, 947,   h], 0xfffdf2);
-      shaper.planeX([70,  0,   18],[-10, 952,   h], 0xfffdf2);
-      h+=18;
-      // shaper.planeX([70,  5,    5],[-10, 952,   h], 0xfffdf2, false);//bevel 1
-      shaper.trapX([[70,  0,    0],[70,  5,    5],[-5,  5,    5]],[-10, 952,   h], 0xfffdf2, false);//bevel 1
-      h += 5;
-
-      shaper.planeX([80,  5,    0],[-20, 957,   h], 0xfffdf2);
-      shaper.planeX([80,  0,    6],[-20, 962,   h], 0xfffdf2);
-      h += 6;
-
-      // shaper.planeX([80,  8,    6],[-20, 962,   h], 0xfffdf2, false);//bevel 2
-      shaper.trapX([[80,  0,    0],[80,  8,    6],[-8,  8,    6]],[-20, 962,   h], 0xfffdf2, false);//bevel 2
-      h += 6;
-      shaper.planeX([88,  0,    6],[-28, 970,   h], 0xfffdf2);
-      h+=6;
-
-      // shaper.planeX([128, 40,    0],[-68, 970,   h], 0xff0000);
-      shaper.trapX([[88, 0,    0],[88, 40,    0],[-40, 40,    0]],[-28, 970,   h], 0xfffdf2);
-      shaper.planeX([128,  0,   18],[-68, 1010,   h], 0xfffdf2);
-      h+=18;
-
-      shaper.trapX([[60,  0,    0],[60,  corniceW,    0],[-68,  corniceW,    0]],[ 0,  942,   h], 0xfffdf2);
-      shaper.planeX([60,  0,    corniceH],[ 0,  942,   wallH], 0xfffdf2);
-
-      //heart
-      // scene.add(sh.main(-.5,-.5));
-
-      //square
-      // scene.add(sq.main());
-      //tetra
-      // scene.add(sq.tetra());
-      //extrude
-      // scene.add(ex.main());
-
+//###############
       //Axes
       scene.add(line([[-200,0,0],[0,0,0]],0xff8888));
       scene.add(line([[0,0,0],[1600,0,0]],0xff0000));
@@ -388,23 +446,23 @@
         // angle = .6*Math.PI/1;//look at back corner
         // angle = .26*Math.PI/1;//Look at frnt left cornice
         // angle = -.1*Math.PI/1;//Look at frnt right cornice
-        // angle = 1.65*Math.PI;//Look at frnt right cornice
+        // angle = 1.0*Math.PI;//Look at frnt right cornice
         // angle = 0;
         vector.applyAxisAngle( axis, angle );
         // console.log(vector);
         // camera.position.set(vector.x,vector.y,vector.z);
 
         var dist = -2200;
-        camera.position.set(750+dist*Math.sin(angle),750+dist*Math.cos(angle),1000);//450
+        camera.position.set(900+dist*Math.sin(angle),900+dist*Math.cos(angle),200);//450
 
-        camera.lookAt(750,500,1033);
+        camera.lookAt(900,900,300);
         // console.log(camera.position);
         // vector.applyAxisAngle( axis, angle );
         // camera.translateOnAxis(vector, 7);
 
         // renderer.render(scene, camera);
         composer.render();
-        // requestAnimationFrame(render);
+        requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
       // renderer.render(scene, camera);
