@@ -19,10 +19,13 @@
     // import * as sq from './three/square.js';
     // import * as ex from './three/extrude.js';
 
+console.log(alt0);
     // var view = new zzz.view();
     var builder = new shit.builder();
     var shaper = new alt.shaper();
     var shaper0 = new alt0.shaper();
+    // var backPlane = new alt0.shaper();
+    // console.log(backPlane);
     shaper.constructor();
     shaper0.constructor();
 
@@ -49,7 +52,7 @@
         }
       );
 
-      const fov = 50;
+      const fov = 60;
       const aspect = 2;  // the canvas default
       const near = 1;
       const far = 7000;
@@ -277,70 +280,92 @@
       // Front Wall.
       shaper0.addHole([200, 100], [200, 100]);//door
       shaper0.addHole([500, 100], [100, 50]);//door
-      // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 0], 0xfffdf2);
-      // // shaper0.frontWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // // shaper0.frontWall([[200,0,0],[200,100,0],[0,100,0]],[ 901, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      shaper0.setPlane([0,-1,0],[0,0,0]);
+      shaper0.setPlane([0,-1,0],[0,0,0],0);
       shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
       shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
-      // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 551], [ 0, 0, 0], 0xfffdf2);
       shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
       shaper0.planeWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], 0xfffdf2);
-
-      // Front horizontal surface.
-      // shaper0.addHole([200, 100], [200, 100]);//door
-      // shaper0.addHole([500, 100], [100, 50]);//door
-      // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 0], 0xfffdf2);
-      // shaper0.frontWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // shaper0.frontWall([[200,0,0],[200,100,0],[0,100,0]],[ 901, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // shaper0.setPlane([0,-1,0],[0,0,0]);
-      // shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 0, 0, 0], [ 45, 0, 0], 0xfffdf2);
-      // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 45, 0, 0], 0xfffdf2);
-      // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 551], [ 45, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[900,0,0],[900,50,0],[0,50,0]],[ 0, 0, 600], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[900,0,0],[940,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[980,0,0],[980,20,0],[0,20,0]],[ -40, 40, 650], [ 0, 0, 0], 0xfffdf2);
 
       //Back Wall
+      // shaper0.addHole([200, 100], [200, 100]);//door
+      // shaper0.addHole([500, 100], [100, 50]);//door
+      // shaper0.setPlane([0,1,0],[900,900,0], 30);
+      // // shaper0.setPlane([0,1,0],[1100,0,0]);
+      // shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 555], [ 0, 0, 0], 0xff0000);
+      // shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xfffdf2);
+
+      //BACK wall
+      //This is by post rotation
+      var RightLen = 700;
+      var angle = Math.atan((900-RightLen)/900);//Angle of the back wall
+      var length = Math.sqrt(Math.pow((900-RightLen),2)+Math.pow(900,2));//Length of the back wall
+      var a2 = angle/2 + Math.PI/4;//angle between per walls
+      var xtraLen = 50*(Math.tan(a2)-1);//extra length added to cornice
+      var xtraLen2 = 40*(Math.tan(a2)-1);//extra length added to cornice
+      // console.log(angle*180/Math.PI);
+      // console.log(length);
+      // console.log(a2*180/Math.PI);
+      // console.log(xtraLen);
       shaper0.addHole([200, 100], [200, 100]);//door
       shaper0.addHole([500, 100], [100, 50]);//door
-      // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 900, 0, 0], [ -90, 180, 0], 0xfffdf2);
-      // // shaper0.backWall([[900,0,0],[900,500,0],[0,500,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // // shaper0.backWall([[200,0,0],[200,100,0],[0,100,0]],[ 900-900, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // // shaper0.setPlane([-Math.PI/2,Math.PI,0],[900,0,0]);
-      shaper0.setPlane([0,1,0],[900,900,0]);
-      shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
-      // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ -100, 0, 555], [ 0, 0, 0], 0xff0000);
-      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
-      shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xfffdf2);
+      shaper0.setPlane([0,-1,0],[900,RightLen,0], 180+angle*180/Math.PI);
+      shaper0.planeWall([[length,0,0],[length,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ length, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[length,0,0],[length+50+xtraLen,50,50],[-(50-xtraLen),50,50]],[ 0, 0, 500], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[length+100,0,0],[length+50-xtraLen,50,-50],[50-xtraLen,50,-50]],[ -(50-xtraLen), 50, 550], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[length,0,0],[length,50,0],[0,50,0]],[ 0, 0, 600], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[length,0,0],[length+40+xtraLen2,40,0],[-(40-xtraLen2),40,0]],[ 0, 0, 650], [ 90, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[length+80,0,0],[length+80,20,0],[0,20,0]],[ -(40-xtraLen2), 40, 650], [ 0, 0, 0], 0xfffdf2);
 
       //Left Wall.
-      shaper0.addHole([200, 100], [200, 100]);//door
-      shaper0.addHole([500, 100], [100, 50]);//door
-      // // // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 900, 0], [ 90, 0, -90], 0xfffdf2);
-      // // // shaper0.leftWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      shaper0.setPlane([-1,0,0],[0,900,0]);
-      shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
-      // // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ 0, -100, 555], [ 0, 0, 0], 0xff0000);
-      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
-      // shaper0.planeWall([[1100,0,0],[1000,50,-50],[100,50,-50]],[ -50, -100, 550], [ 0, 0, 0], 0xff0000);
-      shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
+      // shaper0.addHole([200, 100], [200, 100]);//door
+      // shaper0.addHole([500, 100], [100, 50]);//door
+      // shaper0.setPlane([-1,0,0],[0,900,0], 0);
+      // shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // // // // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // // // // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ 0, -100, 555], [ 0, 0, 0], 0xff0000);
+      // shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
 
-      // //Right Wall.
+      //Left Wall
+      //This is by post rotation
       shaper0.addHole([200, 100], [200, 100]);//door
       shaper0.addHole([500, 100], [100, 50]);//door
-      // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 90], 0xfffdf2);
-      shaper0.setPlane([1,0,0],[900,0,0]);
+      shaper0.setPlane([0,-1,0],[0,900,0], 90);
       shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
       shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
-      // shaper0.planeWall([[900,0,0],[1000,50,0],[-100,50,0]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
-      // shaper0.planeWall([[1100,0,0],[1000,50,0],[100,50,0]],[ 0, -100, 555], [ 0, 0, 0], 0xff0000);
-      shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
-      // shaper0.planeWall([[1100,0,0],[1000,50,-50],[100,50,-50]],[ 50, -100, 550], [ 0, 0, 0], 0xff0000);
-      shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[900,0,0],[950,50,50],[-(50+xtraLen),50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      shaper0.planeWall([[1000+xtraLen,0,0],[950+xtraLen,50,-50],[50+xtraLen,50,-50]],[ -(50+xtraLen), 50, 550], [ 0, 0, 0], 0xff0000);
+      shaper0.planeWall([[900,0,0],[900,50,0],[0,50,0]],[ 0, 0, 600], [ 0, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[900,0,0],[940,40,0],[-(40+xtraLen2),40,0]],[ 0, 0, 650], [ 90, 0, 0], 0xfffdf2);
+      shaper0.planeWall([[980+xtraLen2,0,0],[980+xtraLen2,20,0],[0,20,0]],[ -(40+xtraLen2), 40, 650], [ 0, 0, 0], 0xfffdf2);
+
+      //Right Wall.
+      shaper0.addHole([200, 100], [200, 100]);//door
+      shaper0.addHole([500, 100], [100, 50]);//door
+      // shaper0.setPlane([1,0,0],[900,0,0],0);
+      // shaper0.planeWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // shaper0.planeWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
+      //Right Wall. New way
+      var RightLen = 700;
+      // shaper0.setPlane([0,-1,0],[900,0,0],-90);
+      // shaper0.planeWall([[RightLen,0,0],[RightLen,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[200,0,0],[200,100,0],[0,100,0]],[ RightLen, 0, 0], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[RightLen,0,0],[RightLen+50-xtraLen,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], 0x0000ff);
+      // shaper0.planeWall([[RightLen+100-xtraLen,0,0],[RightLen+50,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
+      // shaper0.planeWall([[RightLen,0,0],[RightLen,50,0],[0,50,0]],[ 0, 0, 600], [ 0, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[RightLen,0,0],[RightLen+40,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], 0xfffdf2);
+      // shaper0.planeWall([[RightLen+80,0,0],[RightLen+80,20,0],[0,20,0]],[ -40, 40, 650], [ 0, 0, 0], 0xfffdf2);
 
 //###############
       //Axes
@@ -364,39 +389,6 @@
       const ambientLight = new THREE.AmbientLight(color, intensity);
       scene.add(ambientLight);
 
-      // var color = 0xffffff;
-      // var intensity = 1;
-      // const light = new THREE.PointLight(color, intensity);
-      // light.position.set(0,5,5);
-      // // light.position.set(-1, 2, 4);
-      // scene.add(light);
-
-      // var color = 0xffffff;
-      // var intensity = 1;
-      // const light2 = new THREE.DirectionalLight(color, intensity);
-      // light2.position.set(750,-50, 500);
-      // light2.castShadow = true;
-      // scene.add(light2);
-      // light2.shadow.mapSize.width = 512; // default
-      // light2.shadow.mapSize.height = 512; // default
-      // light2.shadow.camera.near = 0.5; // default
-      // light2.shadow.camera.far = 500; // default
-      // const helper = new THREE.CameraHelper( light2.shadow.camera );
-      // scene.add( helper );
-
-      // var hemiLight = new THREE.HemisphereLight(0xffeeb1, 0x080820, 4);
-      // scene.add(hemiLight);
-      // var light = new THREE.DirectionalLight(0xfdf3c6,.5);
-      // light.position.set(-5000,-5000,1400);
-      // light.target.position.set(0,0,600);
-      // light.target.updateMatrixWorld();
-      // light.castShadow = true;
-      // light.shadow.bias = 0.00;
-      // scene.add( light );
-      // const helper = new THREE.DirectionalLightHelper( light, 5);
-      // scene.add( helper );
-      // const shhelper = new THREE.CameraHelper(light.shadow.camera);
-      // scene.add( shhelper );
 
       var light = new THREE.SpotLight(0xfdf3c6, 0.9, 10000, Math.PI/4);
       light.position.set(-1000,-1000,1400);
@@ -436,14 +428,14 @@
       function render(time) {
         // console.log(50/Math.tan(37.5*Math.PI/180));
         time *= 0.001;  // convert time to seconds
-        const speed = .25;
+        const speed = .5;
         const rot = time * speed;
         // camera.position.set(0,7,0);
         var vector = new THREE.Vector3( 0, -40, 1 );
         var axis = new THREE.Vector3( 0, 0, 1 );
         var angle = rot+3.5*Math.PI/2;
 
-        // angle = .6*Math.PI/1;//look at back corner
+        // angle = .72*Math.PI/1;//look at back corner
         // angle = .26*Math.PI/1;//Look at frnt left cornice
         // angle = -.1*Math.PI/1;//Look at frnt right cornice
         // angle = 1.0*Math.PI;//Look at frnt right cornice
@@ -453,16 +445,17 @@
         // camera.position.set(vector.x,vector.y,vector.z);
 
         var dist = -2200;
-        camera.position.set(900+dist*Math.sin(angle),900+dist*Math.cos(angle),200);//450
+        // camera.position.set(450+dist*Math.sin(angle),450+dist*Math.cos(angle),200);//450
+        camera.position.set(450+dist*Math.sin(angle),450+dist*Math.cos(angle),500);//450
 
-        camera.lookAt(900,900,300);
+        camera.lookAt(450,450,600);
         // console.log(camera.position);
         // vector.applyAxisAngle( axis, angle );
         // camera.translateOnAxis(vector, 7);
 
         // renderer.render(scene, camera);
         composer.render();
-        requestAnimationFrame(render);
+        // requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
       // renderer.render(scene, camera);
