@@ -13,6 +13,26 @@ function shaper() {
       shapeOriginTranslate: [1,1,1],
       shapeRotateTranslate: [1,1,1]
     };
+
+    // var something = function() {
+    //   this.obj = function() {
+    //     return {
+    //       data: function(getter) {
+    //         console.log(getter);
+    //         console.log(this.obj.getter());
+    //         // var data = getter();
+    //         // return {a:1, b:data.a}
+    //       },
+    //       getter: function() {return this.data;}
+    //     }
+    //   };
+    // };
+    //
+    // var test = new something();
+    // var obj = test.obj();
+    // // console.log(obj);
+    // // console.log(obj.getter());
+    // obj.data(obj.getter);
   }
 
   function getRandomColor() {
@@ -97,7 +117,7 @@ function shaper() {
       // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
     }
     this.main3(geoRotate, geoTranslate, points, origin, rotate, color, mirror);
-}
+  };
 
   this.frontWall = function(points, origin, rotate, color) {
     var geoRotate = [Math.PI/2,0,0];
@@ -224,6 +244,51 @@ function shaper() {
     this.bevelWall([[depth,0,0],[depth,size[1],0],[0,size[1],0]],[ points[0]+size[0], -depth, points[1]], [ 0, 0, -90], color);
     this.bevelWall([[size[0],0,0],[size[0],depth,0],[0,depth,0]],[ points[0], -depth, points[1]+size[1]], [ 90, 0, 0], color);
   }
+
+
+
+  this.wallSystem = function(wallSystem) {
+    Object.entries(wallSystem.exteriors).forEach(function(entry) {//Exterior walls
+      var wall = entry[1];
+      wall.windows.forEach(function(windowName) {//The exterior holes for windows
+        if (!wallSystem.windows.hasOwnProperty(windowName)) {
+          console.log("ERROR");
+          throw new Error;
+        }
+        this.addWindowHoleNew(wallSystem.windows[windowName], wall);
+      }.bind(this));
+      this.planeWallNew(wall);//The exterior wall surface
+    }.bind(this));
+    Object.entries(wallSystem.interiors).forEach(function(entry) {//Interior walls
+      var wall = entry[1];
+      wall.windows.forEach(function(windowName) {//The interior holes and jambs for windows
+        this.addWindowJamb(wallSystem.windows[windowName], wall);//The jamb
+      }.bind(this));
+      wall.windows.forEach(function(windowName) {//The interior holes for windows
+        this.addWindowHoleNew(wallSystem.windows[windowName], wall);//The hole
+      }.bind(this));
+      this.planeWallNew(wall);//The interior wall surface
+    }.bind(this));
+  };
+
+  this.addWindowJamb = function(window, wall) {
+    var depth = -wall.offset.z;//Fix this
+    this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[window.offset.x,0,window.offset.y], [ 0, 0, 90], wall.color);
+    this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,0,window.offset.y], [ -90, 0, 0], wall.color);
+    this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[ window.offset.x+window.size.w,-depth,window.offset.y], [ 0, 0, -90], wall.color);
+    this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,-depth,window.offset.y+window.size.h], [ 90, 0, 0], wall.color);
+  };
+
+  this.addWindowHoleNew = function(window, wall) {
+    this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.y], [window.size.w, window.size.h]);
+  };
+  this.planeWallNew = function(wall) {
+    var size = [wall.size.w, wall.size.h];
+    var offset = [wall.offset.x, wall.offset.z, wall.offset.y];
+    var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
+    return this.planeWall(size, offset, rotate, wall.color, wall.mirror);
+  };
+
 }
 
 export {shaper};

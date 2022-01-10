@@ -285,18 +285,21 @@
         stucco: {f: 0xfcd690, b:0xff0000},
         cornice: {f: 0xfffdf2, b:0xff0000},
         plaster: {f: 0xa3a3a3, b:0xffff00},
-        floor: {f: 0xb58148, b:0x5555ff}
+        floor: {f: 0xb58148, b:0x5555ff},
+        debug: {f: 0xff0000, b:0x0000ff}
       };
-      var totalH = 670;
-      var level1Y = 0;
-      var level1H = 300;
-      var level2Y = 320;
-      var level2H = 350;
-      var wallT = 40;
-      var ground = 0;
 
-      var wallFrontExterior = {
-        exterior: {
+      var ground = 0;
+      var level1Y = ground;
+      var level1H = 300;
+      var level1CeilingThickness = 20;
+      var level2Y = level1H+level1CeilingThickness;
+      var level2H = 350;
+      var totalH = level1Y+level1H+level1CeilingThickness+level2H;
+      var wallT = 40;
+
+      var wallFront = {
+        exteriors: {
           main: {
             size: {w: 900, h: 500},
             offset: {x: 0, y: ground, z: 0},
@@ -306,7 +309,7 @@
             windows: ["window1", "window2"]
           }
         },
-        interior: {
+        interiors: {
           level1: {
             size: {w: 900-2*wallT, h: level1H},
             offset: {x: wallT, y: ground, z: -wallT},
@@ -314,6 +317,14 @@
             color: colors.plaster,
             mirror: true,
             windows: ["window1", "window2"]
+          },
+          level2: {
+            size: {w: 900-2*wallT, h: level2H},
+            offset: {x: wallT, y: level2Y, z: -wallT},
+            rotation: {x: 0, y: 0, z: 0},
+            color: colors.plaster,
+            mirror: true,
+            windows: []
           }
         },
         windows: {
@@ -327,53 +338,16 @@
         mirror: false
       };
 
-      console.log(Object.keys(wallFrontExterior.exterior));
-      // console.log(Object.keys(wallFrontExterior.exterior.["main"]).windows));
-      var wallName = Object.keys(wallFrontExterior.exterior)[0];
-      console.log(wallName);
-      console.log(wallFrontExterior.exterior[wallName].windows);
-      console.log(wallFrontExterior.windows[wallFrontExterior.exterior[wallName].windows[0]]);
-      console.log(wallFrontExterior.windows[wallFrontExterior.exterior[wallName].windows[1]]);
-      // var windowName = Object.keys(wallFrontExterior.exterior[wallName].windows)[0];
-      // console.log(windowName);
-
-
-
-      var window1 = {size: {w: 200, h: 100}, offset: {x: 200, y: 100} };
-      var window2 = {size: {w: 100, h:  50}, offset: {x: 500, y: 100} };
-
       // Front Wall.
       shaper0.setPlane([0,-1,0],[0,0,0],0);
-      shaper0.addWindowHole(window1, wallFrontExterior);//window
-      shaper0.addWindowHole(window2, wallFrontExterior);//window
-      // shaper0.addHole([500, 100], [100, 50]);//door
-      // shaper0.planeWall([900,500],[ 0, 0, 0], [ 0, 0, 0], colors.stucco);
-      shaper0.planeWallx(wallFrontExterior);
-      shaper0.planeWall([200,100],[ 900, 0, 0], [ 0, 0, 0], colors.stucco);
+      shaper0.wallSystem(wallFront);
+
+      //These are the bevel decorations
       shaper0.bevelWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
       shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
       shaper0.planeWall([900,50],[ 0, 0, 600], [ 0, 0, 0], colors.stucco);
       shaper0.bevelWall([[900,0,0],[940,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
       shaper0.planeWall([980,20],[ -40, 40, 650], [ 0, 0, 0], colors.cornice);
-
-      //Frame window
-      shaper0.window([200, 100], [200, 100], 40, colors.plaster);
-      shaper0.window([500, 100], [100, 50], 40, colors.plaster);
-
-      // shaper0.addHole([200-wallT, 100], [200, 100]);//door
-      // shaper0.addHole([500-wallT, 100], [100, 50]);//door
-      var wallFrontInterior = {
-        size: {w: 900-2*wallT, h: level1H},
-        offset: {x: wallT, y: ground, z: -wallT},
-        rotation: {x: 0, y: 0, z: 0},
-        color: colors.plaster,
-        mirror: true
-      };
-      shaper0.addWindowHolex(window1, wallFrontInterior);//window
-      shaper0.addWindowHolex(window2, wallFrontInterior);//window
-      shaper0.planeWallx(wallFrontInterior);
-      // shaper0.planeWall([900-2*wallT,level1H],[ wallT, -wallT, level1Y], [ 0, 0, 0], colors.plaster, true);
-      shaper0.planeWall([900-2*wallT,level2H],[ wallT, -wallT, level2Y], [ 0, 0, 0], colors.plaster, true);
 
       //floor
       shaper0.bevelWall([[900-2*wallT,0,0],[900-2*wallT,700-2*wallT+10,0],[0,900-2*wallT-10,0]],[ wallT, -wallT, level1Y], [ -90, 0, 0], colors.floor);
@@ -427,7 +401,7 @@
       // console.log("old len = "+xtraLen);
       var extraLenR = util.extraLength([50,50,50], -angle);
       var extraLenL = util.extraLength([50,50,50], angle);
-      console.log("extralen = "+extraLenR);
+      // console.log("extralen = "+extraLenR);
       xtraLen = extraLenR;
       var extraLen40R = util.extraLength([40,40,40], -angle);
       var extraLen40L = util.extraLength([40,40,40], angle);
