@@ -277,19 +277,29 @@ function shaper() {
   };
 
   this.addWindowJamb = function(window, wall) {
-    var depth = -wall.offset.z;//Fix this
-    this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[window.offset.x,0,window.offset.y], [ 0, 0, 90], wall.color);
-    this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,0,window.offset.y], [ -90, 0, 0], wall.color);
-    this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[ window.offset.x+window.size.w,-depth,window.offset.y], [ 0, 0, -90], wall.color);
-    this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,-depth,window.offset.y+window.size.h], [ 90, 0, 0], wall.color);
+    console.log(window);
+    // var depth = -wall.offset.z;//Fix this
+    var depth = -wall.offset.y;
+    // this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[window.offset.x,0,window.offset.y], [ 0, 0, 90], wall.color);
+    // this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,0,window.offset.y], [ -90, 0, 0], wall.color);
+    // this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[ window.offset.x+window.size.w,-depth,window.offset.y], [ 0, 0, -90], wall.color);
+    // this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,-depth,window.offset.y+window.size.h], [ 90, 0, 0], wall.color);
+
+    this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[window.offset.x,0,window.offset.z], [ 0, 0, 90], wall.color);
+    this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,0,window.offset.z], [ -90, 0, 0], wall.color);
+    this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[ window.offset.x+window.size.w,-depth,window.offset.z], [ 0, 0, -90], wall.color);
+    this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,-depth,window.offset.z+window.size.h], [ 90, 0, 0], wall.color);
   };
 
   this.addWindowHoleNew = function(window, wall) {
-    this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.y], [window.size.w, window.size.h]);
+    // this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.y], [window.size.w, window.size.h]);
+    // this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.z], [window.size.w, window.size.h]);
+    this.addHole([window.offset.x-wall.offset.x, window.offset.z-wall.offset.z], [window.size.w, window.size.h]);
   };
   this.planeWallNew = function(wall) {
     var size = [wall.size.w, wall.size.h];
-    var offset = [wall.offset.x, wall.offset.z, wall.offset.y];
+    // var offset = [wall.offset.x, wall.offset.z, wall.offset.y];
+    var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     return this.planeWall(size, offset, rotate, wall.color, wall.mirror);
   };
