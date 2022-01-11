@@ -302,7 +302,8 @@
       class bigWindow extends doug.Window {size = {w: 200, h: 100};};
       class smallWindow extends doug.Window {size = {w: 100, h: 50};};
 
-      var wallFront2 = new doug.WallSystem("Front Wall")
+      //Front Wall
+      var wallFront = new doug.WallSystem("Front Wall")
         .setPlane(new doug.Plane()
           .setFacingDirection([0,-1,0])
           .setOriginOffset([0,0,0])
@@ -338,51 +339,7 @@
         .addWindow(new smallWindow("window2").setOffset({x: 500, y: 100}))
         .addWindow(new bigWindow("window3").setOffset({x: 200, y:  350}))
       ;
-      console.log(wallFront2);
-
-      // var wallFront = {
-      //   plane: frontPlane,
-      //   exteriors: {
-      //     main: {
-      //       size: {w: 900, h: 500},
-      //       offset: {x: 0, y: ground, z: 0},
-      //       rotation: {x: 0, y: 0, z: 0},
-      //       color: colors.stucco,
-      //       mirror: false,
-      //       windows: ["window1", "window2"]
-      //     }
-      //   },
-      //   interiors: {
-      //     level1: {
-      //       size: {w: 900-2*wallT, h: level1H},
-      //       offset: {x: wallT, y: ground, z: -wallT},
-      //       rotation: {x: 0, y: 0, z: 0},
-      //       color: colors.plaster,
-      //       mirror: true,
-      //       windows: ["window1", "window2"]
-      //     },
-      //     level2: {
-      //       size: {w: 900-2*wallT, h: level2H},
-      //       offset: {x: wallT, y: level2Y, z: -wallT},
-      //       rotation: {x: 0, y: 0, z: 0},
-      //       color: colors.plaster,
-      //       mirror: true,
-      //       windows: []
-      //     }
-      //   },
-      //   windows: {
-      //     window1: {size: {w: 200, h: 100}, offset: {x: 200, y: 100} },
-      //     window2: {size: {w: 100, h:  50}, offset: {x: 500, y: 100} }
-      //   },
-      //   // size: {w: 900, h: 500},
-      //   // offset: {x: 0, y: level1Y, z: 0},
-      //   // rotation: {x: 0, y: 0, z: 0},
-      //   // color: colors.stucco,
-      //   // mirror: false
-      // };
-
-      // Front Wall.
-      shaper0.wallSystem(wallFront2);
+      shaper0.wallSystem(wallFront);
 
       //These are the bevel decorations
       shaper0.bevelWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
@@ -473,7 +430,7 @@
       shaper0.bevelWall([[length-2*wallT,0,0],[length-2*wallT,level1H,0],[0,level1H,0]],[ wallT-10, -wallT, level1Y], [ 0, 0, 0], colors.plaster, true);
       shaper0.bevelWall([[length-2*wallT,0,0],[length-2*wallT,level2H,0],[0,level2H,0]],[ wallT-10, -wallT, level2Y], [ 0, 0, 0], colors.plaster, true);
 
-      //Left Wall.
+      //Left Wall. This is the old way, without plane rotation.
       // shaper0.addHole([200, 100], [200, 100]);//door
       // shaper0.addHole([500, 100], [100, 50]);//door
       // shaper0.setPlane([-1,0,0],[0,900,0], 0);
@@ -485,9 +442,6 @@
       // shaper0.bevelWall([[1000,0,0],[950,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], 0xff0000);
 
       //Left Wall
-      //This is by post rotation
-      // shaper0.addHole([200, 100], [200, 100]);//door
-      // shaper0.addHole([500, 100], [100, 50]);//door
       var wallLeft = new doug.WallSystem("Left Wall")
         .setPlane(new doug.Plane()
           .setFacingDirection([0,-1,0])
@@ -526,25 +480,11 @@
       ;
       shaper0.wallSystem(wallLeft);
 
-      // shaper0.setPlane([0,-1,0],[0,900,0], 90);
-      // shaper0.bevelWall([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], colors.stucco);
-      // shaper0.bevelWall([[200,0,0],[200,100,0],[0,100,0]],[ 900, 0, 0], [ 0, 0, 0], colors.stucco);
       shaper0.bevelWall([[900,0,0],[950,50,50],[-(50+extraLenR),50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
       shaper0.bevelWall([[1000+extraLenR,0,0],[950+extraLenR,50,-50],[50+extraLenR,50,-50]],[ -(50+extraLenR), 50, 550], [ 0, 0, 0], colors.cornice);
       shaper0.bevelWall([[900,0,0],[900,50,0],[0,50,0]],[ 0, 0, 600], [ 0, 0, 0], colors.stucco);
       shaper0.bevelWall([[900,0,0],[940,40,0],[-(40+extraLen40R),40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
       shaper0.bevelWall([[980+extraLen40R,0,0],[980+extraLen40R,20,0],[0,20,0]],[ -(40+extraLen40R), 40, 650], [ 0, 0, 0], colors.cornice);
-
-      // shaper0.window([200, 100], [200, 100], 40, colors.plaster);
-      // shaper0.window([500, 100], [100, 50], 40, colors.plaster);
-      // shaper0.addHole([200-40-10, 100], [200, 100]);//door
-      // shaper0.addHole([500-40-10, 100], [100, 50]);//door
-      shaper0.bevelWall([[900-40-40-10,0,0],[900-40-40-10,totalH,0],[0,totalH,0]],[ 40+10, -40, 0], [ 0, 0, 0], colors.plaster, true);
-
-      // shaper0.addHole([200-wallT-10, 100], [200, 100]);//door
-      // shaper0.addHole([500-wallT-10, 100], [100, 50]);//door
-      // shaper0.bevelWall([[900-2*wallT-10,0,0],[900-2*wallT-10,level1H,0],[0,level1H,0]],[ wallT+10, -wallT, level1Y], [ 0, 0, 0], colors.plaster, true);
-      // shaper0.bevelWall([[900-2*wallT-10,0,0],[900-2*wallT-10,level2H,0],[0,level2H,0]],[ wallT+10, -wallT, level2Y], [ 0, 0, 0], colors.plaster, true);
 
       //Right Wall.
       // shaper0.addHole([200, 100], [200, 100]);//door
