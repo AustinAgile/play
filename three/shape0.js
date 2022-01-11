@@ -162,14 +162,14 @@ function shaper() {
     var planeMat = new _3js.MeshLambertMaterial({
       color: color.f,
       opacity: 0.5,
-      transparent: true,
+      // transparent: true,
       // side: _3js.BackSide
       side: (mirror ?_3js.BackSide : _3js.FrontSide)
     });
     var planeMatBack = new _3js.MeshLambertMaterial({
       color: color.b,
       opacity: 0.5,
-      transparent: true,
+      // transparent: true,
       // side: _3js.FrontSide
       side: (mirror ? _3js.FrontSide : _3js.BackSide)
     });
@@ -248,25 +248,30 @@ function shaper() {
 
 
   this.wallSystem = function(wallSystem) {
-    Object.entries(wallSystem.exteriors).forEach(function(entry) {//Exterior walls
+    this.setPlane(wallSystem.plane.facingDirection, wallSystem.plane.originOffset, wallSystem.plane.rotationZ);
+
+    Object.entries(wallSystem.exterior.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];
+
       wall.windows.forEach(function(windowName) {//The exterior holes for windows
-        if (!wallSystem.windows.hasOwnProperty(windowName)) {
-          console.log("ERROR");
-          throw new Error;
-        }
+        if (!wallSystem.windows.hasOwnProperty(windowName)) {throw new Error;}
         this.addWindowHoleNew(wallSystem.windows[windowName], wall);
       }.bind(this));
+
       this.planeWallNew(wall);//The exterior wall surface
     }.bind(this));
-    Object.entries(wallSystem.interiors).forEach(function(entry) {//Interior walls
+
+    Object.entries(wallSystem.interior.surfaces).forEach(function(entry) {//Interior walls
       var wall = entry[1];
+
       wall.windows.forEach(function(windowName) {//The interior holes and jambs for windows
         this.addWindowJamb(wallSystem.windows[windowName], wall);//The jamb
       }.bind(this));
+
       wall.windows.forEach(function(windowName) {//The interior holes for windows
         this.addWindowHoleNew(wallSystem.windows[windowName], wall);//The hole
       }.bind(this));
+
       this.planeWallNew(wall);//The interior wall surface
     }.bind(this));
   };
