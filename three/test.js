@@ -47,6 +47,8 @@ class WallSystem {
 
 	addExteriorSurface(wall) {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
+		if (!wall.hasOwnProperty("windows")) {wall.windows = [];}
+		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		wall.mirror = false;
 		this.exterior.surfaces[wall.name] = wall;
 		return this;
@@ -54,6 +56,8 @@ class WallSystem {
 
 	addInteriorSurface(wall) {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.interior.color;}
+		if (!wall.hasOwnProperty("windows")) {wall.windows = [];}
+		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		wall.mirror = true;
 		this.interior.surfaces[wall.name] = wall;
 		return this;
