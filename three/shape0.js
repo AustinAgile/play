@@ -258,7 +258,11 @@ function shaper() {
         this.addWindowHoleNew(wallSystem.windows[windowName], wall);
       }.bind(this));
 
-      this.planeWallNew(wall);//The exterior wall surface
+      if (wall.hasOwnProperty("bevel")) {
+        this.bevelWallNew(wall);//The interior wall surface
+      } else {
+        this.planeWallNew(wall);//The exterior wall surface
+      }
     }.bind(this));
 
     Object.entries(wallSystem.interior.surfaces).forEach(function(entry) {//Interior walls
@@ -272,12 +276,16 @@ function shaper() {
         this.addWindowHoleNew(wallSystem.windows[windowName], wall);//The hole
       }.bind(this));
 
-      this.planeWallNew(wall);//The interior wall surface
+      if (wall.hasOwnProperty("bevel")) {
+        this.bevelWallNew(wall);//The interior wall surface
+      } else {
+        this.planeWallNew(wall);//The interior wall surface
+      }
     }.bind(this));
   };
 
   this.addWindowJamb = function(window, wall) {
-    console.log(window);
+    // console.log(window);
     // var depth = -wall.offset.z;//Fix this
     var depth = -wall.offset.y;
     // this.bevelWall([[depth,0,0],[depth,window.size.h,0],[0,window.size.h,0]],[window.offset.x,0,window.offset.y], [ 0, 0, 90], wall.color);
@@ -303,6 +311,27 @@ function shaper() {
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     return this.planeWall(size, offset, rotate, wall.color, wall.mirror);
   };
+
+  this.bevelWallNew = function(wall) {
+    var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
+    var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
+    // var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
+    if (wall.bevel.mitres.hasOwnProperty("in")) {
+      var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.mitres.in.right,wall.size.h,wall.bevel.y],[wall.bevel.mitres.in.left,wall.size.h,wall.bevel.y]];
+    } else {
+      // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
+      var len = wall.size.w + wall.bevel.mitres.out.right - wall.bevel.mitres.out.left;
+      var points = [[len,0,0],[len-wall.bevel.mitres.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.mitres.out.left,wall.size.h,wall.bevel.y]];
+      offset = ArraySum(offset, [wall.bevel.mitres.out.left, wall.bevel.y, 0]);
+      rotate = ArraySum(rotate, [-90,0,0]);
+    }
+    return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
+  };
+
+  function ArraySum(a,b) {
+    return b.map( (val, i) => val + a[i] );
+  }
+
 
 }
 
