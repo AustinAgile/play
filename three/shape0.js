@@ -102,20 +102,25 @@ function shaper() {
   this.bevelWall = function(points, origin, rotate, color, mirror) {
     var geoRotate = this.planeTransforms.geoRotate;
     var geoTranslate = this.planeTransforms.geoTranslate;
-    if (points[1][2] == 0) {
-      // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
-    } else {
-      var radians = Math.atan(points[1][2]/points[1][1]);
-      var angle = 180*radians/Math.PI;
-      points[1][1] = Math.sqrt(Math.pow(points[1][1],2)+Math.pow(points[1][2],2));
-      points[2][1] = points[1][1];
-      if (this.planeTransforms.YisX) {
-        rotate[1] += angle;
-      } else {
-        rotate[0] += angle;
-      }
-      // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
-    }
+    // if (points[1][2] == 0) {
+    //   // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
+    // } else {
+    //   var radians = Math.atan(points[1][2]/points[1][1]);
+    //   var angle = 180*radians/Math.PI;
+    //   // console.log(points[1][2]+"/"+points[1][1]);
+    //   // console.log(angle);
+    //   points[1][1] = Math.sqrt(Math.pow(points[1][1],2)+Math.pow(points[1][2],2));
+    //   points[2][1] = points[1][1];
+    //   if (this.planeTransforms.YisX) {
+    //     rotate[1] += angle;
+    //   } else {
+    //     rotate[0] += angle;
+    //   }
+    //   // this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
+    // }
+    console.log(points);
+    console.log(origin);
+    console.log(rotate);
     this.main3(geoRotate, geoTranslate, points, origin, rotate, color, mirror);
   };
 
@@ -313,6 +318,8 @@ function shaper() {
   };
 
   this.bevelWallNew = function(wall) {
+    this.beveledWidth(wall);
+
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     // var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
@@ -327,6 +334,28 @@ function shaper() {
     }
     return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
   };
+
+  this.beveledWidth = function(wall) {
+    if (wall.bevel.hasOwnProperty("y") && wall.bevel.y!=0) {
+      var radians = Math.atan(wall.bevel.y/wall.size.h);
+      var angle = 180*radians/Math.PI;
+      console.log(angle);
+      // var H = Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2));
+      // console.log(H);
+      wall.size.h = Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2));
+      if (this.planeTransforms.YisX) {
+        wall.rotation.y += angle;
+      } else {
+        wall.rotation.x += angle;
+      }
+    } else {
+      var h=5;
+      var y=4;
+      console.log(180*Math.atan(1/0)/Math.PI);
+      // wall.rotation = ArraySum(wall.rotation, wall.bevel.rotation);
+    }
+    // return wall;
+  }
 
   function ArraySum(a,b) {
     return b.map( (val, i) => val + a[i] );

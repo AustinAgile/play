@@ -304,11 +304,7 @@
 
       //Front Wall
       var wallFront = new doug.WallSystem("Front Wall")
-        .setPlane(new doug.Plane()
-          .setFacingDirection([0,-1,0])
-          .setOriginOffset([0,0,0])
-          .setRotationZ(0)
-        )
+        .setPlane(new doug.Plane().setFacingDirection([0,-1,0]).setOriginOffset([0,0,0]).setRotationZ(0))
         .setExteriorColor(colors.stucco)
         .addExteriorSurface(new doug.Surface("main").setProperties({
           size: {w: 900, h: 500},
@@ -317,27 +313,36 @@
         }))
         .addExteriorSurface(new doug.Surface("pony").setProperties({
           size: {w: 200, h: 100},
-          offset: {x: 900, y:0, z: ground},
+          offset: {x: 900, y:0, z: ground}
         }))
+        .setExteriorColor(colors.cornice)
         .addExteriorSurface(new doug.Surface("bevel1").setProperties({
           size: {w: 900, h: 50},
           bevel: {y: 50, mitres:{in:{left:-50, right:50}}},
-          offset: {x: 0, y:0, z: 500},
-          color: colors.cornice
+          offset: {x: 0, y:0, z: 500}
         }))
         .addExteriorSurface(new doug.Surface("bevel2").setProperties({
           size: {w: 900, h: 50},
           bevel: {y: 50, mitres:{out:{left:-50, right:50}}},
-          offset: {x: 0, y:0, z: 550},
-          color: colors.cornice
+          offset: {x: 0, y:0, z: 550}
         }))
         .addExteriorSurface(new doug.Surface("cornice band").setProperties({
           size: {w: 900, h: 50},
           offset: {x: 0, y: 0, z: 600},
+          color: colors.stucco
+        }))
+        .addExteriorSurface(new doug.Surface("bevel3").setProperties({
+          size: {w: 900, h: 0},
+          bevel: {y: 40, mitres:{in:{left:-40, right:40}}},
+          offset: {x: 0, y:0, z: 650},
+        }))
+        .addExteriorSurface(new doug.Surface("cornice top").setProperties({
+          size: {w: 980, h: 20},
+          offset: {x: -40, y: 40, z: 650},
         }))
         .setInteriorColor(colors.plaster)
         .addInteriorSurface(new doug.Surface("level1").setProperties({
-          size: {w: 900-2*wallT, h: level1H},
+          size: {w: 900-2*wallT, h: level1H},//reduce by Left wall thickness plus right wall thickness
           offset: {x: wallT, y: -wallT, z: ground},
           windows: ["window1", "window2"]
         }))
@@ -355,8 +360,8 @@
       //These are the bevel decorations
       // shaper0.bevelWall([[900,0,0],[950,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
       // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
-      shaper0.bevelWall([[900,0,0],[940,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
-      shaper0.planeWall([980,20],[ -40, 40, 650], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[900,0,0],[940,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
+ // shaper0.planeWall([980,20],[ -40, 40, 650], [ 0, 0, 0], colors.cornice);
 
       //floor
 //      shaper0.bevelWall([[900-2*wallT,0,0],[900-2*wallT,700-2*wallT+10,0],[0,900-2*wallT-10,0]],[ wallT, -wallT, level1Y], [ -90, 0, 0], colors.floor);
@@ -434,20 +439,39 @@
           size: {w: 200, h: 100},
           offset: {x: 900, y: 0, z: ground},
         }))
+        .setExteriorColor(colors.cornice)
+        .addExteriorSurface(new doug.Surface("bevel1").setProperties({
+          size: {w: length, h: 50},
+          bevel: {y: 50, mitres:{in:{left:-(50+extraLenL), right:50+extraLenR}}},
+          offset: {x: 0, y:0, z: 500}
+        }))
+        .addExteriorSurface(new doug.Surface("bevel2").setProperties({
+          size: {w: length, h: 50},
+          bevel: {y: 50, mitres: {out: {left: -(50+extraLenL), right: 50+extraLenR}}},
+          offset: {x: 0, y:0, z: 550}
+        }))
         .addExteriorSurface(new doug.Surface("cornice band").setProperties({
           size: {w: length, h: 50},
           offset: {x: 0, y: 0, z: 600},
+          color: colors.stucco
+        }))
+        .addExteriorSurface(new doug.Surface("bevel3").setProperties({
+          size: {w: length, h: 0},
+          bevel: {y: 40, mitres: {in: {left: -(40+extraLen40L), right: 40+extraLen40R}}},
+          offset: {x: 0, y:0, z: 650},
+        }))
+        .addExteriorSurface(new doug.Surface("cornice top").setProperties({
+          size: {w: length+80+extraLen40L+extraLen40R, h: 20},
+          offset: {x: -(40+extraLen40L), y: 40, z: 650},
         }))
         .setInteriorColor(colors.plaster)
-        // shaper0.bevelWall([[length-2*wallT,0,0],[length-2*wallT,level1H,0],[0,level1H,0]],[ wallT-10, -wallT, level1Y], [ 0, 0, 0], colors.plaster, true);
         .addInteriorSurface(new doug.Surface("level1").setProperties({
           size: {w: length-2*wallT, h: level1H},
           offset: {x: wallT-10, y: -wallT , z:level1Y },
           windows: ["window1", "window2"]
         }))
-        // shaper0.bevelWall([[length-2*wallT,0,0],[length-2*wallT,level2H,0],[0,level2H,0]],[ wallT-10, -wallT, level2Y], [ 0, 0, 0], colors.plaster, true);
         .addInteriorSurface(new doug.Surface("level2").setProperties({
-          size: {w: 900-2*wallT, h: level2H},
+          size: {w: length-2*wallT, h: level2H},
           offset: {x: wallT-10, y: -wallT , z:level2Y},
           windows: ["window3"]
         }))
@@ -463,11 +487,11 @@
       // shaper0.bevelWall([[length,0,0],[length,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], colors.stucco);
 //      shaper0.bevelWall([[length,0,0],[length,500,0],[0,500,0]],[ 0, 0, 0], [ 0, 0, 0], colors.stucco);
 //      shaper0.bevelWall([[200,0,0],[200,100,0],[0,100,0]],[ length, 0, 0], [ 0, 0, 0], colors.stucco);
-      shaper0.bevelWall([[length,0,0],[length+50+extraLenR,50,50],[-(50+extraLenL),50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
-      shaper0.bevelWall([[length+100+extraLenL+extraLenR,0,0],[length+50+extraLenL,50,-50],[50+extraLenL,50,-50]],[ -(50+extraLenL), 50, 550], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[length,0,0],[length+50+extraLenR,50,50],[-(50+extraLenL),50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[length+100+extraLenL+extraLenR,0,0],[length+50+extraLenL,50,-50],[50+extraLenL,50,-50]],[ -(50+extraLenL), 50, 550], [ 0, 0, 0], colors.cornice);
       // shaper0.bevelWall([[length,0,0],[length,50,0],[0,50,0]],[ 0, 0, 600], [ 0, 0, 0], colors.stucco);
-      shaper0.bevelWall([[length,0,0],[length+40+extraLen40R,40,0],[-(40+extraLen40L),40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
-      shaper0.bevelWall([[length+80+extraLen40L+extraLen40R,0,0],[length+80+extraLen40L+extraLen40R,20,0],[0,20,0]],[ -(40+extraLen40L), 40, 650], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[length,0,0],[length+40+extraLen40R,40,0],[-(40+extraLen40L),40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
+// shaper0.bevelWall([[length+80+extraLen40L+extraLen40R,0,0],[length+80+extraLen40L+extraLen40R,20,0],[0,20,0]],[ -(40+extraLen40L), 40, 650], [ 0, 0, 0], colors.cornice);
       //test square
       // shaper0.bevelWall([[60,0,0],[60,50,0],[50-12,50,0]],[ -50+12, 50, 551], [ -90, 0, 0], 0xffff00);
 
@@ -506,18 +530,39 @@
           size: {w: 200, h: 100},
           offset: {x: 900, y: 0, z: ground},
         }))
+        .setExteriorColor(colors.cornice)
+        .addExteriorSurface(new doug.Surface("bevel1").setProperties({
+          size: {w: 900, h: 50},
+          bevel: {y: 50, mitres:{in:{left:-(50+extraLenR), right:50}}},
+          offset: {x: 0, y:0, z: 500}
+        }))
+        .addExteriorSurface(new doug.Surface("bevel2").setProperties({
+          size: {w: 900, h: 50},
+          bevel: {y: 50, mitres:{out:{left:-(50+extraLenR), right:50}}},
+          offset: {x: 0, y:0, z: 550}
+        }))
         .addExteriorSurface(new doug.Surface("cornice band").setProperties({
           size: {w: 900, h: 50},
           offset: {x: 0, y: 0, z: 600},
+          color: colors.stucco
+        }))
+        .addExteriorSurface(new doug.Surface("bevel3").setProperties({
+          size: {w: 900, h: 0},
+          bevel: {y: 40, mitres:{in:{left:-(40+extraLen40R), right:40}}},
+          offset: {x: 0, y:0, z: 650},
+        }))
+        .addExteriorSurface(new doug.Surface("cornice top").setProperties({
+          size: {w: 900+80+extraLen40R, h: 20},
+          offset: {x: -(40+extraLenR), y:40, z: 650},
         }))
         .setInteriorColor(colors.plaster)
         .addInteriorSurface(new doug.Surface("level1").setProperties({
-          size: {w: 900-2*wallT+10, h: level1H},
+          size: {w: 900-(2*wallT+10), h: level1H},
           offset: {x: wallT+10, y: -wallT, z:ground },
           windows: ["window1", "window2"]
         }))
         .addInteriorSurface(new doug.Surface("level2").setProperties({
-          size: {w: 900-2*wallT+10, h: level2H},
+          size: {w: 900-(2*wallT+10), h: level2H},
           offset: {x: wallT+10, y: -wallT, z:level2Y},
           windows: ["window3"]
         }))
@@ -527,10 +572,10 @@
       ;
       shaper0.wallSystem(wallLeft);
 
-      shaper0.bevelWall([[900,0,0],[950,50,50],[-(50+extraLenR),50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
-      shaper0.bevelWall([[1000+extraLenR,0,0],[950+extraLenR,50,-50],[50+extraLenR,50,-50]],[ -(50+extraLenR), 50, 550], [ 0, 0, 0], colors.cornice);
-      shaper0.bevelWall([[900,0,0],[940,40,0],[-(40+extraLen40R),40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
-      shaper0.bevelWall([[980+extraLen40R,0,0],[980+extraLen40R,20,0],[0,20,0]],[ -(40+extraLen40R), 40, 650], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[900,0,0],[950,50,50],[-(50+extraLenR),50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[1000+extraLenR,0,0],[950+extraLenR,50,-50],[50+extraLenR,50,-50]],[ -(50+extraLenR), 50, 550], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[900,0,0],[940,40,0],[-(40+extraLen40R),40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
+// shaper0.bevelWall([[980+extraLen40R,0,0],[980+extraLen40R,20,0],[0,20,0]],[ -(40+extraLen40R), 40, 650], [ 0, 0, 0], colors.cornice);
 
       //Right Wall.
       var RightLen = 700;
@@ -546,9 +591,30 @@
           size: {w: 200, h: 100},
           offset: {x: 700, y: 0, z: ground},//Can this be linked to previous?
         }))
+        .setExteriorColor(colors.cornice)
+        .addExteriorSurface(new doug.Surface("bevel1").setProperties({
+          size: {w: RightLen, h: 50},
+          bevel: {y: 50, mitres:{in:{left:-(50+extraLenL), right:50}}},
+          offset: {x: 0, y:0, z: 500}
+        }))
+        .addExteriorSurface(new doug.Surface("bevel2").setProperties({
+          size: {w: RightLen, h: 50},
+          bevel: {y: 50, mitres:{out:{left:-(50+extraLenL), right:50}}},
+          offset: {x: 0, y:0, z: 550}
+        }))
         .addExteriorSurface(new doug.Surface("cornice band").setProperties({
           size: {w: RightLen, h: 50},
           offset: {x: 0, y: 0, z: 600},//Can this be linked to previous?
+          color: colors.stucco
+        }))
+        .addExteriorSurface(new doug.Surface("bevel3").setProperties({
+          size: {w: RightLen, h: 0},
+          bevel: {y: 40, mitres:{in:{left:-40, right:(40+extraLen40L)}}},
+          offset: {x: 0, y:0, z: 650}
+        }))
+        .addExteriorSurface(new doug.Surface("cornice top").setProperties({
+          size: {w: RightLen+80+extraLen40L, h: 20},
+          offset: {x: -40, y:40, z: 650}
         }))
         .setInteriorColor(colors.plaster)
         .addInteriorSurface(new doug.Surface("level1").setProperties({
@@ -567,10 +633,10 @@
       ;
       shaper0.wallSystem(wallRight);
 
-      shaper0.bevelWall([[RightLen,0,0],[RightLen+50+extraLenL,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
-      shaper0.bevelWall([[RightLen+100+extraLenL,0,0],[RightLen+50,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
-      shaper0.bevelWall([[RightLen,0,0],[RightLen+40+extraLen40L,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
-      shaper0.bevelWall([[RightLen+80+extraLen40L,0,0],[RightLen+80+extraLen40L,20,0],[0,20,0]],[ -40, 40, 650], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[RightLen,0,0],[RightLen+50+extraLenL,50,50],[-50,50,50]],[ 0, 0, 500], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[RightLen+100+extraLenL,0,0],[RightLen+50,50,-50],[50,50,-50]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
+      // shaper0.bevelWall([[RightLen,0,0],[RightLen+40+extraLen40L,40,0],[-40,40,0]],[ 0, 0, 650], [ 90, 0, 0], colors.cornice);
+// shaper0.bevelWall([[RightLen+80+extraLen40L,0,0],[RightLen+80+extraLen40L,20,0],[0,20,0]],[ -40, 40, 650], [ 0, 0, 0], colors.cornice);
 
 
 //###############
