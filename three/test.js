@@ -1,7 +1,12 @@
 class Plane {
+	facingDirection = 0;
+	originOffset = 0;
+	rotationZ = 0;
+
 	constructor() {
-		console.log("constructed");
+		return this;
 	}
+
 	setFacingDirection(direction) {
 		this.facingDirection = direction;
 		return this;
