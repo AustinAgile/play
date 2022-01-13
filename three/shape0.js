@@ -116,7 +116,8 @@ function shaper() {
     shape.lineTo(points[2][0],points[2][1]);
     shape.holes = this.holes;
     this.holes = [];
-//    console.log(shape.extractPoints());
+    console.log(shape);
+    // console.log(shape.extractPoints());
 
     var shapeGeometry = new _3js.ShapeGeometry( shape );
     shapeGeometry.rotateX(geoRotate[0]);
@@ -220,8 +221,12 @@ function shaper() {
       var wall = entry[1];
 
       wall.windows.forEach(function(windowName) {//The exterior holes for windows
-        if (!wallSystem.windows.hasOwnProperty(windowName)) {throw new Error;}
-        this.addWindowHoleNew(wallSystem.windows[windowName], wall);
+        if (!wallSystem.windows.hasOwnProperty(windowName)) {
+          // throw new Error("Undefined window: "+windowName);
+          console.log("Undefined window: "+windowName);
+        } else {
+          this.addWindowHoleNew(wallSystem.windows, windowName, wall);
+        }
       }.bind(this));
 
       if (wall.hasOwnProperty("bevel")) {
@@ -239,7 +244,8 @@ function shaper() {
       }.bind(this));
 
       wall.windows.forEach(function(windowName) {//The interior holes for windows
-        this.addWindowHoleNew(wallSystem.windows[windowName], wall);//The hole
+        // this.addWindowHoleNew(wallSystem.windows[windowName], wall);//The hole
+        this.addWindowHoleNew(wallSystem.windows, windowName, wall);//The hole
       }.bind(this));
 
       if (wall.hasOwnProperty("bevel")) {
@@ -265,10 +271,34 @@ function shaper() {
     this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,-depth,window.offset.z+window.size.h], [ 90, 0, 0], wall.color);
   };
 
-  this.addWindowHoleNew = function(window, wall) {
+  this.doRelativeOffset = function(windows, windowName) {
+    var window = windows[windowName];
+    // return window;
+    if (window.offset.hasOwnProperty("window")) {
+      var relativeWindow = windows[window.offset.window];
+      if (window.offset.hasOwnProperty("dx") && !relativeWindow.offset.hasOwnProperty("x")) {
+        this.doRelativeOffset(relativeWindow);
+      }
+      window.offset.x = window.offset.dx + relativeWindow.offset.x + relativeWindow.size.w;
+    }
+    return window;
+  }
+
+  this.addWindowHoleNew = function(windows, windowName, wall) {
     // this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.y], [window.size.w, window.size.h]);
     // this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.z], [window.size.w, window.size.h]);
-    this.addHole([window.offset.x-wall.offset.x, window.offset.z-wall.offset.z], [window.size.w, window.size.h]);
+    // console.log(windows[windowName]);
+    // console.log(wall);
+    var window = this.doRelativeOffset(windows, windowName);
+    // console.log(window);
+
+    this.addHole([
+      window.offset.x - wall.offset.x,
+      window.offset.z - wall.offset.z
+    ], [
+      window.size.w,
+      window.size.h
+    ]);
   };
   this.planeWallNew = function(wall) {
     var size = [wall.size.w, wall.size.h];
@@ -284,13 +314,13 @@ function shaper() {
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     // var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
-    if (wall.bevel.mitres.hasOwnProperty("in")) {
-      var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.mitres.in.right,wall.size.h,wall.bevel.y],[wall.bevel.mitres.in.left,wall.size.h,wall.bevel.y]];
+    if (wall.bevel.miters.hasOwnProperty("in")) {
+      var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
     } else {
       // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
-      var len = wall.size.w + wall.bevel.mitres.out.right - wall.bevel.mitres.out.left;
-      var points = [[len,0,0],[len-wall.bevel.mitres.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.mitres.out.left,wall.size.h,wall.bevel.y]];
-      offset = ArraySum(offset, [wall.bevel.mitres.out.left, wall.bevel.y, 0]);
+      var len = wall.size.w + wall.bevel.miters.out.right - wall.bevel.miters.out.left;
+      var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.h,wall.bevel.y]];
+      offset = ArraySum(offset, [wall.bevel.miters.out.left, wall.bevel.y, 0]);
       rotate = ArraySum(rotate, [-90,0,0]);
     }
     return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
@@ -311,6 +341,8 @@ function shaper() {
     return b.map( (val, i) => val + a[i] );
   }
 
+  // var in =  [[w,    0,0],[w+r, h, y],[ l, h, y]];
+  // var out = [[w+r-l,0,0],[w-l, h, y],[-l, h, y]];
 
 }
 
