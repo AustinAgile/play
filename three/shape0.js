@@ -116,7 +116,7 @@ function shaper() {
     shape.lineTo(points[2][0],points[2][1]);
     shape.holes = this.holes;
     this.holes = [];
-    console.log(shape);
+    // console.log(shape);
     // console.log(shape.extractPoints());
 
     var shapeGeometry = new _3js.ShapeGeometry( shape );
@@ -314,7 +314,13 @@ function shaper() {
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     // var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
-    if (wall.bevel.miters.hasOwnProperty("in")) {
+    if (wall.bevel.miters.hasOwnProperty("angle")) {
+      var left = Math.tan(wall.bevel.miters.angle.left*Math.PI/180) * wall.bevel.y;
+      var right = Math.tan(wall.bevel.miters.angle.right*Math.PI/180) * wall.bevel.y;
+      console.log(left);
+      console.log(right);
+      var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.h,wall.bevel.y],[left,wall.size.h,wall.bevel.y]];
+    } else if (wall.bevel.miters.hasOwnProperty("in")) {
       var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
     } else {
       // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
