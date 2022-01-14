@@ -3,7 +3,7 @@
 
 <body>
   <!-- <canvas id="c"></canvas> -->
-
+  <script src="./js/lodash.min.js"></script>
   <script type="module">
     import * as THREE from '../three/build/three.module.js';
     import {EffectComposer} from '../three/examples/jsm/postprocessing/EffectComposer.js';
@@ -191,95 +191,21 @@
         debug: {f: 0xff0000, b:0x0000ff}
       };
 
-      function cornice(wallSystem, wallWidth, wallHeight) {
+      function cornice(wallSystem, wallWidth, wallHeight, angle) {
         wallSystem
-          .addExteriorSurface(new doug.Surface("cornice1H").setProperties({
-            size: {w: wallWidth, h: 0},
-            bevel: {y: 5, miters:{angle:{left:-45, right:45}}},
-            offset: {x: 0, y:0, z: wallHeight}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice1V").setProperties({on: "cornice1H",
-            // size: {w: wallWidth+10, h: 8, bevel:"cornice1H"},//+left and right extra from previous non-vertical.
-            size: {dw: 0, h: 8},//+left and right extra from previous non-vertical.
-            // offset: {x: -5, y:5, z: wallHeight}
-            offset: {dx: 0, dy: 0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice2H").setProperties({on: "cornice1V",
-            size: {on:"cornice1V", dw: 0, h: 0},
-            bevel: {y: 5, miters:{angle:{left:-45, right:45}}},
-            // offset: {x: -5, y:5, z: wallHeight+8}
-            offset: {dx: 0, dy:0, dz: 0}
-            // offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice2V").setProperties({on: "cornice2H",
-            size: {on:"cornice2H", dw: 0, h: 18},
-            // offset: {x: -10, y:10, z: wallHeight+8}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice3B").setProperties({
-            // size: {w: wallWidth+10+10, h: 5},
-            on: "cornice2V",
-            size: {on:"cornice2V", dw: 0, h: 5},
-            bevel: {y: 5, miters:{angle:{left:-45, right:45}}},
-            // offset: {x: -10, y:10, z: wallHeight+18+8}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice4H").setProperties({
-            // size: {w: wallWidth+30, h: 0, bevel:"cornice3B"},
-            on: "cornice3B",
-            size: {on:"cornice3B", dw: 0, h: 0},
-            bevel: {y: 5, miters:{angle:{left:-45, right:45}}},
-            // offset: {x: -15, y:15, z: wallHeight+18+8+5},
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice4V").setProperties({
-            // size: {w: wallWidth+40, h: 6, bevel:"cornice4H"},
-            on: "cornice4H",
-            size: {on:"cornice4H", dw: 0, h: 6},
-            // offset: {x: -20, y:20, z: wallHeight+18+8+5}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice5B").setProperties({
-            // size: {w: wallWidth+40, h: 6},//Can just stack them, the vertical ones will have extra length of zero.
-            on: "cornice4V",
-            size: {on:"cornice4V", dw: 0, h: 6},//Can just stack them, the vertical ones will have extra length of zero.
-            bevel: {y: 8, miters:{angle:{left:-45, right:45}}},
-            // offset: {x: -20, y:20, z: wallHeight+18+8+5+6}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice5V").setProperties({
-            // size: {w: wallWidth+56, h: 6},
-            on: "cornice5B",
-            size: {on:"cornice5B", dw: 0, h: 6},
-            // offset: {x: -28, y:28, z: wallHeight+18+8+5+6+6}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice6H").setProperties({
-            // size: {w: wallWidth+56, h: 0},
-            on: "cornice5V",
-            size: {on:"cornice5V", dw: 0, h: 0},
-            bevel: {y: 40, miters:{angle:{left:-45, right:45}}},
-            // offset: {x: -28, y:28, z: wallHeight+18+8+5+6+6+6}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice6V").setProperties({
-            // size: {w: wallWidth+136, h: 18},
-            on: "cornice6H",
-            size: {on:"cornice6H", dw: 0, h: 18},
-            // offset: {x: -68, y:68, z: wallHeight+18+8+5+6+6+6}
-            offset: {dx: 0, dy:0, dz: 0}
-          }))
-          .addExteriorSurface(new doug.Surface("cornice7H").setProperties({
-            // size: {w: wallWidth+136, h: 0},
-            on: "cornice6V",
-            size: {on:"cornice6H", dw: 0, h: 0},
-            bevel: {y: -68, miters:{angle:{left:-45, right:45}}},
-            // offset: {x: -68, y:68, z: wallHeight+18+8+5+6+6+6+18},
-            offset: {dx: 0, dy:0, dz: 0}
-            // rotation: {x:0, y:0, z:0}
-            // offset: {x: -68, y:68, dz: 0},
-            // rotation: {x:0, y:180, z:0}
-          }).flip())
+          // .addExteriorSurface(new doug.Surface("cornice1H").setProperties({size: {w: wallWidth, h: 0}, bevel: {y: 5, miters:angle}, offset: {x: 0, y:0, z: wallHeight}}))
+          .addExteriorSurface(new doug.Surface("cornice1H").setProperties({on: "main", size: {h: 0}, bevel: {y: 5, miters:angle}}))
+          .addExteriorSurface(new doug.Surface("cornice1V").setProperties({on: "cornice1H", size: {h: 8}}))
+          .addExteriorSurface(new doug.Surface("cornice2H").setProperties({on: "cornice1V", size: {h: 0}, bevel: {y: 5, miters:angle}}))
+          .addExteriorSurface(new doug.Surface("cornice2V").setProperties({on: "cornice2H", size: {h: 18}}))
+          .addExteriorSurface(new doug.Surface("cornice3B").setProperties({on: "cornice2V", size: {h: 5}, bevel: {y: 5, miters:angle}}))
+          .addExteriorSurface(new doug.Surface("cornice4H").setProperties({on: "cornice3B", size: {h: 0}, bevel: {y: 5, miters:angle}}))
+          .addExteriorSurface(new doug.Surface("cornice4V").setProperties({on: "cornice4H", size: {h: 6}}))
+          .addExteriorSurface(new doug.Surface("cornice5B").setProperties({on: "cornice4V", size: {h: 6}, bevel: {y: 8, miters:angle}}))
+          .addExteriorSurface(new doug.Surface("cornice5V").setProperties({on: "cornice5B", size: {h: 6}}))
+          .addExteriorSurface(new doug.Surface("cornice6H").setProperties({on: "cornice5V", size: {h: 0}, bevel: {y: 40, miters:angle}}))
+          .addExteriorSurface(new doug.Surface("cornice6V").setProperties({on: "cornice6H", size: {h: 18}}))
+          .addExteriorSurface(new doug.Surface("cornice7H").setProperties({on: "cornice6V", size: {h: 0}, bevel: {y: -68, miters:angle}}).flip())
         ;
       }
 
@@ -397,7 +323,7 @@
         .addWindow(new Window90x190("leftL2BR").setOffset({dx: 186, z: 750, window: "stairL2"}))
         .addWindow(new Window90x190("rightL2BR").setOffset({dx: 165, z: 750, window: "leftL2BR"}))
       ;
-      // shaper0.wallSystem(eastWall);
+      shaper0.wallSystem(eastWall);
 
       // //South Side
       // var h = 0;
@@ -452,14 +378,14 @@
         .addWindow(new doug.Window("Kitchen1").setOffset({x: -350, z: 100}).setSize({w: 30, h:30}))
         .addWindow(new doug.Window("Kitchen2").setOffset({x: 293, z: 384}).setSize({w: 90, h:135}))
         .setExteriorColor(colors.stucco)
-        // .addExteriorSurface(new doug.Surface("main").setProperties({
-        //   size: {w: southWallWidth, h: wallH},
-        //   offset: {x: 0, y: 0, z: ground},
-        //   windows: ["w1", "w2", "w3", "w4"]
-        // }))
+        .addExteriorSurface(new doug.Surface("main").setProperties({
+          size: {w: southWallWidth, h: wallH},
+          offset: {x: 0, y: 0, z: ground},
+          windows: ["w1", "w2", "w3", "w4"]
+        }))
         .setExteriorColor(colors.cornice)
       ;
-      cornice(southWall, southWallWidth, wallH);
+      cornice(southWall, southWallWidth, wallH, {angle:{left:-45, right:45}});
       //   .addExteriorSurface(new doug.Surface("pony").setProperties({
       //     size: {w: 200, h: 100},
       //     offset: {x: 900, y: 0, z: ground},

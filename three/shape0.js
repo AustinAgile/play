@@ -146,7 +146,6 @@ function shaper() {
     // plane.castShadow = true;
     // plane.receiveShadow = true;
 
-
     shapeGeometry.rotateX(this.planeTransforms.shapeRotateTranslate[0] * rotate[0]*Math.PI/180);
     shapeGeometry.rotateY(this.planeTransforms.shapeRotateTranslate[1] * rotate[1]*Math.PI/180);
     shapeGeometry.rotateZ(this.planeTransforms.shapeRotateTranslate[2] * rotate[2]*Math.PI/180);
@@ -398,7 +397,7 @@ function shaper() {
       var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.xy,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.xy,wall.bevel.y]];
     } else {
       // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
-      // var len = wall.size.w + wall.bevel.miters.out.right - wall.bevel.miters.out.left;
+      var len = wall.size.w + wall.bevel.miters.out.right - wall.bevel.miters.out.left;
       // var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.h,wall.bevel.y]];
       var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.xy,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.xy,wall.bevel.y]];
       offset = ArraySum(offset, [wall.bevel.miters.out.left, wall.bevel.y, 0]);
@@ -410,6 +409,7 @@ function shaper() {
     console.log(rotate);
     // console.log(wall.color);
     // console.log(wall.mirror);
+    console.log(wall);
     return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
   };
 

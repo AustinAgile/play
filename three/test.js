@@ -75,13 +75,20 @@ class WallSystem {
 
 class Surface {
 	name = "";
+	size = {w:0, h:0, dw:0};
+	offset = {x:0, y:0, z:0, dx:0, dy:0, dz:0};
 	mirror = false;
 	constructor(name) {
 		this.name = name;
 		return this;
 	};
 	setProperties(properties) {
-		Object.assign(this, properties);
+		console.log("set properties");
+		console.log(this);
+		_.merge(this, properties);
+		// let blowme = _.merge(this, properties);
+		// Object.assign(this, properties);
+		// console.log(blowme);
 		return this;
 	};
 	flip() {
