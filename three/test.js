@@ -73,10 +73,9 @@ class WallSystem {
 	}
 
 	addInteriorHorizontalSurface(floor) {
-		if (!floor.hasOwnProperty("color")) {floor.color = this.interiorHorizontal.color;}
+		// if (!floor.hasOwnProperty("color")) {floor.color = this.interiorHorizontal.color;}
 		if (!floor.hasOwnProperty("windows")) {floor.windows = [];}
 		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 0, y: 0, z: 0};}
-		floor.flip();
 		this.interior.surfaces[floor.name] = floor;
 		return this;
 	}
