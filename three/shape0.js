@@ -127,19 +127,18 @@ function shaper() {
     // shapeGeometry.translate(geoTranslate[0], geoTranslate[1], geoTranslate[2]);
 
     var planeMat = new _3js.MeshLambertMaterial({
-      color: color.f,
-      opacity: 0.5,
+      color: color.f.color,
+      opacity: color.f.opacity,
       // transparent: true,
-      // side: _3js.BackSide
       side: (mirror ?_3js.BackSide : _3js.FrontSide)
     });
     var planeMatBack = new _3js.MeshLambertMaterial({
-      color: color.b,
-      opacity: 0.5,
+      color: color.b.color,
+      opacity: color.b.opacity,
       // transparent: true,
-      // side: _3js.FrontSide
       side: (mirror ? _3js.FrontSide : _3js.BackSide)
     });
+
     // if (mirror) {console.log(planeMatBack);}
     // var planeMat = getMaterial(mirror, color, 0xff0000);
     // var plane = new _3js.Mesh(shapeGeometry, planeMat);

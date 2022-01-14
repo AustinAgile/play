@@ -40,13 +40,13 @@ class WallSystem {
 		return this;
 	}
 
-	setExteriorColor(color) {
-		this.exterior.color = color;
+	setExteriorMaterial(material) {
+		this.exterior.color = material;
 		return this;
 	}
 
-	setInteriorColor(color) {
-		this.interior.color = color;
+	setInteriorMaterial(material) {
+		this.interior.color = material;
 		return this;
 	}
 
@@ -83,8 +83,8 @@ class Surface {
 		return this;
 	};
 	setProperties(properties) {
-		console.log("set properties");
-		console.log(this);
+		// console.log("set properties");
+		// console.log(this);
 		_.merge(this, properties);
 		// let blowme = _.merge(this, properties);
 		// Object.assign(this, properties);
