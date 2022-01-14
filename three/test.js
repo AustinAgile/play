@@ -28,6 +28,7 @@ class WallSystem {
 	plane;
 	exterior = {color: {}, surfaces: {}};
 	interior = {color: {}, surfaces: {}};
+	interiorHorizontal = {color: {}, surfaces: {}};
 	windows = {};
 
 	constructor(name) {
@@ -49,6 +50,10 @@ class WallSystem {
 		this.interior.color = material;
 		return this;
 	}
+	setInteriorHorizontalMaterial(material) {
+		this.interiorHorizontal.color = material;
+		return this;
+	}
 
 	addExteriorSurface(wall) {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
@@ -64,6 +69,15 @@ class WallSystem {
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		wall.flip();
 		this.interior.surfaces[wall.name] = wall;
+		return this;
+	}
+
+	addInteriorHorizontalSurface(floor) {
+		if (!floor.hasOwnProperty("color")) {floor.color = this.interiorHorizontal.color;}
+		if (!floor.hasOwnProperty("windows")) {floor.windows = [];}
+		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 0, y: 0, z: 0};}
+		floor.flip();
+		this.interior.surfaces[floor.name] = floor;
 		return this;
 	}
 
