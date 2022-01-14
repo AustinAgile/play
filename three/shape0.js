@@ -219,6 +219,9 @@ function shaper() {
 
     Object.entries(wallSystem.exterior.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];
+      console.log("wall "+wall.name);
+      console.log(wall);
+      this.wallRelativeSize(wallSystem.exterior.surfaces, wall);
 
       wall.windows.forEach(function(windowName) {//The exterior holes for windows
         if (!wallSystem.windows.hasOwnProperty(windowName)) {
@@ -228,7 +231,6 @@ function shaper() {
           this.addWindowHoleNew(wallSystem.windows, windowName, wall);
         }
       }.bind(this));
-
       if (wall.hasOwnProperty("bevel")) {
         this.bevelWallNew(wall);//The interior wall surface
       } else {
@@ -271,17 +273,63 @@ function shaper() {
     this.bevelWall([[window.size.w,0,0],[window.size.w,depth,0],[0,depth,0]],[ window.offset.x,-depth,window.offset.z+window.size.h], [ 90, 0, 0], wall.color);
   };
 
-  this.doRelativeOffset = function(windows, windowName) {
+  this.windowRelativeOffset = function(windows, windowName) {
     var window = windows[windowName];
-    // return window;
     if (window.offset.hasOwnProperty("window")) {
       var relativeWindow = windows[window.offset.window];
       if (window.offset.hasOwnProperty("dx") && !relativeWindow.offset.hasOwnProperty("x")) {
-        this.doRelativeOffset(relativeWindow);
+        this.windowRelativeOffset(relativeWindow);
       }
       window.offset.x = window.offset.dx + relativeWindow.offset.x + relativeWindow.size.w;
     }
     return window;
+  }
+  this.wallRelativeSize = function(walls, wall) {
+    // return;
+    if (wall.hasOwnProperty("on")) {
+      // console.log(wall.size);
+      var relativeWall = walls[wall.on];
+      console.log("relative wall "+relativeWall.name);
+      console.log(relativeWall);
+      // console.log(relativeWall);
+      // if (wall.size.hasOwnProperty("dw") && !relativeWall.size.hasOwnProperty("w")) {
+      //   this.wallRelativeSize(relativeWall);
+      // }
+      // var extraWidth = this.bevelWidth(relativeWall);
+      // wall.size.w = wall.size.dw + relativeWall.size.w + extraWidth.right - extraWidth.left;
+      // console.log(wall.size);
+
+      if (!relativeWall.size.hasOwnProperty("w")) {this.wallRelativeSize(walls, relativeWall);}
+      if (wall.size.hasOwnProperty("dw")) {
+        var extraWidth = this.bevelWidth(relativeWall);
+        wall.size.w = wall.size.dw + relativeWall.size.w + extraWidth.right - extraWidth.left;
+        // console.log(wall.size);
+      }
+      if (!relativeWall.offset.hasOwnProperty("x")) {console.log("??");this.wallRelativeSize(walls, relativeWall);}
+      if (!relativeWall.offset.hasOwnProperty("y")) {console.log("??");this.wallRelativeSize(walls, relativeWall);}
+      if (!relativeWall.offset.hasOwnProperty("z")) {console.log("??");this.wallRelativeSize(walls, relativeWall);}
+      console.log("wall "+wall.name+" here");
+      if (wall.offset.hasOwnProperty("dx")) {
+        var extraWidth = this.bevelWidth(relativeWall);
+        wall.offset.x = wall.offset.dx + relativeWall.offset.x + extraWidth.left;
+        console.log("wall "+wall.name+" has dx, relative x="+relativeWall.offset.x);
+        console.log("offset.x = "+(wall.offset.dx + relativeWall.offset.x + extraWidth.left));
+      }
+      if (wall.offset.hasOwnProperty("dy")) {
+        console.log("wall "+wall.name+" has dy, relative y="+relativeWall.offset.y);
+//        console.log("offset.y = "+(wall.offset.dy + relativeWall.bevel.y));
+        wall.offset.y = wall.offset.dy + relativeWall.offset.y;
+        if (relativeWall.hasOwnProperty("bevel")) {wall.offset.y += relativeWall.bevel.y;}
+      }
+      if (wall.offset.hasOwnProperty("dz")) {
+        console.log("wall "+wall.name+" has dz, relative z="+relativeWall.offset.z+", relative h="+relativeWall.size.h);
+        wall.offset.z = wall.offset.dz + relativeWall.offset.z + relativeWall.size.h;
+        console.log(wall.offset);
+      }
+    } else {
+      // console.log("wall "+wall.name+" not on anything");
+    }
+    return wall;
   }
 
   this.addWindowHoleNew = function(windows, windowName, wall) {
@@ -289,7 +337,7 @@ function shaper() {
     // this.addHole([window.offset.x-wall.offset.x, window.offset.y-wall.offset.z], [window.size.w, window.size.h]);
     // console.log(windows[windowName]);
     // console.log(wall);
-    var window = this.doRelativeOffset(windows, windowName);
+    var window = this.windowRelativeOffset(windows, windowName);
     // console.log(window);
 
     this.addHole([
@@ -308,8 +356,32 @@ function shaper() {
     return this.planeWall(size, offset, rotate, wall.color, wall.mirror);
   };
 
+  this.bevelWidth = function(wall) {
+    var extraWidth = {left:0, right: 0};
+    if (wall.hasOwnProperty("bevel")) {
+      if (wall.bevel.miters.hasOwnProperty("angle")) {
+        // console.log("here");
+        extraWidth.left = Math.tan(wall.bevel.miters.angle.left*Math.PI/180) * wall.bevel.y;
+        extraWidth.right = Math.tan(wall.bevel.miters.angle.right*Math.PI/180) * wall.bevel.y;
+        // var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.h,wall.bevel.y],[left,wall.size.h,wall.bevel.y]];
+      } else if (wall.bevel.miters.hasOwnProperty("in")) {
+        extraWidth.left = wall.bevel.miters.in.left;
+        extraWidth.right = wall.bevel.miters.in.right;
+        // var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
+      } else if (wall.bevel.miters.hasOwnProperty("out")) {
+        extraWidth.left = -wall.bevel.miters.out.left;
+        extraWidth.right = -wall.bevel.miters.out.right;
+      } else {
+        throw new Error("Bad bevel spec");
+      }
+    }
+    console.log(extraWidth);
+    return extraWidth;
+  }
+
   this.bevelWallNew = function(wall) {
-    this.beveledWidth(wall);
+    this.beveledHeight(wall);
+    var extraWidth = this.bevelWidth(wall);
 
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
@@ -317,30 +389,71 @@ function shaper() {
     if (wall.bevel.miters.hasOwnProperty("angle")) {
       var left = Math.tan(wall.bevel.miters.angle.left*Math.PI/180) * wall.bevel.y;
       var right = Math.tan(wall.bevel.miters.angle.right*Math.PI/180) * wall.bevel.y;
-      console.log(left);
-      console.log(right);
-      var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.h,wall.bevel.y],[left,wall.size.h,wall.bevel.y]];
+      // console.log(left);
+      // console.log(right);
+      // var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.h,wall.bevel.y],[left,wall.size.h,wall.bevel.y]];
+      var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.xy,wall.bevel.y],[left,wall.size.xy,wall.bevel.y]];
     } else if (wall.bevel.miters.hasOwnProperty("in")) {
-      var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
+      // var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
+      var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.xy,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.xy,wall.bevel.y]];
     } else {
       // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
-      var len = wall.size.w + wall.bevel.miters.out.right - wall.bevel.miters.out.left;
-      var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.h,wall.bevel.y]];
+      // var len = wall.size.w + wall.bevel.miters.out.right - wall.bevel.miters.out.left;
+      // var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.h,wall.bevel.y]];
+      var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.xy,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.xy,wall.bevel.y]];
       offset = ArraySum(offset, [wall.bevel.miters.out.left, wall.bevel.y, 0]);
       rotate = ArraySum(rotate, [-90,0,0]);
     }
+    // console.log(points);
+    // console.log(points2);
+    console.log(offset);
+    console.log(rotate);
+    // console.log(wall.color);
+    // console.log(wall.mirror);
     return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
   };
 
-  this.beveledWidth = function(wall) {
+  this.xbeveledHeight = function(wall) {
     var radians = Math.atan(wall.bevel.y/wall.size.h);
+    // radians = Math.PI/4;
     var angle = 180*radians/Math.PI;
+    console.log(angle);
+    console.log(wall.size.h);
+    console.log(Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2)));
+    // console.log(wall.bevel.y/Math.sin(radians));
+    // console.log(wall.bevel.y/Math.tan(radians));
+    // wall.size.h = Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2));
     wall.size.h = Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2));
+    wall.size.xy = wall.bevel.y/Math.sin(radians);
     if (this.planeTransforms.YisX) {
       wall.rotation.y += angle;
     } else {
       wall.rotation.x += angle;
     }
+  }
+  this.beveledHeight = function(wall) {
+    var angle = 90;
+    wall.size.xy = wall.bevel.y;
+    if (wall.size.h != 0) {
+      var radians = Math.atan(wall.bevel.y/wall.size.h);
+      // radians = Math.PI/4;
+      var angle = 180*radians/Math.PI;
+      console.log(angle);
+      console.log(wall.size.h);
+      console.log(Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2)));
+      console.log(wall.bevel.y/Math.sin(radians));
+      console.log(wall.bevel.y/Math.tan(radians));
+      // wall.size.h = Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2));
+      // wall.size.h = wall.bevel.y/Math.sin(radians);
+      wall.size.xy = wall.bevel.y/Math.sin(radians);
+    }
+    if (this.planeTransforms.YisX) {
+      wall.rotation.y += angle;
+    } else {
+      wall.rotation.x += angle;
+    }
+    console.log(angle);
+    console.log(wall.size.xy);
   }
 
   function ArraySum(a,b) {
