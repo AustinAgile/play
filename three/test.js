@@ -57,7 +57,7 @@ class WallSystem {
 
 	addExteriorSurface(wall) {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
-		if (!wall.hasOwnProperty("windows")) {wall.windows = [];}
+		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		this.exterior.surfaces[wall.name] = wall;
 		return this;
@@ -65,7 +65,7 @@ class WallSystem {
 
 	addInteriorSurface(wall) {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.interior.color;}
-		if (!wall.hasOwnProperty("windows")) {wall.windows = [];}
+		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		wall.flip();
 		this.interior.surfaces[wall.name] = wall;
@@ -74,7 +74,7 @@ class WallSystem {
 
 	addInteriorHorizontalSurface(floor) {
 		// if (!floor.hasOwnProperty("color")) {floor.color = this.interiorHorizontal.color;}
-		if (!floor.hasOwnProperty("windows")) {floor.windows = [];}
+		// if (!floor.hasOwnProperty("windows")) {floor.windows = new Windows();}
 		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 0, y: 0, z: 0};}
 		this.interior.surfaces[floor.name] = floor;
 		return this;
@@ -129,4 +129,22 @@ class Window {
 	};
 };
 
-export { Plane, WallSystem, Surface, Window };
+class Windows {
+	wallSystem;
+	names = [];
+	constructor(names) {
+		this.wallSystem = false;
+		if (!names) {names = [];}
+		return this.setNames(names);
+	};
+	setNames(names) {
+		this.names = names;
+		return this;
+	};
+	setWallSystem(wallSystem) {
+		this.wallSystem = wallSystem;
+		return this;
+	};
+};
+
+export { Plane, WallSystem, Surface, Window, Windows };
