@@ -79,6 +79,11 @@ class WallSystem {
 		this.interior.surfaces[floor.name] = floor;
 		return this;
 	}
+	addHorizontalSurface(floor) {
+		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: -90, y: 0, z: 0};}
+		this.interior.surfaces[floor.name] = floor;
+		return this;
+	}
 
 	addWindow(window) {
 		this.windows[window.name] = window;
@@ -96,14 +101,37 @@ class Surface {
 		return this;
 	};
 	setProperties(properties) {
-		// console.log("set properties");
-		// console.log(this);
 		_.merge(this, properties);
-		// let blowme = _.merge(this, properties);
-		// Object.assign(this, properties);
-		// console.log(blowme);
 		return this;
 	};
+	setSize(size) {
+		this.size = _.merge({w:0, h:0, dw:0}, size);
+		return this;
+	}
+	setOffset(offset) {
+		this.offset = _.merge({x:0, y:0, z:0, dx:0, dy:0, dz:0}, offset);
+		return this;
+	}
+	setRotation(rotation) {
+		this.rotation = rotation;
+		return this;
+	}
+	setWindows(windows) {
+		this.windows = windows;
+		return this;
+	}
+	setOn(on) {
+		this.on = on;
+		return this;
+	}
+	setOn(on) {
+		this.on = on;
+		return this;
+	}
+	setBevel(bevel) {
+		this.bevel = bevel;
+		return this;
+	}
 	flip() {
 		this.mirror = !this.mirror;
 		return this;
@@ -132,6 +160,7 @@ class Window {
 class Windows {
 	wallSystem;
 	names = [];
+	jambs = [];
 	constructor(names) {
 		this.wallSystem = false;
 		if (!names) {names = [];}
@@ -143,6 +172,10 @@ class Windows {
 	};
 	setWallSystem(wallSystem) {
 		this.wallSystem = wallSystem;
+		return this;
+	};
+	setJambsAll() {
+		this.jambs = this.names;
 		return this;
 	};
 };

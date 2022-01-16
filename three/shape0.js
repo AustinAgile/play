@@ -32,7 +32,16 @@ function shaper() {
 
 
   this.setPlane = function(direction, translate, angle) {
-    if (direction[1] == -1) {//front
+    if (direction[1] == -2) {//This is for testing different things
+      this.planeTransforms = {
+        geoRotate: [0,-Math.PI/2,0],
+        geoAngle: -angle,
+        geoTranslate: translate,
+        shapeOriginTranslate: [1,1,1],
+        shapeRotateTranslate: [1,1,1],
+        YisX: false
+      };
+    } else if (direction[1] == -1) {//front
       this.planeTransforms = {
         geoRotate: [Math.PI/2,0,0],
         geoAngle: -angle,
@@ -111,6 +120,10 @@ function shaper() {
   }
 
   this.main3 = function(geoRotate, geoTranslate, points, origin, rotate, color, mirror) {
+    // console.log("main");
+    // console.log(origin);
+    // console.log(points);
+
     var shape = new _3js.Shape();
     shape.moveTo(0,0);
     shape.lineTo(points[0][0],points[0][1]);
@@ -185,6 +198,9 @@ function shaper() {
   };
 
   this.addHole = function(origin, size) {
+    // console.log("hole");
+    // console.log(origin);
+    // console.log(size);
     var hole = new _3js.Shape();
     hole.moveTo( origin[0], origin[1] );
     hole.lineTo( origin[0]+size[0], origin[1] );
@@ -207,6 +223,7 @@ function shaper() {
 
     Object.entries(wallSystem.exterior.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];
+
       this.wallRelativeSize(wallSystem.exterior.surfaces, wall);
 
       if (wall.hasOwnProperty("windows")) {
@@ -226,7 +243,8 @@ function shaper() {
       var wall = entry[1];
 
       if (wall.hasOwnProperty("windows")) {
-        wall.windows.names.forEach(function(windowName) {//The interior holes and jambs for windows
+        // wall.windows.names.forEach(function(windowName) {//The interior holes and jambs for windows
+        wall.windows.jambs.forEach(function(windowName) {//The interior holes and jambs for windows
           this.addWindowJamb(wall.windows.wallSystem, windowName, wallSystem, wall);//The jamb
         }.bind(this));
 
@@ -251,7 +269,6 @@ function shaper() {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
       var relativePlane = {originOffset: [0, 0, 0]};
     }
-
     var depth = -wall.offset.y - relativePlane.originOffset[1];
 
     //Left from exterior
@@ -312,7 +329,7 @@ function shaper() {
     if (window.offset.hasOwnProperty("window")) {
       var relativeWindow = windows[window.offset.window];
       if (window.offset.hasOwnProperty("dx") && !relativeWindow.offset.hasOwnProperty("x")) {
-        this.windowRelativeOffset(relativeWindow);
+        this.windowRelativeOffset(windows, window.offset.window);
       }
       window.offset.x = window.offset.dx + relativeWindow.offset.x + relativeWindow.size.w;
     }
@@ -377,6 +394,10 @@ function shaper() {
     }
     // console.log(windowName);
     // var window = this.windowRelativeOffset(windows, windowName);
+    // console.log("adding window hole");
+    // console.log(window.offset);
+    // console.log(wall.offset);
+    // console.log(relativePlane.originOffset);
     this.addHole([
       window.offset.x - wall.offset.x - relativePlane.originOffset[0],
       window.offset.z - wall.offset.z - relativePlane.originOffset[2]

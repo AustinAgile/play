@@ -194,18 +194,18 @@
 
       function cornice(wallSystem, delta, angle) {
         wallSystem
-          .addExteriorSurface(new doug.Surface("cornice1H").setProperties({on: "main", size: {dw: delta.dw, h: 0}, bevel: {y: 5, miters:angle}, offset: {dx: delta.dx}}))
-          .addExteriorSurface(new doug.Surface("cornice1V").setProperties({on: "cornice1H", size: {h: 8}}))
-          .addExteriorSurface(new doug.Surface("cornice2H").setProperties({on: "cornice1V", size: {h: 0}, bevel: {y: 5, miters:angle}}))
-          .addExteriorSurface(new doug.Surface("cornice2V").setProperties({on: "cornice2H", size: {h: 18}}))
-          .addExteriorSurface(new doug.Surface("cornice3B").setProperties({on: "cornice2V", size: {h: 5}, bevel: {y: 5, miters:angle}}))
-          .addExteriorSurface(new doug.Surface("cornice4H").setProperties({on: "cornice3B", size: {h: 0}, bevel: {y: 5, miters:angle}}))
-          .addExteriorSurface(new doug.Surface("cornice4V").setProperties({on: "cornice4H", size: {h: 6}}))
-          .addExteriorSurface(new doug.Surface("cornice5B").setProperties({on: "cornice4V", size: {h: 6}, bevel: {y: 8, miters:angle}}))
-          .addExteriorSurface(new doug.Surface("cornice5V").setProperties({on: "cornice5B", size: {h: 6}}))
-          .addExteriorSurface(new doug.Surface("cornice6H").setProperties({on: "cornice5V", size: {h: 0}, bevel: {y: 40, miters:angle}}))
-          .addExteriorSurface(new doug.Surface("cornice6V").setProperties({on: "cornice6H", size: {h: 18}}))
-          .addExteriorSurface(new doug.Surface("cornice7H").setProperties({on: "cornice6V", size: {h: 0}, bevel: {y: -68, miters:angle}}).flip())
+          .addExteriorSurface(new doug.Surface("cornice1H").setOn("main").setSize({dw: delta.dw, h: 0}).setBevel({y: 5, miters:angle}).setOffset({dx: delta.dx}))
+          .addExteriorSurface(new doug.Surface("cornice1V").setOn("cornice1H").setSize({h: 8}))
+          .addExteriorSurface(new doug.Surface("cornice2H").setOn("cornice1V").setSize({h: 0}).setBevel({y: 5, miters:angle}))
+          .addExteriorSurface(new doug.Surface("cornice2V").setOn("cornice2H").setSize({h: 18}))
+          .addExteriorSurface(new doug.Surface("cornice3B").setOn("cornice2V").setSize({h: 5}).setBevel({y: 5, miters:angle}))
+          .addExteriorSurface(new doug.Surface("cornice4H").setOn("cornice3B").setSize({h: 0}).setBevel({y: 5, miters:angle}))
+          .addExteriorSurface(new doug.Surface("cornice4V").setOn("cornice4H").setSize({h: 6}))
+          .addExteriorSurface(new doug.Surface("cornice5B").setOn("cornice4V").setSize({h: 6}).setBevel({y: 8, miters:angle}))
+          .addExteriorSurface(new doug.Surface("cornice5V").setOn("cornice5B").setSize({h: 6}))
+          .addExteriorSurface(new doug.Surface("cornice6H").setOn("cornice5V").setSize({h: 0}).setBevel({y: 40, miters:angle}))
+          .addExteriorSurface(new doug.Surface("cornice6V").setOn("cornice6H").setSize({h: 18}))
+          .addExteriorSurface(new doug.Surface("cornice7H").setOn("cornice6V").setSize({h: 0}).setBevel({y: -68, miters:angle}).flip())
         ;
       }
 
@@ -225,7 +225,11 @@
       class smallWindow extends doug.Window {size = {w: 100, h: 50};};
       class Window90x190 extends doug.Window {size = {w: 90, h: 190};};
       class Door90x285 extends doug.Window {size = {w: 90, h: 285};};
+      class Door95x205 extends doug.Window {size = {w: 95, h: 205};};
       class Window90x185 extends doug.Window {size = {w: 90, h: 185};};
+
+      class Floor extends doug.Surface {color = materials.floor};
+      class Ceiling extends doug.Surface {color = materials.plaster};
 
       var thick = {
         east: {L0: 70, L1: 70, L2: 70},
@@ -274,31 +278,31 @@
       var eastWall = new doug.WallSystem("East Wall")
         .setPlane(new doug.Plane().setFacingDirection([0,-1,0]).setOriginOffset([0,0,0]).setRotationZ(0))
         .setExteriorMaterial(materials.stucco)
-        .addExteriorSurface(new doug.Surface("main").setProperties({
-          size: {w: eastWallWidth, h: wallH},
-          offset: {x: 0, y: 0, z: ground},
-          windows: new doug.Windows([
+        .addExteriorSurface(new doug.Surface("main")
+          .setSize({w: eastWallWidth, h: wallH})
+          .setOffset({x: 0, y: 0, z: ground})
+          .setWindows(new doug.Windows([
             "cellar1", "cellar2", "cellar3", "cellar4", "cellar5",
             "leftL1LR", "rightL1LR", "stairL1", "leftL1BR", "rightL1BR",
             "leftL2LR", "rightL2LR", "stairL2", "leftL2BR", "rightL2BR"
-          ])
-        }))
+          ]))
+        )
         .setInteriorMaterial(materials.plaster)
-        .addInteriorSurface(new doug.Surface("level0").setProperties({
-          size: roomWallSize({level: "L0", room: "cellar", side: "east"}),
-          offset: roomWallOffset({level: "L0", room: "cellar", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: 0}),
-          windows: new doug.Windows(["cellar1", "cellar2"])
-        }))
-        .addInteriorSurface(new doug.Surface("level1").setProperties({
-          size: roomWallSize({level: "L1", room: "living", side: "east"}),
-          offset: roomWallOffset({level: "L1", room: "living", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: 0}),
-          windows: new doug.Windows(["leftL1LR", "rightL1LR"])
-        }))
-        .addInteriorSurface(new doug.Surface("level2").setProperties({
-          size: roomWallSize({level: "L2", room: "bedroom", side: "east"}),
-          offset: roomWallOffset({level: "L2", room: "bedroom", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: 0}),
-          windows: new doug.Windows(["leftL2LR", "rightL2LR"])
-        }))
+        .addInteriorSurface(new doug.Surface("level0")
+          .setSize(roomWallSize({level: "L0", room: "cellar", side: "east"}))
+          .setOffset(roomWallOffset({level: "L0", room: "cellar", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: 0}))
+          .setWindows(new doug.Windows(["cellar1", "cellar2"]).setJambsAll())
+        )
+        .addInteriorSurface(new doug.Surface("level1")
+          .setSize(roomWallSize({level: "L1", room: "living", side: "east"}))
+          .setOffset(roomWallOffset({level: "L1", room: "living", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: 0}))
+          .setWindows(new doug.Windows(["leftL1LR", "rightL1LR"]).setJambsAll())
+        )
+        .addInteriorSurface(new doug.Surface("level2")
+          .setSize(roomWallSize({level: "L2", room: "bedroom", side: "east"}))
+          .setOffset(roomWallOffset({level: "L2", room: "bedroom", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: 0}))
+          .setWindows(new doug.Windows(["leftL2LR", "rightL2LR"]).setJambsAll())
+        )
         .addWindow(new doug.Window("cellar1").setOffset({x: 172, z: 150}).setSize({w: 70, h: 60}))
         .addWindow(new doug.Window("cellar2").setOffset({dx: 210, z: 150, window: "cellar1"}).setSize({w: 60, h: 60}))
         .addWindow(new doug.Window("cellar3").setOffset({x: 703, z: 10}).setSize({w: 113, h: 224}))
@@ -319,47 +323,98 @@
       cornice(eastWall, {dw: 0, dx: 0}, {angle:{left:-45, right:0}});
       shaper0.wallSystem(eastWall);
 
+
       var bedroomL1 = new doug.WallSystem("Bedroom L1")
-        .setPlane(new doug.Plane().setFacingDirection([0,-1,0]).setOriginOffset([864,70,289]).setRotationZ(0))
+        .setPlane(new doug.Plane().setFacingDirection([0,-1,0]).setOriginOffset([901,70,289]).setRotationZ(0))
         .setInteriorMaterial(materials.plaster)
-        .addInteriorSurface(new doug.Surface("level1").setProperties({
-          size: {w: 493, h: 329},
-          offset: {x: 0, y: 0, z: 0},
-          windows: new doug.Windows(["leftL1BR", "rightL1BR"]).setWallSystem(eastWall)
-        }))
+        .addWindow(new Door95x205("door").setOffset({x: 40, z: 0}))
+        .addWindow(new doug.Window("closet").setSize({w: 97, h: 205}).setOffset({x: 279, z: 0}))
+        .addWindow(new doug.Window("nookie").setSize({w: 137, h: 205}).setOffset({x: 10, z: 50}))
+        .addInteriorSurface(new doug.Surface("east")
+          .setSize({w: 493, h: 329})
+          .setWindows(new doug.Windows(["leftL1BR", "rightL1BR"]).setWallSystem(eastWall).setJambsAll())
+        )
+        .addInteriorSurface(new doug.Surface("south")
+          .setSize({w: 450, h: 329})
+          .setRotation({x: 0, y: 0, z: 90})
+          .setWindows(new doug.Windows(["closet"]))
+          .flip()
+        )
+        .addInteriorSurface(new doug.Surface("south nook 1")
+          .setSize({w: 35, h: 205})
+          .setOffset({x: 0, y: -279, z: 0})
+          .setRotation({x: 0, y: 0, z: 180})
+          .flip()
+        )
+        .addInteriorSurface(new doug.Surface("south nook 2")
+          .setSize({w: 97, h: 205})
+          .setOffset({x: -35, y: -279, z: 0})
+          .setRotation({x: 0, y: 0, z: 90})
+          .flip()
+        )
+        .addInteriorSurface(new doug.Surface("south nook 3")
+          .setSize({w: 35, h: 205})
+          .setOffset({x: 0, y: -(279+97), z: 0})
+          .setRotation({x: 0, y: 0, z: 180})
+        )
+        .addInteriorSurface(new doug.Surface("west")
+          .setSize({w: 501, h: 329})
+          .setOffset({x: 0, y: -450, z: 0})
+          .setWindows(new doug.Windows(["door"]))
+          .flip()
+        )
+        .addInteriorSurface(new doug.Surface("north")
+          .setSize({w: 447, h: 329})
+          .setOffset({x: 493, y: 0, z: 0})
+          .setRotation({x: 0, y: 0, z: 90})
+          .setWindows(new doug.Windows(["nookie"]))
+        )
+        // .addHorizontalSurface(new Floor("floor").setProperties({
+        //   size: {w: 493, h: 447},
+        // }))
+        // .addHorizontalSurface(new Floor("closet floor").setProperties({
+        //   size: {w: 35, h: 97},
+        //   offset: {x: -35, y: -279, z: 0},
+        // }))
+        // .addInteriorHorizontalSurface(new Floor("ceiling").setProperties({
+        //   size: {w: 493, h: 447},
+        //   offset: {x: 0, y: 0, z: 329},
+        //   rotation: {x: -90, y: 0, z: 0}
+        // }).flip())
       ;
       shaper0.wallSystem(bedroomL1);
 
 
       //Floors
-      class Floor extends doug.Surface {color = materials.floor};
-      class Ceiling extends doug.Surface {color = materials.plaster};
       var floors = new doug.WallSystem("Floor")
         .setPlane(new doug.Plane().setFacingDirection([0,0,1]).setOriginOffset([0,0,0]).setRotationZ(0))
-        .addInteriorHorizontalSurface(new Floor("floor0").setProperties({
-          size: {w: rooms.L0.cellar.w, h: rooms.L0.cellar.y},
-          offset: roomWallOffset({level: "L0", room: "cellar", sides: {x: "south", y: "east"}}),
-        }))
-        .addInteriorHorizontalSurface(new Ceiling("ceiling0").setProperties({
-          size: {w: rooms.L0.cellar.w, h: rooms.L0.cellar.y},
-          offset: roomWallOffset({level: "L0", room: "cellar", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: rooms.L0.cellar.h}),
-        }).flip())
-        .addInteriorHorizontalSurface(new Floor("floor1").setProperties({
-          size: {w: rooms.L1.living.w, h: rooms.L1.living.y},
-          offset: roomWallOffset({level: "L1", room: "living", sides: {x: "south", y: "east"}}),
-        }))
-        .addInteriorHorizontalSurface(new Ceiling("ceiling1").setProperties({
-          size: {w: rooms.L1.living.w, h: rooms.L1.living.y},
-          offset: roomWallOffset({level: "L1", room: "living", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: rooms.L1.living.h}),
-        }).flip())
-        .addInteriorHorizontalSurface(new Floor("floor2").setProperties({
-          size: {w: rooms.L2.bedroom.w, h: rooms.L2.bedroom.y},
-          offset: roomWallOffset({level: "L2", room: "bedroom", sides: {x: "south", y: "east"}}),
-        }))
-        .addInteriorHorizontalSurface(new Ceiling("ceiling2").setProperties({
-          size: {w: rooms.L2.bedroom.w, h: rooms.L2.bedroom.y},
-          offset: roomWallOffset({level: "L2", room: "bedroom", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: rooms.L2.bedroom.h}),
-        }).flip())
+        .addInteriorHorizontalSurface(new Floor("floor0")
+          .setSize({w: rooms.L0.cellar.w, h: rooms.L0.cellar.y})
+          .setOffset(roomWallOffset({level: "L0", room: "cellar", sides: {x: "south", y: "east"}}))
+        )
+        .addInteriorHorizontalSurface(new Ceiling("ceiling0")
+          .setSize({w: rooms.L0.cellar.w, h: rooms.L0.cellar.y})
+          .setOffset(roomWallOffset({level: "L0", room: "cellar", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: rooms.L0.cellar.h}))
+          .flip()
+        )
+        .addInteriorHorizontalSurface(new Floor("floor1")
+          .setSize({w: rooms.L1.living.w, h: rooms.L1.living.y})
+          .setOffset(roomWallOffset({level: "L1", room: "living", sides: {x: "south", y: "east"}}))
+        )
+        .addInteriorHorizontalSurface(new Ceiling("ceiling1")
+          .setSize({w: rooms.L1.living.w, h: rooms.L1.living.y})
+          .setOffset(roomWallOffset({level: "L1", room: "living", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: rooms.L1.living.h}))
+          .flip()
+        )
+        .addInteriorHorizontalSurface(new Floor("floor2")
+          .setSize({w: rooms.L2.bedroom.w, h: rooms.L2.bedroom.y})
+          .setOffset(roomWallOffset({level: "L2", room: "bedroom", sides: {x: "south", y: "east"}}))
+        )
+        .addInteriorHorizontalSurface(new Ceiling("ceiling2")
+          .setSize({w: rooms.L2.bedroom.w, h: rooms.L2.bedroom.y})
+          .setOffset(roomWallOffset({level: "L2", room: "bedroom", sides: {x: "south", y: "east"}}, {x: 0, y: 0, z: rooms.L2.bedroom.h}))
+          .flip()
+        )
       ;
       shaper0.wallSystem(floors);
 
@@ -374,26 +429,26 @@
         .addWindow(new doug.Window("Kitchen1").setOffset({x: -350, z: 100}).setSize({w: 30, h:30}))
         .addWindow(new doug.Window("Kitchen2").setOffset({x: 293, z: 384}).setSize({w: 90, h:135}))
         .setExteriorMaterial(materials.stucco)
-        .addExteriorSurface(new doug.Surface("main").setProperties({
-          size: {w: southWallWidth, h: wallH},
-          offset: {x: 0, y: 0, z: ground},
-          windows: new doug.Windows(["w1", "w2", "w3", "w4"])
-        }))
+        .addExteriorSurface(new doug.Surface("main")
+          .setSize({w: southWallWidth, h: wallH})
+          .setOffset({x: 0, y: 0, z: ground})
+          .setWindows(new doug.Windows(["w1", "w2", "w3", "w4"]))
+        )
         .setInteriorMaterial(materials.plaster)
-        .addInteriorSurface(new doug.Surface("level0").setProperties({
-          size: roomWallSize({level: "L0", room: "cellar", side: "south"}),
-          offset: roomWallOffset({level: "L0", room: "cellar", sides: {x: "east", y: "south"}}, {x: southWallWidth-rooms.L0.cellar.y, y: 0, z: 0})
-        }))
-        .addInteriorSurface(new doug.Surface("level1").setProperties({
-          size: roomWallSize({level: "L1", room: "living", side: "south"}),
-          offset: roomWallOffset({level: "L1", room: "living", sides: {x: "east", y: "south"}}, {x: southWallWidth-rooms.L1.living.y, y: 0, z: 0}),
-          windows: new doug.Windows(["w2"])
-        }))
-        .addInteriorSurface(new doug.Surface("level2").setProperties({
-          size: roomWallSize({level: "L2", room: "bedroom", side: "south"}),
-          offset: roomWallOffset({level: "L2", room: "bedroom", sides: {x: "east", y: "south"}}, {x: southWallWidth-rooms.L2.bedroom.y, y: 0, z: 0}),
-          windows: new doug.Windows(["w4"])
-        }))
+        .addInteriorSurface(new doug.Surface("level0")
+          .setSize(roomWallSize({level: "L0", room: "cellar", side: "south"}))
+          .setOffset(roomWallOffset({level: "L0", room: "cellar", sides: {x: "east", y: "south"}}, {x: southWallWidth-rooms.L0.cellar.y, y: 0, z: 0}))
+        )
+        .addInteriorSurface(new doug.Surface("level1")
+          .setSize(roomWallSize({level: "L1", room: "living", side: "south"}))
+          .setOffset(roomWallOffset({level: "L1", room: "living", sides: {x: "east", y: "south"}}, {x: southWallWidth-rooms.L1.living.y, y: 0, z: 0}))
+          .setWindows(new doug.Windows(["w2"]).setJambsAll())
+        )
+        .addInteriorSurface(new doug.Surface("level2")
+          .setSize(roomWallSize({level: "L2", room: "bedroom", side: "south"}))
+          .setOffset(roomWallOffset({level: "L2", room: "bedroom", sides: {x: "east", y: "south"}}, {x: southWallWidth-rooms.L2.bedroom.y, y: 0, z: 0}))
+          .setWindows(new doug.Windows(["w4"]).setJambsAll())
+        )
         .setExteriorMaterial(materials.cornice)
       ;
       cornice(southWall, {dw: 0, dx: 0}, {angle:{left:-45, right:45}});
@@ -418,22 +473,22 @@
       var northWallWidth = 810.5;
       var angle = 5;
       var westWallWidth = eastWallWidth/Math.cos(angle*Math.PI/180);
-      // var westWall = new doug.WallSystem("West Wall")
-      //   .setPlane(new doug.Plane()
-      //     .setFacingDirection([0,-1,0])
-      //     .setOriginOffset([eastWallWidth, northWallWidth, 0])
-      //     // .setRotationZ(180+angle*180/Math.PI)
-      //     .setRotationZ(angle+180)
-      //   )
-      //   .setExteriorMaterial(materials.stucco)
-      //   .addExteriorSurface(new doug.Surface("main").setProperties({
-      //     size: {w: westWallWidth, h: wallH},
-      //     offset: {x: 0, y:0 , z: ground},
-      //     // windows: ["window1", "window2", "window3"]
-      //   }))
-      // ;
-      // var corniceOffsetX = westWallWidth-65;
-      // cornice(westWall, {dw: -corniceOffsetX, dx: corniceOffsetX}, {angle:{left:0, right:45}});
+      var westWall = new doug.WallSystem("West Wall")
+        .setPlane(new doug.Plane()
+          .setFacingDirection([0,-1,0])
+          .setOriginOffset([eastWallWidth, northWallWidth, 0])
+          // .setRotationZ(180+angle*180/Math.PI)
+          .setRotationZ(angle+180)
+        )
+        .setExteriorMaterial(materials.stucco)
+        .addExteriorSurface(new doug.Surface("main")
+          .setSize({w: westWallWidth, h: wallH})
+          .setOffset({x: 0, y:0 , z: ground})
+          // windows: ["window1", "window2", "window3"]
+        )
+      ;
+      var corniceOffsetX = westWallWidth-65;
+      cornice(westWall, {dw: -corniceOffsetX, dx: corniceOffsetX}, {angle:{left:0, right:45}});
       // shaper0.wallSystem(westWall);
 
 
@@ -445,11 +500,11 @@
       var northWall = new doug.WallSystem("North Wall")
         .setPlane(new doug.Plane().setFacingDirection([0,-1,0]).setOriginOffset([eastWallWidth,0,0]).setRotationZ(-90))
         .setExteriorMaterial(materials.stucco)
-        .addExteriorSurface(new doug.Surface("main").setProperties({
-          size: {w: northWallWidth, h: wallH},
-          offset: {x: 0, y:0 , z: ground},
+        .addExteriorSurface(new doug.Surface("main")
+          .setSize({w: northWallWidth, h: wallH})
+          .setOffset({x: 0, y:0 , z: ground})
           // windows: ["window1", "window2", "window3"]
-        }))
+        )
       //   .addExteriorSurface(new doug.Surface("pony").setProperties({
       //     size: {w: 200, h: 100},
       //     offset: {x: 700, y: 0, z: ground},//Can this be linked to previous?
@@ -495,7 +550,7 @@
       //   .addWindow(new smallWindow("window2").setOffset({x: 500, z: 100}))
       //   .addWindow(new bigWindow("window3").setOffset({x: 200, z:  350}))
       ;
-      // shaper0.wallSystem(northWall);
+      shaper0.wallSystem(northWall);
 
 
 //###############
