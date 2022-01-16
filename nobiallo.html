@@ -12,31 +12,16 @@
     import { ShaderPass } from "../three/examples/jsm/postprocessing/ShaderPass.js";
     import { FXAAShader } from "../three/examples/jsm/shaders/FXAAShader.js";
     import {line} from "./three/line.js";
-    // import * as shit from './three/plane1.js';
-    // import * as alt from './three/shape.js';
     import * as alt0 from './three/shape0.js';
     import * as utilm from './three/util.js';
-    // import * as zzz from './three/view.js';
-    // import * as sq from './three/square.js';
-    // import * as ex from './three/extrude.js';
-
     import * as doug from "./three/test.js";
 
-    // var view = new zzz.view();
-    // var builder = new shit.builder();
-    // var shaper = new alt.shaper();
     var shaper0 = new alt0.shaper();
     var util = new utilm.util();
     util.constructor();
-
-    // var backPlane = new alt0.shaper();
-    // console.log(backPlane);
-    // shaper.constructor();
     shaper0.constructor();
 
     function main() {
-      // const canvas = document.querySelector('#c');
-      // const renderer = new THREE.WebGLRenderer({canvas});
       const renderer = new THREE.WebGLRenderer({antialias: true});
       renderer.setSize(1800, 900);
       // renderer.shadowMap.enabled = true;
@@ -93,95 +78,6 @@
 
       // shaper.setScene(scene);
       shaper0.setScene(scene);
-
-      // //South Side
-      // var h = 0;
-      // shaper.addHole([157, 385], [90, 185]);//
-      // shaper.addHole([714, 385], [90, 185]);//
-      // shaper.addHole([157, 750], [90, 185]);//
-      // shaper.addHole([714, 750], [90, 185]);//
-      // shaper.planeY([942,  0, 1033],[  0,   0,   0], 0xfcd690);
-      // h+=wallH;
-      //
-      // //Cornice
-      // shaper.planeY([952,  5,    0],[ -5,  -5,   h], 0xfffdf2);
-      // shaper.planeY([952,  0,    8],[ -5,  -5,   h], 0xfffdf2);
-      // h+=8;
-      //
-      // shaper.planeY([962,  5,    0],[-10, -10,   h], 0xfffdf2);
-      // shaper.planeY([962,  0,   18],[-10, -10,   h], 0xfffdf2);
-      // h+=18;
-      //
-      // // shaper.planeY([962,  5,    5],[-10, -10,   h], 0xfffdf2, true);//bevel 1
-      // shaper.trapY([[962,0,0],[967,5,5],[-5,5,5]],[-10, -10,   h], 0xfffdf2, true);//bevel 1
-      // h += 5;
-      //
-      // shaper.planeY([982,  5,    0],[-20, -20,   h], 0xfffdf2);
-      // shaper.planeY([982,  0,    6],[-20, -20,   h], 0xfffdf2);
-      // h += 6;
-      //
-      // // shaper.planeY([982,  8,    6],[-20, -20,   h], 0xffff00, true);//bevel 2
-      // shaper.trapY([[982,  0,    0],[990,  8,    6],[-8,  8,    6]],[-20, -20,   h], 0xfffdf2, true);//bevel 2????
-      // h += 6;
-      // shaper.planeY([998,  0,    6],[-28, -28,   h], 0xfffdf2);
-      // h+=6;
-      //
-      // // shaper.planeY([1078, 40,    0],[-68, -68,   h], 0xff0000);
-      // shaper.trapY([[1078, 0,    0],[1038, 40,    0],[40, 40,    0]],[-68, -68,   h], 0xfffdf2);//????
-      // shaper.planeY([1078,  0,   18],[-68, -68,   h], 0xfffdf2);
-      // h+=18;
-      //
-      // console.log(corniceW);
-      // shaper.trapY([[1078,  0,    0],[1078-corniceW,  corniceW,    0],[corniceW,  corniceW,  0]],[ -68,  -corniceW,   h], 0xfffdf2);
-      // shaper.planeY([942,  0,    corniceH],[ 0,  0,   wallH], 0xfffdf2);
-      //
-      // //South Side Kitchen
-      // var h = 0;
-      // shaper.addHole([70, 400], [30, 30]);//door
-      // shaper.addHole([293, 385], [90, 135]);//door
-      // shaper.planeY([393,  0, 630],[  0,   942,   0], 0xfcd690);
-      // h+=wallH;
-      //
-      // //West Side
-      // shaper.addHole([133, 5], [110, 214]);//door
-      // shaper.planeX([900,  0, 340],[  600,   942,   290], 0xfcd690);//Lower wall
-      //
-      // shaper.addHole([733, 100], [90, 125]);//door
-      // shaper.planeX([1500,  0, 403],[  0,   942,   630], 0xfcd690);//Upper wall
-      //
-      // shaper.planeX([1440,  0, corniceH],[  60,   942,   wallH], 0xfcd690);//Top wall// attempt to rotate this wall a bit more
-      //
-      // //West Cornice
-      // shaper.planeX([65,  5,    0],[ -5,  942,   h], 0xfffdf2);
-      // shaper.planeX([65,  0,    8],[ -5,  947,   h], 0xfffdf2);
-      // h+=8;
-      // shaper.planeX([70,  5,    0],[-10, 947,   h], 0xfffdf2);
-      // shaper.planeX([70,  0,   18],[-10, 952,   h], 0xfffdf2);
-      // h+=18;
-      // // shaper.planeX([70,  5,    5],[-10, 952,   h], 0xfffdf2, false);//bevel 1
-      // shaper.trapX([[70,  0,    0],[70,  5,    5],[-5,  5,    5]],[-10, 952,   h], 0xfffdf2, false);//bevel 1
-      // h += 5;
-      //
-      // shaper.planeX([80,  5,    0],[-20, 957,   h], 0xfffdf2);
-      // shaper.planeX([80,  0,    6],[-20, 962,   h], 0xfffdf2);
-      // h += 6;
-      //
-      // // shaper.planeX([80,  8,    6],[-20, 962,   h], 0xfffdf2, false);//bevel 2
-      // shaper.trapX([[80,  0,    0],[80,  8,    6],[-8,  8,    6]],[-20, 962,   h], 0xfffdf2, false);//bevel 2
-      // h += 6;
-      // shaper.planeX([88,  0,    6],[-28, 970,   h], 0xfffdf2);
-      // h+=6;
-      //
-      // // shaper.planeX([128, 40,    0],[-68, 970,   h], 0xff0000);
-      // shaper.trapX([[88, 0,    0],[88, 40,    0],[-40, 40,    0]],[-28, 970,   h], 0xfffdf2);
-      // shaper.planeX([128,  0,   18],[-68, 1010,   h], 0xfffdf2);
-      // h+=18;
-      //
-      // shaper.trapX([[60,  0,    0],[60,  corniceW,    0],[-68,  corniceW,    0]],[ 0,  942,   h], 0xfffdf2);
-      // shaper.planeX([60,  0,    corniceH],[ 0,  942,   wallH], 0xfffdf2);
-
-      // shaper0.addHole([200, 100], [200, 100]);//door
-      // shaper0.main2([[900,0,0],[900,500,0],[0,500,0]],[ 0, 0, 0], [ 90, 0, 0], 0xfffdf2);
 
       var materials = {
         stucco:   {f: {color: 0xfcd690, opacity: 1}, b: {color: 0xff0000, opacity: .5}},
@@ -282,10 +178,10 @@
       var northWallWidth = southWallWidth - westWallWidth*Math.sin(angle*Math.PI/180);
 
       var planes = {
-        north: new doug.Plane("North+X").setFacingDirection([3,0,0]).setOriginOffset([eastWallWidth,0,0]),
-        south: new doug.Plane("South-X").setFacingDirection([-3,0,0]),
-        east: new doug.Plane("East-Y").setFacingDirection([0,-2,0]),
-        west: new doug.Plane("West+Y").setFacingDirection([0,2,0]).setOriginOffset([0,southWallWidth,0]).setRotationZ(-5)
+        north: new doug.Plane("North+X").setFacingDirection([1,0,0]).setOriginOffset([eastWallWidth,0,0]),
+        south: new doug.Plane("South-X").setFacingDirection([-1,0,0]),
+        east: new doug.Plane("East-Y").setFacingDirection([0,-1,0]),
+        west: new doug.Plane("West+Y").setFacingDirection([0,1,0]).setOriginOffset([0,southWallWidth,0]).setRotationZ(-5)
       };
 
       //These are my test planes
@@ -393,10 +289,10 @@
 
 
       planes.L1 = {bedroom: {
-        north: new doug.Plane("North+X").setFacingDirection([3,0,0]).setOriginOffset([901+493, 70, 289]),
-        south: new doug.Plane("South-X").setFacingDirection([-3,0,0]).setOriginOffset([901,70,289]),
-        east: new doug.Plane("East-Y").setFacingDirection([0,-2,0]).setOriginOffset([901,70,289]),
-        west: new doug.Plane("West+Y").setFacingDirection([0,2,0]).setOriginOffset([901, 70+450, 289])
+        north: new doug.Plane("North+X").setFacingDirection([1,0,0]).setOriginOffset([901+493, 70, 289]),
+        south: new doug.Plane("South-X").setFacingDirection([-1,0,0]).setOriginOffset([901,70,289]),
+        east: new doug.Plane("East-Y").setFacingDirection([0,-1,0]).setOriginOffset([901,70,289]),
+        west: new doug.Plane("West+Y").setFacingDirection([0,1,0]).setOriginOffset([901, 70+450, 289])
       }};
       var bedroomL1 = new doug.WallSystem("Bedroom L1")
         // .setPlane(new doug.Plane().setFacingDirection([0,-1,0]).setOriginOffset([901,70,289]).setRotationZ(0))
@@ -532,26 +428,8 @@
       // ;
       // cornice(southWall, {dw: 0, dx: 0}, {angle:{left:-45, right:45}});
       shaper0.wallSystem(southWall);
-      //
-      //
-      // //West wall
-      // //This is by post rotation
-      // var lengthRightWall = 700;
-      // var angle = Math.atan((900-lengthRightWall)/900);//Angle of the back wall
-      // // console.log(Math.atan(1)*180/Math.PI);
-      // var lengthBackWall = Math.sqrt(Math.pow((900-lengthRightWall),2)+Math.pow(900,2));//Length of the back wall
-      //
-      // var extraLenR = util.extraLength([50,50,50], -angle);
-      // var extraLenL = util.extraLength([50,50,50], angle);
-      // // console.log("extralen = "+extraLenR);
-      // var extraLen40R = util.extraLength([40,40,40], -angle);
-      // var extraLen40L = util.extraLength([40,40,40], angle);
 
 
-      //West Wall
-      // var northWallWidth = 810.5;
-      // var angle = 5;
-      // var westWallWidth = eastWallWidth/Math.cos(angle*Math.PI/180);
       var westWall = new doug.WallSystem("West Wall")
         // .setPlane(new doug.Plane()
         //   .setFacingDirection([0,-1,0])
@@ -570,6 +448,15 @@
       // var corniceOffsetX = westWallWidth-65;
       // cornice(westWall, {dw: -corniceOffsetX, dx: corniceOffsetX}, {angle:{left:0, right:45}});
       shaper0.wallSystem(westWall);
+      //West Side holes
+      // shaper.addHole([133, 5], [110, 214]);//door
+      // shaper.planeX([900,  0, 340],[  600,   942,   290], 0xfcd690);//Lower wall
+      //
+      // shaper.addHole([733, 100], [90, 125]);//door
+      // shaper.planeX([1500,  0, 403],[  0,   942,   630], 0xfcd690);//Upper wall
+      //
+      // shaper.planeX([1440,  0, corniceH],[  60,   942,   wallH], 0xfcd690);//Top wall// attempt to rotate this wall a bit more
+      //
 
 
 
@@ -692,6 +579,7 @@
       //   // requestAnimationFrame(render);
       // }
       function render(time) {
+
         // console.log(50/Math.tan(37.5*Math.PI/180));
         time *= 0.001;  // convert time to seconds
         const speed = .5;
@@ -699,8 +587,9 @@
         // camera.position.set(0,7,0);
         var vector = new THREE.Vector3( 0, -40, 1 );
         var axis = new THREE.Vector3( 0, 0, 1 );
-        var angle = rot+3.5*Math.PI/2;
-
+        var angle = rot+3.5*Math.PI/180;
+        // console.log(rot);
+        angle = rot;
         // angle = .72*Math.PI/1;//look at back corner
         // angle = .26*Math.PI/1;//Look at frnt left cornice
         // angle = -.1*Math.PI/1;//Look at frnt right cornice
@@ -710,9 +599,11 @@
         // console.log(vector);
         // camera.position.set(vector.x,vector.y,vector.z);
 
+        // console.log(rot);
         //Outside
         var dist = -1900;
-        camera2([450+dist*Math.sin(angle),450+dist*Math.cos(angle),700-800*Math.sin(angle)], [750,500,500], 80);
+        // camera2([450+dist*Math.sin(angle),450+dist*Math.cos(angle),700-800*Math.sin(angle)], [750,500,500], 80);
+        camera2([750+dist*Math.sin(angle),450+dist*Math.sin(angle+Math.PI/2),500+2000*Math.sin(angle/4)], [750,500,500], 80);
         // camera.position.set(450+dist*Math.sin(angle),450+dist*Math.cos(angle),700-800*Math.sin(angle));//450
         // camera.lookAt(750,500,500);
         // camera.position.set(450+dist*Math.sin(angle),450+dist*Math.cos(angle),0);//450

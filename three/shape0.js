@@ -32,7 +32,7 @@ function shaper() {
 
 
   this.setPlane = function(direction, translate, angle) {
-    if (direction[1] == -2) {//Face -Y
+    if (direction[1] == -1) {//Face -Y
       this.planeTransforms = {
         geoRotate: [Math.PI/2,0,0],
         geoAngle: angle,
@@ -41,7 +41,7 @@ function shaper() {
         shapeRotateTranslate: [1,1,1],
         YisX: false
       };
-    } else if (direction[0] == -3) {//Face -X
+    } else if (direction[0] == -1) {//Face -X
       this.planeTransforms = {
         geoRotate: [0,-Math.PI/2,0],
         geoAngle: angle,
@@ -50,7 +50,7 @@ function shaper() {
         shapeRotateTranslate: [1,1,1],
         YisX: false
       };
-    } else if (direction[1] == 2) {//Face Y
+    } else if (direction[1] == 1) {//Face Y
       this.planeTransforms = {
         geoRotate: [Math.PI/2,0,0],
         geoAngle: angle,
@@ -59,7 +59,7 @@ function shaper() {
         shapeRotateTranslate: [1,1,1],
         YisX: false
       };
-    } else if (direction[0] == 3) {//Face X
+    } else if (direction[0] == 1) {//Face X
       this.planeTransforms = {
         geoRotate: [0,-Math.PI/2,0],
         geoAngle: angle,
@@ -68,52 +68,52 @@ function shaper() {
         shapeRotateTranslate: [1,1,1],
         YisX: false
       };
-    } else if (direction[1] == -1) {//front
-      this.planeTransforms = {
-        geoRotate: [Math.PI/2,0,0],
-        geoAngle: -angle,
-        geoTranslate: translate,
-        shapeOriginTranslate: [1,-1,1],
-        shapeRotateTranslate: [1,1,1],
-        YisX: false
-      };
-    } else if (direction[1] == 1) {//back
-      this.planeTransforms = {
-        geoRotate: [-Math.PI/2,Math.PI,0],
-        geoAngle: -angle,
-        geoTranslate: translate,
-        shapeOriginTranslate: [-1,1,1],
-        shapeRotateTranslate: [-1,1,1],
-        YisX: false
-      };
-    } else if (direction[0] == -1) {//left
-      this.planeTransforms = {
-        geoRotate: [Math.PI/2,0,-Math.PI/2],
-        geoAngle: angle,
-        geoTranslate: translate,
-        // shapeOriginTranslate: [1,-1,1],
-        shapeOriginTranslate: [-1,-1,1],
-        shapeRotateTranslate: [1,-1,1],
-        YisX: true
-      };
-    } else if (direction[0] == 1) {//right
-      this.planeTransforms = {
-        geoRotate: [Math.PI/2,0,Math.PI/2],
-        geoAngle: -angle,
-        geoTranslate: translate,
-        shapeOriginTranslate: [1,1,1],
-        shapeRotateTranslate: [1,1,1],
-        YisX: true
-      };
-    } else if (direction[2] == 1) {//up
-      this.planeTransforms = {
-        geoRotate: [0,0,0],
-        geoAngle: -angle,
-        geoTranslate: translate,
-        shapeOriginTranslate: [1,-1,1],
-        shapeRotateTranslate: [1,1,1],
-        YisX: false
-      };
+    // } else if (direction[1] == -1) {//front
+    //   this.planeTransforms = {
+    //     geoRotate: [Math.PI/2,0,0],
+    //     geoAngle: -angle,
+    //     geoTranslate: translate,
+    //     shapeOriginTranslate: [1,-1,1],
+    //     shapeRotateTranslate: [1,1,1],
+    //     YisX: false
+    //   };
+    // } else if (direction[1] == 1) {//back
+    //   this.planeTransforms = {
+    //     geoRotate: [-Math.PI/2,Math.PI,0],
+    //     geoAngle: -angle,
+    //     geoTranslate: translate,
+    //     shapeOriginTranslate: [-1,1,1],
+    //     shapeRotateTranslate: [-1,1,1],
+    //     YisX: false
+    //   };
+    // } else if (direction[0] == -1) {//left
+    //   this.planeTransforms = {
+    //     geoRotate: [Math.PI/2,0,-Math.PI/2],
+    //     geoAngle: angle,
+    //     geoTranslate: translate,
+    //     // shapeOriginTranslate: [1,-1,1],
+    //     shapeOriginTranslate: [-1,-1,1],
+    //     shapeRotateTranslate: [1,-1,1],
+    //     YisX: true
+    //   };
+    // } else if (direction[0] == 1) {//right
+    //   this.planeTransforms = {
+    //     geoRotate: [Math.PI/2,0,Math.PI/2],
+    //     geoAngle: -angle,
+    //     geoTranslate: translate,
+    //     shapeOriginTranslate: [1,1,1],
+    //     shapeRotateTranslate: [1,1,1],
+    //     YisX: true
+    //   };
+    // } else if (direction[2] == 1) {//up
+    //   this.planeTransforms = {
+    //     geoRotate: [0,0,0],
+    //     geoAngle: -angle,
+    //     geoTranslate: translate,
+    //     shapeOriginTranslate: [1,-1,1],
+    //     shapeRotateTranslate: [1,1,1],
+    //     YisX: false
+    //   };
     }
   }
 
@@ -167,13 +167,6 @@ function shaper() {
     shapeGeometry.rotateZ(geoRotate[2]);
     // console.log(geoTranslate);
     // shapeGeometry.translate(geoTranslate[0], geoTranslate[1], geoTranslate[2]);
-
-    if (this.planeTransforms.hasOwnProperty("geoRotate2")) {
-      shapeGeometry.rotateX(this.planeTransforms.geoRotate2[0]);
-      shapeGeometry.rotateY(this.planeTransforms.geoRotate2[1]);
-      shapeGeometry.rotateZ(this.planeTransforms.geoRotate2[2]);
-    }
-
 
     var planeMat = new _3js.MeshLambertMaterial({
       color: color.f.color,
@@ -240,10 +233,6 @@ function shaper() {
     hole.lineTo( origin[0]+size[0], origin[1] );
     hole.lineTo( origin[0]+size[0], origin[1]+size[1] );
     hole.lineTo( origin[0], origin[1]+size[1] );
-    // hole.moveTo( origin[1], origin[0] );
-    // hole.lineTo( origin[1]+size[1], origin[0] );
-    // hole.lineTo( origin[1]+size[1], origin[0]+size[0] );
-    // hole.lineTo( origin[1], origin[0]+size[0] );
     this.holes.push(hole);
   };
 
@@ -257,7 +246,6 @@ function shaper() {
 
 
   this.wallSystem = function(wallSystem) {
-    // console.log(wallSystem);
     Object.entries(wallSystem.exterior.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];
       this.setPlane(wall.plane.facingDirection, wall.plane.originOffset, wall.plane.rotationZ);
@@ -279,18 +267,14 @@ function shaper() {
 
     Object.entries(wallSystem.interior.surfaces).forEach(function(entry) {//Interior walls
       var wall = entry[1];
-      // console.log("do interiro surfaces");
-      // console.log(wall);
       this.setPlane(wall.plane.facingDirection, wall.plane.originOffset, wall.plane.rotationZ);
 
       if (wall.hasOwnProperty("windows")) {
-        // wall.windows.names.forEach(function(windowName) {//The interior holes and jambs for windows
         wall.windows.jambs.forEach(function(windowName) {//The interior holes and jambs for windows
          // this.addWindowJamb(wall.windows.wallSystem, windowName, wallSystem, wall);//The jamb
         }.bind(this));
 
         wall.windows.names.forEach(function(windowName) {//The interior holes for windows
-          // console.log("ready to window");
           this.addWindowHole(wall.windows.wallSystem, windowName, wallSystem, wall);//The hole
         }.bind(this));
       }
@@ -434,19 +418,8 @@ function shaper() {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
       var relativePlane = {originOffset: [0, 0, 0]};
     }
-    // console.log(window);
-    // console.log(windowName);
-    // var window = this.windowRelativeOffset(windows, windowName);
-    // console.log("adding window hole");
-    // console.log(window.offset);
-    // console.log(wall.offset);
-    // console.log(relativePlane.originOffset);
-    // if (_.isEqual(wall.plane.facingDirection, [-3,0,0])) {//Wall faces the -X direction
-    if (wall.plane.facingDirection[0] != 0) {//Wall faces the -X direction
-      // console.log("Y hole");
-      // console.log(window.offset);
-      // console.log(wall.offset);
-      // console.log(relativePlane.originOffset);
+
+    if (wall.plane.facingDirection[0] != 0) {//Wall faces the X direction
       this.addHole([
         window.offset.z - wall.offset.z - relativePlane.originOffset[2],
         window.offset.y - wall.offset.y - relativePlane.originOffset[0]
@@ -454,7 +427,7 @@ function shaper() {
         window.size.h,
         window.size.w
       ]);
-    } else {//Wall faces the -Y direction
+    } else {//Wall faces the Y direction
       this.addHole([
         window.offset.x - wall.offset.x - relativePlane.originOffset[0],
         window.offset.z - wall.offset.z - relativePlane.originOffset[2]
@@ -470,10 +443,10 @@ function shaper() {
     // console.log(wall.plane.facingDirection);
     // console.log("here");
     // console.log(wall);
-    if (_.isEqual(wall.plane.facingDirection, [-3,0,0])) {//Wall faces the -X direction
+    if (_.isEqual(wall.plane.facingDirection, [-1,0,0])) {//Wall faces the -X direction
       // console.log("-Y wall");
       var points = [[wall.size.h,0,0],[wall.size.h,wall.size.w,0],[0,wall.size.w,0]];
-    } else if (_.isEqual(wall.plane.facingDirection, [3,0,0])) {//Wall faces the -X direction
+    } else if (_.isEqual(wall.plane.facingDirection, [1,0,0])) {//Wall faces the -X direction
       // console.log("Y wall");
       var points = [[wall.size.h,0,0],[wall.size.h,wall.size.w,0],[0,wall.size.w,0]];
     } else {//Wall faces the -Y direction
