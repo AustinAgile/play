@@ -69,7 +69,10 @@ class WallSystem {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.interior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
-		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
+		if (!wall.hasOwnProperty("plane")) {
+			console.log("here");
+			wall.setPlane(this.plane);
+		}
 		wall.flip();
 		this.interior.surfaces[wall.name] = wall;
 		return this;

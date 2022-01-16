@@ -413,7 +413,8 @@ function shaper() {
   this.addWindowHole = function(windowWallSystem, windowName, wallSystem, wall) {
     if (windowWallSystem !== false) {
       var window = this.windowRelativeOffset(windowWallSystem.windows, windowName);
-      var relativePlane = wallSystem.plane;
+      // var relativePlane = wallSystem.plane;
+      var relativePlane = wall.plane;
     } else {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
       var relativePlane = {originOffset: [0, 0, 0]};
