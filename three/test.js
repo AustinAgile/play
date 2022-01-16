@@ -1,9 +1,10 @@
 class Plane {
-	facingDirection = 0;
-	originOffset = 0;
+	facingDirection = [0,0,0];
+	originOffset = [0,0,0];
 	rotationZ = 0;
 
-	constructor() {
+	constructor(name) {
+		this.name = name;
 		return this;
 	}
 
@@ -59,6 +60,7 @@ class WallSystem {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
+		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
 		this.exterior.surfaces[wall.name] = wall;
 		return this;
 	}
@@ -67,6 +69,7 @@ class WallSystem {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.interior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
+		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
 		wall.flip();
 		this.interior.surfaces[wall.name] = wall;
 		return this;
@@ -76,11 +79,13 @@ class WallSystem {
 		// if (!floor.hasOwnProperty("color")) {floor.color = this.interiorHorizontal.color;}
 		// if (!floor.hasOwnProperty("windows")) {floor.windows = new Windows();}
 		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 0, y: 0, z: 0};}
+		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
 		this.interior.surfaces[floor.name] = floor;
 		return this;
 	}
 	addHorizontalSurface(floor) {
 		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: -90, y: 0, z: 0};}
+		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
 		this.interior.surfaces[floor.name] = floor;
 		return this;
 	}
@@ -104,6 +109,11 @@ class Surface {
 		_.merge(this, properties);
 		return this;
 	};
+	setPlane(plane) {
+		this.plane = plane;
+		if (this.plane.facingDirection[0] > 0 || this.plane.facingDirection[1] > 0) {this.flip();}
+		return this;
+	}
 	setSize(size) {
 		this.size = _.merge({w:0, h:0, dw:0}, size);
 		return this;
