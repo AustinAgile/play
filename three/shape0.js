@@ -414,12 +414,12 @@ function shaper() {
   this.addWindowHole = function(windowWallSystem, windowName, wallSystem, wall) {
     if (windowWallSystem !== false) {
       var window = this.windowRelativeOffset(windowWallSystem.windows, windowName);
-      console.log(wall);
+      // console.log(wall);
       // var relativePlane = wallSystem.plane;
       var relativePlane = wall.plane;
       var fromPlane = windowWallSystem.plane;
-      console.log(relativePlane);
-      console.log(fromPlane);
+      // console.log(relativePlane);
+      // console.log(fromPlane);
     } else {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
       var relativePlane = {originOffset: [0, 0, 0]};
@@ -427,14 +427,26 @@ function shaper() {
     }
 
     if (wall.plane.facingDirection[0] != 0) {//Wall faces the X direction
+      // console.log("here");
+      // console.log(window.offset);
+      // console.log(wall.offset);
+      // console.log(relativePlane.originOffset);
       var offset = [
-        window.offset.z - wall.offset.z - relativePlane.originOffset[2],
-        window.offset.y - wall.offset.y - relativePlane.originOffset[0]
+        // window.offset.z - wall.offset.z - relativePlane.originOffset[2],
+        // window.offset.y - wall.offset.y - relativePlane.originOffset[0]
+        window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2]),
+        window.offset.y - wall.offset.y - (relativePlane.originOffset[1] - fromPlane.originOffset[1])
       ];
       var size = [
         window.size.h,
         window.size.w
       ];
+      // console.log(offset);
+      // console.log(size);
+      // console.log(wall.size);
+      // console.log(offset[0]+size[0]);
+      // console.log(offset[1]+size[1]);
+      // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
     } else {//Wall faces the Y direction
       var offset = [
         // window.offset.x - wall.offset.x - relativePlane.originOffset[0],
@@ -442,7 +454,6 @@ function shaper() {
         window.offset.x - wall.offset.x - (relativePlane.originOffset[0] - fromPlane.originOffset[0]),
         window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
       ];
-      // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
       var size = [
         Math.min(window.size.w, wall.size.w - offset[0]),
         window.size.h
