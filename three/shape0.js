@@ -233,6 +233,7 @@ function shaper() {
     hole.lineTo( origin[0]+size[0], origin[1] );
     hole.lineTo( origin[0]+size[0], origin[1]+size[1] );
     hole.lineTo( origin[0], origin[1]+size[1] );
+    // hole.lineTo( origin[0], origin[1] );
     this.holes.push(hole);
   };
 
@@ -413,30 +414,41 @@ function shaper() {
   this.addWindowHole = function(windowWallSystem, windowName, wallSystem, wall) {
     if (windowWallSystem !== false) {
       var window = this.windowRelativeOffset(windowWallSystem.windows, windowName);
+      console.log(wall);
       // var relativePlane = wallSystem.plane;
       var relativePlane = wall.plane;
+      var fromPlane = windowWallSystem.plane;
+      console.log(relativePlane);
+      console.log(fromPlane);
     } else {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
       var relativePlane = {originOffset: [0, 0, 0]};
+      var fromPlane = {originOffset: [0, 0, 0]};
     }
 
     if (wall.plane.facingDirection[0] != 0) {//Wall faces the X direction
-      this.addHole([
+      var offset = [
         window.offset.z - wall.offset.z - relativePlane.originOffset[2],
         window.offset.y - wall.offset.y - relativePlane.originOffset[0]
-      ], [
+      ];
+      var size = [
         window.size.h,
         window.size.w
-      ]);
+      ];
     } else {//Wall faces the Y direction
-      this.addHole([
-        window.offset.x - wall.offset.x - relativePlane.originOffset[0],
-        window.offset.z - wall.offset.z - relativePlane.originOffset[2]
-      ], [
-        window.size.w,
+      var offset = [
+        // window.offset.x - wall.offset.x - relativePlane.originOffset[0],
+        // window.offset.z - wall.offset.z - relativePlane.originOffset[2]
+        window.offset.x - wall.offset.x - (relativePlane.originOffset[0] - fromPlane.originOffset[0]),
+        window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
+      ];
+      // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
+      var size = [
+        Math.min(window.size.w, wall.size.w - offset[0]),
         window.size.h
-      ]);
+      ];
     }
+    this.addHole(offset, size);
   };
 
   this.planeWall = function(wall) {
