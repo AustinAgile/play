@@ -171,15 +171,43 @@ function shaper() {
     var planeMat = new _3js.MeshLambertMaterial({
       color: color.f.color,
       opacity: color.f.opacity,
-      // transparent: true,
-      side: (mirror ?_3js.BackSide : _3js.FrontSide)
+      // opacity: 0.1,
+      transparent: true,
+      format: _3js.RGBAFormat,
+      // blending: _3js.AdditiveBlending,
+      // blending: _3js.SubtractiveBlending,
+      // blending: _3js.MultiplyBlending,
+      depthFunc: _3js.AlwaysDepth,
+      side: (mirror ?_3js.BackSide : _3js.FrontSide),
+      // side: _3js.DoubleSide,
     });
     var planeMatBack = new _3js.MeshLambertMaterial({
-      color: color.b.color,
+      // color: color.b.color,
+      color: color.f.color,
       opacity: color.b.opacity,
-      // transparent: true,
+      // opacity: 0.1,
+      transparent: true,
+      format: _3js.RGBAFormat,
+      // blending: _3js.AdditiveBlending,
+      // blending: _3js.SubtractiveBlending,
+      // blending: _3js.MultiplyBlending,
+      depthFunc: _3js.AlwaysDepth,
       side: (mirror ? _3js.FrontSide : _3js.BackSide)
     });
+    if (color.f.hasOwnProperty("blending")) {
+      planeMat.blending = color.f.blending;
+    }
+    if (color.b.hasOwnProperty("blending")) {
+      planeMatBack.blending = color.b.blending;
+    }
+    if (globalOpacity !== false) {
+      console.log("global opacity");
+      planeMat.opacity = .5;
+      planeMatBack.opacity = .5;
+      planeMat.blending = _3js.SubtractiveBlending;
+      planeMatBack.blending = _3js.SubtractiveBlending;
+      console.log(planeMat);
+    }
 
     // if (mirror) {console.log(planeMatBack);}
     // var planeMat = getMaterial(mirror, color, 0xff0000);
@@ -245,8 +273,9 @@ function shaper() {
   }
 
 
-
+  var globalOpacity = false;
   this.wallSystem = function(wallSystem) {
+    if (wallSystem.hasOwnProperty("opacity")) {globalOpacity = wallSystem.opacity;}
     Object.entries(wallSystem.exterior.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];
       this.setPlane(wall.plane.facingDirection, wall.plane.originOffset, wall.plane.rotationZ);
@@ -286,6 +315,7 @@ function shaper() {
         this.planeWall(wall);//The interior wall surface
       }
     }.bind(this));
+    globalOpacity = false;
   };
 
   this.addWindowJamb = function(windowWallSystem, windowName, wallSystem, wall) {
@@ -448,6 +478,7 @@ function shaper() {
       // console.log(offset[1]+size[1]);
       // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
     } else {//Wall faces the Y direction
+      // console.log("here");
       var offset = [
         // window.offset.x - wall.offset.x - relativePlane.originOffset[0],
         // window.offset.z - wall.offset.z - relativePlane.originOffset[2]
@@ -456,8 +487,19 @@ function shaper() {
       ];
       var size = [
         Math.min(window.size.w, wall.size.w - offset[0]),
-        window.size.h
+        Math.min(window.size.h, wall.size.h - offset[1])
+        // window.size.h
       ];
+      if (offset[1] < 0) {
+        size[1] += offset[1];
+        offset[1] = 0;
+      }
+      // console.log(offset);
+      // console.log(size);
+      // console.log(wall.size);
+      // console.log(offset[0]+size[0]);
+      // console.log(offset[1]+size[1]);
+      // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
     }
     this.addHole(offset, size);
   };

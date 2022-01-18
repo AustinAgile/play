@@ -56,6 +56,11 @@ class WallSystem {
 		return this;
 	}
 
+	setOpacity(opacity) {
+		this.opacity = opacity;
+		return this;
+	}
+
 	addExteriorSurface(wall) {
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
