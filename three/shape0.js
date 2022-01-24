@@ -1,4 +1,5 @@
 import * as _3js from '../../three/build/three.module.js';
+import * as doug from "./test.js";
 
 function shaper() {
 
@@ -168,46 +169,50 @@ function shaper() {
     // console.log(geoTranslate);
     // shapeGeometry.translate(geoTranslate[0], geoTranslate[1], geoTranslate[2]);
 
-    var planeMat = new _3js.MeshLambertMaterial({
+    var planeMat = new _3js.MeshStandardMaterial({
       color: color.f.color,
       opacity: color.f.opacity,
       // opacity: 0.1,
-      transparent: true,
+      transparent: (color.f.opacity != 1),
+      // transparent: false,
       format: _3js.RGBAFormat,
       // blending: _3js.AdditiveBlending,
       // blending: _3js.SubtractiveBlending,
-      // blending: _3js.MultiplyBlending,
-      depthFunc: _3js.AlwaysDepth,
+      blending: (color.f.opacity == 1 ? _3js.NormalBlending : _3js.MultiplyBlending),
+      depthFunc: (color.f.opacity == 1 ? _3js.LessDepth : _3js.LessDepth),
       side: (mirror ?_3js.BackSide : _3js.FrontSide),
       // side: _3js.DoubleSide,
     });
-    var planeMatBack = new _3js.MeshLambertMaterial({
-      // color: color.b.color,
-      color: color.f.color,
+    var planeMatBack = new _3js.MeshStandardMaterial({
+      color: color.b.color,
+      // color: color.f.color,
       opacity: color.b.opacity,
       // opacity: 0.1,
-      transparent: true,
+      transparent: (color.b.opacity != 1),
+      // transparent: false,
       format: _3js.RGBAFormat,
       // blending: _3js.AdditiveBlending,
       // blending: _3js.SubtractiveBlending,
-      // blending: _3js.MultiplyBlending,
-      depthFunc: _3js.AlwaysDepth,
+      blending: (color.f.opacity == 1 ? _3js.NormalBlending : _3js.MultiplyBlending),
+      depthFunc: (color.f.opacity == 1 ? _3js.LessDepth : _3js.LessDepth),
       side: (mirror ? _3js.FrontSide : _3js.BackSide)
     });
-    if (color.f.hasOwnProperty("blending")) {
-      planeMat.blending = color.f.blending;
-    }
-    if (color.b.hasOwnProperty("blending")) {
-      planeMatBack.blending = color.b.blending;
-    }
-    if (globalOpacity !== false) {
-      console.log("global opacity");
-      planeMat.opacity = .5;
-      planeMatBack.opacity = .5;
-      planeMat.blending = _3js.SubtractiveBlending;
-      planeMatBack.blending = _3js.SubtractiveBlending;
-      console.log(planeMat);
-    }
+    // console.log(planeMat);
+    // console.log(planeMatBack);
+    // if (color.f.hasOwnProperty("blending")) {
+    //   planeMat.blending = color.f.blending;
+    // }
+    // if (color.b.hasOwnProperty("blending")) {
+    //   planeMatBack.blending = color.b.blending;
+    // }
+    // if (globalOpacity !== false) {
+    //   console.log("global opacity");
+    //   planeMat.opacity = .5;
+    //   planeMatBack.opacity = .5;
+    //   planeMat.blending = _3js.SubtractiveBlending;
+    //   planeMatBack.blending = _3js.SubtractiveBlending;
+    //   console.log(planeMat);
+    // }
 
     // if (mirror) {console.log(planeMatBack);}
     // var planeMat = getMaterial(mirror, color, 0xff0000);
@@ -301,7 +306,9 @@ function shaper() {
 
       if (wall.hasOwnProperty("windows")) {
         wall.windows.jambs.forEach(function(windowName) {//The interior holes and jambs for windows
-         // this.addWindowJamb(wall.windows.wallSystem, windowName, wallSystem, wall);//The jamb
+          // this.addWindowJamb(wall.windows.wallSystem, windowName, wallSystem, wall);//The jamb
+          // this.addWindowJamb(wall.windows.wall, windowName, wallSystem, wall);//The jamb
+          this.addWindowJamb(windowName, wall);//The jamb
         }.bind(this));
 
         wall.windows.names.forEach(function(windowName) {//The interior holes for windows
@@ -316,69 +323,114 @@ function shaper() {
       }
     }.bind(this));
     globalOpacity = false;
+  }.bind(this);
+
+  this.distanceBetweenPointsInSpace = function(a, b) {
+    return Math.pow(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2), 0.5);
   };
 
-  this.addWindowJamb = function(windowWallSystem, windowName, wallSystem, wall) {
-    if (windowWallSystem !== false) {
-      var window = this.windowRelativeOffset(windowWallSystem.windows, windowName);
-      var relativePlane = wall.plane;
-    } else {
-      var window = this.windowRelativeOffset(wallSystem.windows, windowName);
-      var relativePlane = {originOffset: [0, 0, 0]};
+  this.addWindowJamb = function(windowName, toWall) {
+    var fromWall = toWall.windows.wall;
+    var window = this.windowRelativeOffset(fromWall.parent.windows, windowName);
+
+    if (toWall.plane.isFacingEastWest()) {//Facing in the Y direction
+      // console.log("window.offset.x="+window.offset.x);
+      // console.log("actual window.offset.x="+fromWall.plane.getHorizontal(window.offset.x));
+      var offset = {
+        // horizontal: toWall.plane.getHorizontal2(fromWall.plane.getHorizontal(window.offset.x) - (toWall.plane.originOffset[0] - fromWall.plane.originOffset[0])),
+        horizontal: toWall.plane.getProjectionHorizontalFrom(window.offset.x, fromWall.plane),
+        vertical: window.offset.z - (toWall.plane.originOffset[2] - fromWall.plane.originOffset[2])
+      };
+      var depth = this.distanceBetweenPointsInSpace(toWall.plane.getPointInSpace(offset.horizontal), fromWall.plane.getPointInSpace(window.offset.x));
+      var rotation = {horizontal: {horizontal: -90, vertical: 0}, vertical: {horizontal: 0, vertical: -90}};
+      if (toWall.plane.isFacingWest()) {
+        rotation.horizontal.horizontal =  -rotation.horizontal.horizontal;
+        rotation.vertical.vertical =  -rotation.vertical.vertical;
+        // depth = -depth;
+      }
+    } else {//Facing North-South
+      var offset = {
+        horizontal: window.offset.y - (toWall.plane.originOffset[1] - fromWall.plane.originOffset[1]),
+        vertical: window.offset.z - (toWall.plane.originOffset[2] - fromWall.plane.originOffset[2])
+      };
+      // console.log("toWall.offset.x="+toWall.offset.x);
+      // console.log("toWall.plane.originOffset[0]="+toWall.plane.originOffset[0]);
+      // console.log("fromWall.plane.originOffset[0]="+fromWall.plane.originOffset[0]);
+      // var size = {horizontal: window.size.w, vertical: Math.min(window.size.h, toWall.size.h - offset.vertical};
+      // var depth = -toWall.offset.x - (toWall.plane.originOffset[0]  - fromWall.plane.originOffset[0]);
+      var depth = toWall.offset.x + (toWall.plane.originOffset[0]  - fromWall.plane.originOffset[0]);
+      // console.log("depth="+depth);
+      // var rotation = {horizontal: {horizontal: 90, vertical: 0}, vertical: {horizontal: 0, vertical: -90}};
+      var rotation = {horizontal: {horizontal:90, vertical: 0}, vertical: {horizontal: 0, vertical: 90}};
+      if (toWall.plane.isFacingNorth()) {
+        rotation.horizontal.horizontal =  -rotation.horizontal.horizontal;
+        rotation.vertical.vertical =  -rotation.vertical.vertical;
+        depth = -depth;
+      }
     }
-    var depth = -wall.offset.y - relativePlane.originOffset[1];
+    var size = {horizontal: window.size.w, vertical: window.size.h};
 
-    //Left from exterior
-    this.planeWall({
-      size: {w: depth, h: window.size.h},
-      offset: {
-        x: window.offset.x - relativePlane.originOffset[0],
-        y: 0,
-        z: window.offset.z - relativePlane.originOffset[2]
-      },
-      rotation: {x: 0, y: 0, z: 90},
-      color: wall.color,
-      mirror: !wall.mirror
-    });
+    var jambs = {left: true, right: true, top: true, bottom: true};
+    if (size.vertical > toWall.size.h - offset.vertical) {
+      size.vertical = toWall.size.h - offset.vertical;
+      jambs.top = false;
+    }
+    if (offset.vertical < toWall.offset.z) {
+      offset.vertical = toWall.offset.z;
+      jambs.bottom = false;
+    }
 
-    //Bottom
-    this.planeWall({
-      size: {w: window.size.w, h: depth},
-      offset: {
-        x: window.offset.x - relativePlane.originOffset[0],
-        y: 0,
-        z: window.offset.z - relativePlane.originOffset[2]
-      },
-      rotation: {x: -90, y: 0, z: 0},
-      color: wall.color,
-      mirror: !wall.mirror
-    });
+    offset.horizontal += 0;
+    // depth = 75;//Depth is negative, should be positive for X diresction
+    // size.vertical = 30;
+    // console.log("test");
+    // console.log(rotation.vertical);
+    // console.log(_.update(rotation.vertical, "vertical", function(v) {return -v;}));
+    // console.log(_.mapValues(rotation.vertical, function(v) {return -v;}));
 
-    // Right from exterior
-    this.planeWall({
-      size: {w: depth, h: window.size.h},
-      offset: {
-        x: window.offset.x+window.size.w - relativePlane.originOffset[0],
-        y: 0,
-        z: window.offset.z - relativePlane.originOffset[2]
-      },
-      rotation: {x: 0, y: 0, z: 90},
-      color: wall.color,
-      mirror: wall.mirror
-    });
-
-    //Top
-    this.planeWall({
-      size: {w: window.size.w, h: depth},
-      offset: {
-        x: window.offset.x - relativePlane.originOffset[0],
-        y: 0,
-        z: window.offset.z+window.size.h - relativePlane.originOffset[2]
-      },
-      rotation: {x: -90, y: 0, z: 0},
-      color: wall.color,
-      mirror: wall.mirror
-    });
+    new doug.Surface("left").setPlane(toWall.plane)
+      .setSize({w: depth, h: size.vertical})
+      .setOffset(offset)
+      .setRotation(rotation.vertical)
+      .setMaterial(toWall.color)
+      .setMirror(toWall.mirror)
+      .call(this.planeWall)
+    ;
+    if (jambs.bottom) {
+      new doug.Surface("bottom").setPlane(toWall.plane)
+        .setSize({w: size.horizontal, h: -depth})
+        .setOffset(offset)
+        .setRotation(rotation.horizontal)
+        .setMaterial(toWall.color)
+        .call(this.planeWall)
+      ;
+    }
+    new doug.Surface("right").setPlane(toWall.plane)
+      .setSize({w: -depth, h: size.vertical})
+      .setOffset({
+        horizontal: offset.horizontal + window.size.w,
+        vertical: offset.vertical
+      })
+      // .setRotation({horizontal: rotation.vertical.horizontal, vertical: -rotation.vertical.vertical})
+      .setRotation(_.update(rotation.vertical, "vertical", function(v) {return -v;}))
+      .setMaterial(toWall.color)
+      .flip()
+      .call(this.planeWall)
+    ;
+    if (jambs.top) {
+      new doug.Surface("top").setPlane(toWall.plane)
+        // .setSize({w: size.horizontal, h: depth})
+        .setSize({w: size.horizontal, h: -depth})
+        .setOffset({
+          horizontal: offset.horizontal,
+          vertical: offset.vertical + window.size.h
+        })
+        .setRotation(rotation.horizontal)
+        .setMaterial(toWall.color)
+        .flip()
+        .call(this.planeWall)
+      ;
+    }
   };
 
   this.windowRelativeOffset = function(windows, windowName) {
@@ -441,30 +493,37 @@ function shaper() {
     return wall;
   }
 
-  this.addWindowHole = function(windowWallSystem, windowName, wallSystem, wall) {
+  this.addWindowHole = function(windowWallSystem, windowName, wallSystem, wall) {//eliminate windowWallSystem
+    // if (wall.windows.hasOwnProperty("wall")) {
+    //   windowWallSystem = wall.windows.wall.parent;
+    // }
     if (windowWallSystem !== false) {
       var window = this.windowRelativeOffset(windowWallSystem.windows, windowName);
       // console.log(wall);
       // var relativePlane = wallSystem.plane;
       var relativePlane = wall.plane;
       var fromPlane = windowWallSystem.plane;
+      fromPlane = wall.windows.wall.plane;
       // console.log(relativePlane);
       // console.log(fromPlane);
     } else {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
-      var relativePlane = {originOffset: [0, 0, 0]};
-      var fromPlane = {originOffset: [0, 0, 0]};
+      // var relativePlane = {originOffset: [0, 0, 0]};
+      // var fromPlane = {originOffset: [0, 0, 0]};
+      var relativePlane = wall.plane;
+      var fromPlane = wall.plane;
     }
 
-    if (wall.plane.facingDirection[0] != 0) {//Wall faces the X direction
+    if (wall.plane.isFacingNorthSouth()) {//Wall faces the y direction
       // console.log("here");
       // console.log(window.offset);
       // console.log(wall.offset);
+      // console.log(fromPlane.originOffset);
       // console.log(relativePlane.originOffset);
       var offset = [
         // window.offset.z - wall.offset.z - relativePlane.originOffset[2],
         // window.offset.y - wall.offset.y - relativePlane.originOffset[0]
-        window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2]),
+        Math.max(window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2]), wall.offset.z),
         window.offset.y - wall.offset.y - (relativePlane.originOffset[1] - fromPlane.originOffset[1])
       ];
       var size = [
@@ -478,12 +537,16 @@ function shaper() {
       // console.log(offset[1]+size[1]);
       // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
     } else {//Wall faces the Y direction
-      // console.log("here");
+      // var offset = [
+      //   // window.offset.x - wall.offset.x - relativePlane.originOffset[0],
+      //   // window.offset.z - wall.offset.z - relativePlane.originOffset[2]
+      //   window.offset.x - wall.offset.x - (relativePlane.originOffset[0] - fromPlane.originOffset[0]),
+      //   window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
+      // ];
       var offset = [
-        // window.offset.x - wall.offset.x - relativePlane.originOffset[0],
-        // window.offset.z - wall.offset.z - relativePlane.originOffset[2]
-        window.offset.x - wall.offset.x - (relativePlane.originOffset[0] - fromPlane.originOffset[0]),
-        window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
+        // horizontal: toWall.plane.getHorizontal2(fromWall.plane.getHorizontal(window.offset.x) - (toWall.plane.originOffset[0] - fromWall.plane.originOffset[0])),
+        relativePlane.getProjectionHorizontalFrom(window.offset.x, fromPlane),
+        window.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
       ];
       var size = [
         Math.min(window.size.w, wall.size.w - offset[0]),
@@ -505,23 +568,19 @@ function shaper() {
   };
 
   this.planeWall = function(wall) {
-    // console.log(wall);
-    // console.log(wall.plane.facingDirection);
-    // console.log("here");
-    // console.log(wall);
-    if (_.isEqual(wall.plane.facingDirection, [-1,0,0])) {//Wall faces the -X direction
-      // console.log("-Y wall");
-      var points = [[wall.size.h,0,0],[wall.size.h,wall.size.w,0],[0,wall.size.w,0]];
-    } else if (_.isEqual(wall.plane.facingDirection, [1,0,0])) {//Wall faces the -X direction
-      // console.log("Y wall");
-      var points = [[wall.size.h,0,0],[wall.size.h,wall.size.w,0],[0,wall.size.w,0]];
-    } else {//Wall faces the -Y direction
-      var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
-    }
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
-    var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
-    return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
-  };
+    var rotation = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
+    if (wall.plane.isFacingNorthSouth()) {//Wall faces the X direction
+      var points = [[wall.size.h,0,0],[wall.size.h,wall.size.w,0],[0,wall.size.w,0]];
+      if (wall.offset.hasOwnProperty("horizontal")) {offset = [0, wall.offset.horizontal, wall.offset.vertical];}
+      if (wall.rotation.hasOwnProperty("horizontal")) {rotation = [0, wall.rotation.horizontal, wall.rotation.vertical];}
+    } else {//Wall faces the Y direction
+      var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
+      if (wall.offset.hasOwnProperty("horizontal")) {offset = [wall.offset.horizontal, 0, wall.offset.vertical];}
+      if (wall.rotation.hasOwnProperty("horizontal")) {rotation = [wall.rotation.horizontal, 0, wall.rotation.vertical];}
+    }
+    return this.bevelWall(points, offset, rotation, wall.color, wall.mirror);
+  }.bind(this);
 
   this.bevelWidth = function(wall) {
     var extraWidth = {left:0, right: 0};

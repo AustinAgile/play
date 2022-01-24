@@ -7,20 +7,52 @@ class Plane {
 		this.name = name;
 		return this;
 	}
-
 	setFacingDirection(direction) {
 		this.facingDirection = direction;
 		return this;
 	}
-
 	setOriginOffset(offset) {
 		this.originOffset = offset;
 		return this;
 	}
-
 	setRotationZ(angle) {
 		this.rotationZ = angle;
 		return this;
+	}
+	isFacingNorth() {
+		return _.isEqual(this.facingDirection, [1,0,0]);
+	}
+	isFacingSouth() {
+		return _.isEqual(this.facingDirection, [-1,0,0]);
+	}
+	isFacingEast() {
+		return _.isEqual(this.facingDirection, [0,-1,0]);
+	}
+	isFacingWest() {
+		return _.isEqual(this.facingDirection, [0,1,0]);
+	}
+	isFacingNorthSouth() {
+		return this.facingDirection[0] != 0;
+	}
+	isFacingEastWest() {
+		return this.facingDirection[1] != 0;
+	}
+	getProjectionFromAngle(h) {
+		return h * Math.cos(this.rotationZ*Math.PI/180);
+	}
+	getProjectionToAngle(h) {
+		return h / Math.cos(this.rotationZ*Math.PI/180);
+	}
+	getProjectionHorizontalFrom(h, from) {
+		var projectedHorizontalOffset = from.getProjectionToAngle(h) - (this.originOffset[0] - from.originOffset[0]);
+		projectedHorizontalOffset -= (this.originOffset[1] - from.originOffset[1]) * Math.tan(from.rotationZ*Math.PI/180);
+		return this.getProjectionFromAngle(projectedHorizontalOffset);
+	}
+	getPointInSpace(pointOnPlane) {
+		return {
+			x: pointOnPlane * Math.cos(this.rotationZ*Math.PI/180) + this.originOffset[0],
+			y: pointOnPlane * Math.sin(this.rotationZ*Math.PI/180) + this.originOffset[1],
+		};
 	}
 }
 
@@ -62,6 +94,7 @@ class WallSystem {
 	}
 
 	addExteriorSurface(wall) {
+		wall.parent = this;
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
@@ -71,6 +104,7 @@ class WallSystem {
 	}
 
 	addInteriorSurface(wall) {
+		wall.parent = this;
 		if (!wall.hasOwnProperty("color")) {wall.color = this.interior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
@@ -102,6 +136,11 @@ class WallSystem {
 		this.windows[window.name] = window;
 		return this;
 	}
+
+	call(f) {
+		f(this);
+		return this;
+	}
 }
 
 class Surface {
@@ -109,6 +148,7 @@ class Surface {
 	size = {w:0, h:0, dw:0};
 	offset = {x:0, y:0, z:0, dx:0, dy:0, dz:0};
 	mirror = false;
+	parent = false;
 	constructor(name) {
 		this.name = name;
 		return this;
@@ -117,6 +157,10 @@ class Surface {
 		_.merge(this, properties);
 		return this;
 	};
+	setParent(parent) {
+		this.parent = parent;
+		return this;
+	}
 	setPlane(plane) {
 		this.plane = plane;
 		if (this.plane.facingDirection[0] > 0 || this.plane.facingDirection[1] > 0) {this.flip();}
@@ -142,16 +186,24 @@ class Surface {
 		this.on = on;
 		return this;
 	}
-	setOn(on) {
-		this.on = on;
+	setMaterial(material) {
+		this.color = material;
 		return this;
 	}
 	setBevel(bevel) {
 		this.bevel = bevel;
 		return this;
 	}
+	setMirror(mirror) {
+		this.mirror = mirror;
+		return this;
+	}
 	flip() {
 		this.mirror = !this.mirror;
+		return this;
+	}
+	call(f) {
+		f(this);
 		return this;
 	}
 };
@@ -188,8 +240,9 @@ class Windows {
 		this.names = names;
 		return this;
 	};
-	setWallSystem(wallSystem) {
-		this.wallSystem = wallSystem;
+	setWall(wall) {
+		this.wall = wall;
+		this.wallSystem = wall.parent;
 		return this;
 	};
 	setJambsAll() {
