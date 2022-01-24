@@ -59,8 +59,9 @@ class Plane {
 class WallSystem {
 	name;
 	plane;
-	exterior = {color: {}, surfaces: {}};
-	interior = {color: {}, surfaces: {}};
+	exterior = {color: {}};
+	interior = {color: {}};
+	surfaces = {};
 	interiorHorizontal = {color: {}, surfaces: {}};
 	windows = {};
 
@@ -94,12 +95,14 @@ class WallSystem {
 	}
 
 	addExteriorSurface(wall) {
+		// console.log("addExteriorSurface");
+		// console.log(wall);
 		wall.parent = this;
 		if (!wall.hasOwnProperty("color")) {wall.color = this.exterior.color;}
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
-		this.exterior.surfaces[wall.name] = wall;
+		this.surfaces[wall.name] = wall;
 		return this;
 	}
 
@@ -113,7 +116,7 @@ class WallSystem {
 			wall.setPlane(this.plane);
 		}
 		wall.flip();
-		this.interior.surfaces[wall.name] = wall;
+		this.surfaces[wall.name] = wall;
 		return this;
 	}
 
@@ -122,13 +125,13 @@ class WallSystem {
 		// if (!floor.hasOwnProperty("windows")) {floor.windows = new Windows();}
 		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 0, y: 0, z: 0};}
 		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
-		this.interior.surfaces[floor.name] = floor;
+		this.surfaces[floor.name] = floor;
 		return this;
 	}
 	addHorizontalSurface(floor) {
 		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: -90, y: 0, z: 0};}
 		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
-		this.interior.surfaces[floor.name] = floor;
+		this.surfaces[floor.name] = floor;
 		return this;
 	}
 
@@ -138,7 +141,7 @@ class WallSystem {
 	}
 
 	call(f) {
-		f(this);
+		f.apply(null, _.concat([this], _.drop(arguments)));
 		return this;
 	}
 }
@@ -175,6 +178,8 @@ class Surface {
 		return this;
 	}
 	setRotation(rotation) {
+		console.log("setRotation");
+		console.log(this);
 		this.rotation = rotation;
 		return this;
 	}
@@ -184,6 +189,12 @@ class Surface {
 	}
 	setOn(on) {
 		this.on = on;
+		this.setPlane(on.plane);
+		// console.log("settin on");
+		// console.log(on);
+		// console.log(this);
+		// console.log(this.parent);
+		// this.plane = this.parent.walls[on].plane;
 		return this;
 	}
 	setMaterial(material) {

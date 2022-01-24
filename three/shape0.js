@@ -278,16 +278,21 @@ function shaper() {
   }
 
 
-  var globalOpacity = false;
+  // var globalOpacity = false;
   this.wallSystem = function(wallSystem) {
-    if (wallSystem.hasOwnProperty("opacity")) {globalOpacity = wallSystem.opacity;}
-    Object.entries(wallSystem.exterior.surfaces).forEach(function(entry) {//Exterior walls
+    // if (wallSystem.hasOwnProperty("opacity")) {globalOpacity = wallSystem.opacity;}
+    Object.entries(wallSystem.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];
+      // console.log("wallSystem");
+      // console.log(wall);
       this.setPlane(wall.plane.facingDirection, wall.plane.originOffset, wall.plane.rotationZ);
 
-      this.wallRelativeSize(wallSystem.exterior.surfaces, wall);
+      this.wallRelativeSize(wallSystem.surfaces, wall);
 
       if (wall.hasOwnProperty("windows")) {
+        wall.windows.jambs.forEach(function(windowName) {//The interior holes and jambs for windows
+          this.addWindowJamb(windowName, wall);//The jamb
+        }.bind(this));
         wall.windows.names.forEach(function(windowName) {//The interior holes for windows
           this.addWindowHole(wall.windows.wallSystem, windowName, wallSystem, wall);//The hole
         }.bind(this));
@@ -299,30 +304,7 @@ function shaper() {
         this.planeWall(wall);//The exterior wall surface
       }
     }.bind(this));
-
-    Object.entries(wallSystem.interior.surfaces).forEach(function(entry) {//Interior walls
-      var wall = entry[1];
-      this.setPlane(wall.plane.facingDirection, wall.plane.originOffset, wall.plane.rotationZ);
-
-      if (wall.hasOwnProperty("windows")) {
-        wall.windows.jambs.forEach(function(windowName) {//The interior holes and jambs for windows
-          // this.addWindowJamb(wall.windows.wallSystem, windowName, wallSystem, wall);//The jamb
-          // this.addWindowJamb(wall.windows.wall, windowName, wallSystem, wall);//The jamb
-          this.addWindowJamb(windowName, wall);//The jamb
-        }.bind(this));
-
-        wall.windows.names.forEach(function(windowName) {//The interior holes for windows
-          this.addWindowHole(wall.windows.wallSystem, windowName, wallSystem, wall);//The hole
-        }.bind(this));
-      }
-
-      if (wall.hasOwnProperty("bevel")) {
-        this.bevelWallNew(wall);//The interior wall surface
-      } else {
-        this.planeWall(wall);//The interior wall surface
-      }
-    }.bind(this));
-    globalOpacity = false;
+    // globalOpacity = false;
   }.bind(this);
 
   this.distanceBetweenPointsInSpace = function(a, b) {
@@ -448,11 +430,13 @@ function shaper() {
   this.wallRelativeSize = function(walls, wall) {
     // return;
     if (wall.hasOwnProperty("on")) {
+      console.log("on");
       // console.log(wall.size);
-      var relativeWall = walls[wall.on];
-      // console.log("relative wall "+relativeWall.name);
-      // console.log(relativeWall);
-      // console.log(relativeWall);
+      // var relativeWall = walls[wall.on];
+      var relativeWall = wall.on;
+      console.log("relative wall "+relativeWall.name);
+      console.log(relativeWall);
+      console.log(wall);
       // if (wall.size.hasOwnProperty("dw") && !relativeWall.size.hasOwnProperty("w")) {
       //   this.wallRelativeSize(relativeWall);
       // }
@@ -480,7 +464,18 @@ function shaper() {
         // console.log("wall "+wall.name+" has dy, relative y="+relativeWall.offset.y);
 //        console.log("offset.y = "+(wall.offset.dy + relativeWall.bevel.y));
         wall.offset.y = wall.offset.dy + relativeWall.offset.y;
-        if (relativeWall.hasOwnProperty("bevel")) {wall.offset.y += relativeWall.bevel.y;}
+        // if (relativeWall.hasOwnProperty("bevel")) {wall.offset.y += relativeWall.bevel.y;}
+        if (relativeWall.hasOwnProperty("bevel")) {
+          if (wall.plane.isFacingEast()) {
+            wall.offset.y -= relativeWall.bevel.y;
+          } else if (wall.plane.isFacingSouth()) {
+            wall.offset.y -= relativeWall.bevel.y;
+          } else if (wall.plane.isFacingWest()) {
+            wall.offset.y += relativeWall.bevel.y;
+          } else if (wall.plane.isFacingNorth()) {
+            wall.offset.y += relativeWall.bevel.y;
+          }
+        }
       }
       if (wall.offset.hasOwnProperty("dz")) {
         // console.log("wall "+wall.name+" has dz, relative z="+relativeWall.offset.z+", relative h="+relativeWall.size.h);
@@ -568,6 +563,7 @@ function shaper() {
   };
 
   this.planeWall = function(wall) {
+    console.log("here");
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     var rotation = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     if (wall.plane.isFacingNorthSouth()) {//Wall faces the X direction
@@ -606,6 +602,8 @@ function shaper() {
   }
 
   this.bevelWallNew = function(wall) {
+    console.log("bevel "+wall.parent.name+" "+wall.name);
+    console.log(wall);
     this.beveledHeight(wall);
     var extraWidth = this.bevelWidth(wall);
 
@@ -630,18 +628,17 @@ function shaper() {
       offset = ArraySum(offset, [wall.bevel.miters.out.left, wall.bevel.y, 0]);
       rotate = ArraySum(rotate, [-90,0,0]);
     }
-    // console.log(points);
-    // console.log(points2);
-    // console.log(offset);
-    // console.log(rotate);
-    // console.log(wall.color);
-    // console.log(wall.mirror);
-    // console.log(wall);
+    if (wall.plane.isFacingNorthSouth()) {
+      points[0] = [points[0][1], points[0][0], points[0][2]];
+      points[1] = [points[1][1], points[1][0], points[1][2]];
+      points[2] = [points[2][1], points[2][0], points[2][2]];
+    }
     return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
   };
 
   this.beveledHeight = function(wall) {
     var angle = 90;
+    // var angle = 0;
     wall.size.xy = wall.bevel.y;
     if (wall.size.h != 0) {
       var radians = Math.atan(wall.bevel.y/wall.size.h);
@@ -656,9 +653,14 @@ function shaper() {
       // wall.size.h = wall.bevel.y/Math.sin(radians);
       wall.size.xy = wall.bevel.y/Math.sin(radians);
     }
-    if (this.planeTransforms.YisX) {
-      wall.rotation.y += angle;
-    } else {
+    // if (this.planeTransforms.YisX) {
+    if (wall.plane.isFacingSouth()) {
+      wall.rotation.y -= angle;
+    } else if (wall.plane.isFacingEast()) {
+      wall.rotation.x += angle;
+    } else if (wall.plane.isFacingWest()) {
+      wall.rotation.x -= angle;
+    } else if (wall.plane.isFacingNorth()) {
       wall.rotation.x += angle;
     }
     // console.log(angle);
