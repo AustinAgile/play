@@ -112,7 +112,7 @@ class WallSystem {
 		// if (!wall.hasOwnProperty("windows")) {wall.windows = new Windows();}
 		if (!wall.hasOwnProperty("rotation")) {wall.rotation = {x: 0, y: 0, z: 0};}
 		if (!wall.hasOwnProperty("plane")) {
-			console.log("here");
+			// console.log("here");
 			wall.setPlane(this.plane);
 		}
 		wall.flip();
@@ -121,17 +121,21 @@ class WallSystem {
 	}
 
 	addInteriorHorizontalSurface(floor) {
+		floor.parent = this;
 		// if (!floor.hasOwnProperty("color")) {floor.color = this.interiorHorizontal.color;}
 		// if (!floor.hasOwnProperty("windows")) {floor.windows = new Windows();}
-		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 0, y: 0, z: 0};}
-		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
+		if (!floor.hasOwnProperty("color")) {floor.color = this.interior.color;}
+		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: 90, y: 0, z: 0};}
+		if (!floor.hasOwnProperty("plane")) {floor.setPlane(this.plane);}
 		this.surfaces[floor.name] = floor;
 		return this;
 	}
-	addHorizontalSurface(floor) {
-		if (!floor.hasOwnProperty("rotation")) {floor.rotation = {x: -90, y: 0, z: 0};}
-		if (!wall.hasOwnProperty("plane")) {wall.setPlane(this.plane);}
-		this.surfaces[floor.name] = floor;
+	addHorizontalSurface(surface) {
+		surface.parent = this;
+		if (!surface.hasOwnProperty("color")) {surface.color = this.interior.color;}
+		if (!surface.hasOwnProperty("rotation")) {surface.rotation = {x: -90, y: 0, z: 0};}
+		if (!surface.hasOwnProperty("plane")) {surface.setPlane(this.plane);}
+		this.surfaces[surface.name] = surface;
 		return this;
 	}
 
@@ -152,6 +156,7 @@ class Surface {
 	offset = {x:0, y:0, z:0, dx:0, dy:0, dz:0};
 	mirror = false;
 	parent = false;
+	pointsInSpace = [];
 	constructor(name) {
 		this.name = name;
 		return this;
@@ -178,8 +183,8 @@ class Surface {
 		return this;
 	}
 	setRotation(rotation) {
-		console.log("setRotation");
-		console.log(this);
+		// console.log("setRotation");
+		// console.log(this);
 		this.rotation = rotation;
 		return this;
 	}
@@ -211,6 +216,10 @@ class Surface {
 	}
 	flip() {
 		this.mirror = !this.mirror;
+		return this;
+	}
+	addPointInSpace(point) {
+		this.pointsInSpace.push(point);
 		return this;
 	}
 	call(f) {

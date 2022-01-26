@@ -121,6 +121,13 @@ function shaper() {
   this.bevelWall = function(points, origin, rotate, color, mirror) {
     var geoRotate = this.planeTransforms.geoRotate;
     var geoTranslate = this.planeTransforms.geoTranslate;
+    if (points.length == 3) {
+      points = _.concat([[0,0]], points);
+      // console.log(fuck);
+      // throw new Error("fuck");
+    } else {
+      console.log(points);
+    }
     this.main3(geoRotate, geoTranslate, points, origin, rotate, color, mirror);
   };
 
@@ -147,16 +154,86 @@ function shaper() {
   //   return this.main3(geoRotate, geoTranslate, points, origin, rotate, color);
   // }
 
+  this.test = function() {
+    // var a = new _3js.Vector3(500,-560,166.25);
+    // var b = new _3js.Vector3(1530,-280,166.25);
+    // var c = new _3js.Vector3(1505.73,0,0);
+    var a = new _3js.Vector3(0,-100,0);
+    var b = new _3js.Vector3(100,0,100);
+    var c = new _3js.Vector3(100,0,0);
+    var plane = new _3js.Plane().setFromCoplanarPoints(a,b,c);
+    console.log(plane);
+    // var q = new _3js.Quaternion().set(plane.normal.x, plane.normal.y, plane.normal.z, plane.constant );
+    var q = new _3js.Quaternion().set(plane.normal.x, plane.normal.y, plane.normal.z, plane.constant );
+    console.log(q.length());
+    var anglea = plane.normal.angleTo(new _3js.Vector3(1,0,0));
+    var angleb = plane.normal.angleTo(new _3js.Vector3(0,1,0));
+    var anglec = plane.normal.angleTo(new _3js.Vector3(0,0,1));
+    console.log(anglea*180/Math.PI);
+    console.log(angleb*180/Math.PI);
+    console.log(anglec*180/Math.PI);
+    var pos = new _3js.Vector3(0,0,0);
+    var scale = new _3js.Vector3(1,1,1);
+    var m = new _3js.Matrix4().compose(pos, q, scale);
+    var m2 = new _3js.Matrix4().extractRotation(m);
+    var q2 = new _3js.Quaternion().setFromRotationMatrix(m2);
+    var m = new _3js.Matrix4().makeRotationFromQuaternion(q);
+    var q2 = new _3js.Quaternion().setFromRotationMatrix(m2);
+    console.log(q);
+    console.log(q2);
+
+    var shape = new _3js.Shape();
+    shape.moveTo(0,0);
+    shape.lineTo(1500,0);
+    shape.lineTo(1550,-100);
+    shape.lineTo(0,-450);
+
+    var shapeGeometry = new _3js.ShapeGeometry( shape );
+    // shapeGeometry.rotateX(17.4*Math.PI/180);
+    // shapeGeometry.rotateY(72.6*Math.PI/180);
+    // shapeGeometry.rotateZ(90.5*Math.PI/180);
+    shapeGeometry.lookAt(plane.normal);
+
+    // shapeGeometry.rotateZ(-Math.PI/2);
+    // shapeGeometry.applyQuaternion(q);
+    shapeGeometry.translate(0, 900, 1100);
+    // scale = 1/q.length();
+    // shapeGeometry.scale(scale,scale,scale);
+    // console.log(shapeGeometry.vertices);
+
+    var planeMat = new _3js.MeshStandardMaterial({
+      color: 0xff00ff,
+      opacity: 1.0,
+      transparent: false,
+      format: _3js.RGBAFormat,
+      side: _3js.DoubleSide,
+    });
+
+    var mesh = new _3js.Mesh(shapeGeometry, planeMat);
+    this.scene.add(mesh);
+
+    // var shapeGeometry2 = new _3js.ShapeGeometry( shape );
+    // shapeGeometry.rotateZ(-Math.PI/2);
+    // shapeGeometry.translate(0, 900, 0);
+
+    // this.scene.add(new _3js.Mesh(shapeGeometry2, planeMat));
+    return plane;
+  }
+
   this.main3 = function(geoRotate, geoTranslate, points, origin, rotate, color, mirror) {
     // console.log("main");
     // console.log(origin);
     // console.log(points);
 
     var shape = new _3js.Shape();
-    shape.moveTo(0,0);
-    shape.lineTo(points[0][0],points[0][1]);
+    // shape.moveTo(0,0);
+    // shape.lineTo(points[0][0],points[0][1]);
+    // shape.lineTo(points[1][0],points[1][1]);
+    // shape.lineTo(points[2][0],points[2][1]);
+    shape.moveTo(points[0][0],points[0][1]);
     shape.lineTo(points[1][0],points[1][1]);
     shape.lineTo(points[2][0],points[2][1]);
+    shape.lineTo(points[3][0],points[3][1]);
     shape.holes = this.holes;
     this.holes = [];
     // console.log(shape);
@@ -430,13 +507,13 @@ function shaper() {
   this.wallRelativeSize = function(walls, wall) {
     // return;
     if (wall.hasOwnProperty("on")) {
-      console.log("on");
+      // console.log("on");
       // console.log(wall.size);
       // var relativeWall = walls[wall.on];
       var relativeWall = wall.on;
-      console.log("relative wall "+relativeWall.name);
-      console.log(relativeWall);
-      console.log(wall);
+      // console.log("relative wall "+relativeWall.name);
+      // console.log(relativeWall);
+      // console.log(wall);
       // if (wall.size.hasOwnProperty("dw") && !relativeWall.size.hasOwnProperty("w")) {
       //   this.wallRelativeSize(relativeWall);
       // }
@@ -563,9 +640,15 @@ function shaper() {
   };
 
   this.planeWall = function(wall) {
-    console.log("here");
+    // console.log("here");
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     var rotation = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
+
+    if (wall.pointsInSpace.length == 4) {
+      console.log("here");
+      return this.bevelWall(wall.pointsInSpace, offset, rotation, wall.color, wall.mirror);
+    }
+
     if (wall.plane.isFacingNorthSouth()) {//Wall faces the X direction
       var points = [[wall.size.h,0,0],[wall.size.h,wall.size.w,0],[0,wall.size.w,0]];
       if (wall.offset.hasOwnProperty("horizontal")) {offset = [0, wall.offset.horizontal, wall.offset.vertical];}
@@ -579,55 +662,50 @@ function shaper() {
   }.bind(this);
 
   this.bevelWidth = function(wall) {
-    var extraWidth = {left:0, right: 0};
     if (wall.hasOwnProperty("bevel")) {
-      if (wall.bevel.miters.hasOwnProperty("angle")) {
-        // console.log("here");
-        extraWidth.left = Math.tan(wall.bevel.miters.angle.left*Math.PI/180) * wall.bevel.y;
-        extraWidth.right = Math.tan(wall.bevel.miters.angle.right*Math.PI/180) * wall.bevel.y;
-        // var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.h,wall.bevel.y],[left,wall.size.h,wall.bevel.y]];
-      } else if (wall.bevel.miters.hasOwnProperty("in")) {
-        extraWidth.left = wall.bevel.miters.in.left;
-        extraWidth.right = wall.bevel.miters.in.right;
-        // var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
-      } else if (wall.bevel.miters.hasOwnProperty("out")) {
-        extraWidth.left = -wall.bevel.miters.out.left;
-        extraWidth.right = -wall.bevel.miters.out.right;
-      } else {
-        throw new Error("Bad bevel spec");
+      if (wall.bevel.hasOwnProperty("miters")) {
+        if (wall.bevel.miters.hasOwnProperty("angle")) {
+          return {
+            left: Math.tan(wall.bevel.miters.angle.left*Math.PI/180) * wall.bevel.y,
+            right: Math.tan(wall.bevel.miters.angle.right*Math.PI/180) * wall.bevel.y
+          };
+        } else if (wall.bevel.miters.hasOwnProperty("points")) {
+          if (wall.bevel.miters.points.hasOwnProperty("middle")) {
+            if (wall.bevel.miters.points.hasOwnProperty("right")) {
+              return {
+                right: -wall.bevel.miters.points.right,
+                left: wall.size.w - (wall.bevel.miters.points.right + wall.bevel.miters.points.middle)
+              };
+            } else {
+              return {
+                left: wall.bevel.miters.points.left,
+                right: -(wall.size.w - (wall.bevel.miters.points.left + wall.bevel.miters.points.middle))
+              };
+            }
+          } else {
+            return {
+              left: wall.bevel.miters.points.left,
+              right: -wall.bevel.miters.points.right
+            };
+          }
+        } else {
+          throw new Error("Bad bevel spec");
+        }
       }
     }
-    // console.log(extraWidth);
-    return extraWidth;
+    return {left: 0, right: 0};
   }
 
   this.bevelWallNew = function(wall) {
-    console.log("bevel "+wall.parent.name+" "+wall.name);
-    console.log(wall);
+    // console.log("bevel "+wall.parent.name+" "+wall.name);
+    // console.log(wall);
     this.beveledHeight(wall);
     var extraWidth = this.bevelWidth(wall);
 
+    var points = [[wall.size.w,0,0],[wall.size.w+extraWidth.right,wall.size.xy,wall.bevel.y],[extraWidth.left,wall.size.xy,wall.bevel.y]];
     var rotate = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
-    // var points = [[wall.size.w,0,0],[wall.size.w,wall.size.h,0],[0,wall.size.h,0]];
-    if (wall.bevel.miters.hasOwnProperty("angle")) {
-      var left = Math.tan(wall.bevel.miters.angle.left*Math.PI/180) * wall.bevel.y;
-      var right = Math.tan(wall.bevel.miters.angle.right*Math.PI/180) * wall.bevel.y;
-      // console.log(left);
-      // console.log(right);
-      // var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.h,wall.bevel.y],[left,wall.size.h,wall.bevel.y]];
-      var points = [[wall.size.w,0,0],[wall.size.w+right,wall.size.xy,wall.bevel.y],[left,wall.size.xy,wall.bevel.y]];
-    } else if (wall.bevel.miters.hasOwnProperty("in")) {
-      // var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.h,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.h,wall.bevel.y]];
-      var points = [[wall.size.w,0,0],[wall.size.w+wall.bevel.miters.in.right,wall.size.xy,wall.bevel.y],[wall.bevel.miters.in.left,wall.size.xy,wall.bevel.y]];
-    } else {
-      // shaper0.bevelWall([[1000,0,-50],[950,50,-50],[50,50,0]],[ -50, 50, 550], [ 0, 0, 0], colors.cornice);
-      var len = wall.size.w + wall.bevel.miters.out.right - wall.bevel.miters.out.left;
-      // var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.h,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.h,wall.bevel.y]];
-      var points = [[len,0,0],[len-wall.bevel.miters.out.right,wall.size.xy,wall.bevel.y],[-wall.bevel.miters.out.left,wall.size.xy,wall.bevel.y]];
-      offset = ArraySum(offset, [wall.bevel.miters.out.left, wall.bevel.y, 0]);
-      rotate = ArraySum(rotate, [-90,0,0]);
-    }
+
     if (wall.plane.isFacingNorthSouth()) {
       points[0] = [points[0][1], points[0][0], points[0][2]];
       points[1] = [points[1][1], points[1][0], points[1][2]];
@@ -640,7 +718,7 @@ function shaper() {
     var angle = 90;
     // var angle = 0;
     wall.size.xy = wall.bevel.y;
-    if (wall.size.h != 0) {
+    // if (wall.size.h != 0) {
       var radians = Math.atan(wall.bevel.y/wall.size.h);
       // radians = Math.PI/4;
       var angle = 180*radians/Math.PI;
@@ -652,7 +730,13 @@ function shaper() {
       // wall.size.h = Math.sqrt(Math.pow(wall.size.h,2)+Math.pow(wall.bevel.y,2));
       // wall.size.h = wall.bevel.y/Math.sin(radians);
       wall.size.xy = wall.bevel.y/Math.sin(radians);
-    }
+      if (wall.bevel.hasOwnProperty("points")) {
+        console.log(wall.bevel);
+        var plane = new _3js.Plane().setFromCoplanarPoints(new _3js.Vector3(5,15,4), new _3js.Vector3(55,10,4), new _3js.Vector3(50,0,0));//Effect
+        console.log(plane);
+//        New Three.Plane (). setfromcoplanarpoints (New Three.Vector3 (1, 2, 3), New Three.Vector3 (2, 2, 3), New Three.Vector3 (3, 2, 3)); // If three Will return to the default plane
+      }
+    // }
     // if (this.planeTransforms.YisX) {
     if (wall.plane.isFacingSouth()) {
       wall.rotation.y -= angle;
