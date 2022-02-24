@@ -357,6 +357,7 @@ function shaper() {
 
   // var globalOpacity = false;
   this.wallSystem = function(wallSystem) {
+    if (!wallSystem.visible) {return;}
     // if (wallSystem.hasOwnProperty("opacity")) {globalOpacity = wallSystem.opacity;}
     Object.entries(wallSystem.surfaces).forEach(function(entry) {//Exterior walls
       var wall = entry[1];

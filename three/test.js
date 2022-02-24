@@ -64,6 +64,7 @@ class WallSystem {
 	surfaces = {};
 	interiorHorizontal = {color: {}, surfaces: {}};
 	windows = {};
+	visible = true;
 
 	constructor(name) {
 		this.name = name;
@@ -140,7 +141,16 @@ class WallSystem {
 	}
 
 	addWindow(window) {
+		window.setWallSystem(this);
 		this.windows[window.name] = window;
+		return this;
+	}
+	getWindow(name) {
+		return this.windows[name];
+	}
+
+	hide() {
+		this.visible = false;
 		return this;
 	}
 
@@ -189,8 +199,12 @@ class Surface {
 		return this;
 	}
 	setWindows(windows) {
+		windows.setWall(this);
 		this.windows = windows;
 		return this;
+	}
+	getWindow(name) {
+		return this.windows[name];
 	}
 	setOn(on) {
 		this.on = on;
@@ -232,10 +246,15 @@ class Window {
 	name = "";
 	size = {};
 	offset = {};
+	wallSystem;
 	constructor(name) {
 		this.name = name;
 		return this;
 	};
+	setWallSystem(wallSystem) {
+		this.wallSystem = wallSystem;
+		return this;
+	}
 	setSize(size) {
 		this.size = size;
 		return this;
@@ -261,8 +280,10 @@ class Windows {
 		return this;
 	};
 	setWall(wall) {
-		this.wall = wall;
-		this.wallSystem = wall.parent;
+		if (!this.wallSystem) {
+			this.wall = wall;
+			this.wallSystem = wall.parent;
+		}
 		return this;
 	};
 	setJambsAll() {
@@ -271,4 +292,103 @@ class Windows {
 	};
 };
 
-export { Plane, WallSystem, Surface, Window, Windows };
+class RectangularRoom {
+	name = "";
+	size = {x: 0, y: 0, z: 0};
+	offset = {x: 0, y: 0, z: 0};
+	constructor(name) {
+		this.name = name;
+		this.walls = {
+			east: new Wall(this),
+			south: new Wall(this),
+			west: new Wall(this),
+			north: new Wall(this),
+		}
+		return this;
+	};
+	width(x) {
+		this.size.x = x;
+		this.walls.east.width(x);
+		this.walls.west.width(x);
+		return this;
+	}
+	depth(y) {
+		this.size.y = y;
+		this.walls.north.width(y);
+		this.walls.south.width(y);
+		return this;
+	}
+	height(z) {
+		this.size.z = z;
+		this.walls.east.height(z);
+		this.walls.west.height(z);
+		this.walls.north.height(z);
+		this.walls.south.height(z);
+		return this;
+	}
+	setOffset(offset) {
+		this.offset = offset;
+		this.walls.north.setPlane(new Plane("North+X").setFacingDirection([1,0,0]).setOriginOffset([this.offset.x + this.size.x, this.offset.y, this.offset.z]));
+		this.walls.south.setPlane(new Plane("South-X").setFacingDirection([-1,0,0]).setOriginOffset([this.offset.x, this.offset.y, this.offset.z]));
+		this.walls.east.setPlane(new Plane("East-Y").setFacingDirection([0,-1,0]).setOriginOffset([this.offset.x, this.offset.y, this.offset.z]));
+		this.walls.west.setPlane(new Plane("West+Y").setFacingDirection([0,1,0]).setOriginOffset([this.offset.x, this.offset.y + this.size.y, this.offset.z]));
+		return this;
+	}
+	getWall(facing) {
+		return this.walls[facing];
+	}
+};
+
+class Wall {
+	room;
+	plane;
+	size = {x: 0, z: 0};
+	doors = [];
+	windows = [];
+	constructor(room) {
+		this.room = room;
+		return this;
+	}
+	getRoom() {
+		return this.room;
+	}
+	getWall(facing) {
+		return this.room.getWall(facing);
+	}
+	width(x) {this.size.x = x; return this;}
+	height(z) {this.size.z = z; return this;}
+	setPlane(plane) {this.plane = plane; return this;}
+	addDoor(door) {
+		this.doors.push(door);
+		return this;
+	}
+	addWindow(window) {
+		this.windows.push(window);
+		return this;
+	}
+}
+
+class Door {
+	wall;
+	size = {x: 0, z: 0};
+	offset = {x: 0, z: 0};
+	constructor(wall) {
+		this.wall = wall;
+		return this;
+	}
+	getWall(facing) {
+		return this.wall.getWall(facing);
+	}
+	addDoor() {
+		return this.wall.addDoor();
+	}
+	getRoom() {
+		return this.wall.getRoom();
+	}
+	width(x) {this.size.x = x; return this;}
+	height(z) {this.size.z = z; return this;}
+	offsetWidth(x) {this.offset.x = x; return this;}
+	offsetHeight(z) {this.offset.z = z; return this;}
+}
+
+export { Plane, WallSystem, Surface, Window, Windows, RectangularRoom, Door };
