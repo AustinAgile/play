@@ -372,7 +372,8 @@ function shaper() {
           this.addWindowJamb(windowName, wall);//The jamb
         }.bind(this));
         wall.windows.names.forEach(function(windowName) {//The interior holes for windows
-          this.addWindowHole(wall.windows.wallSystem, windowName, wallSystem, wall);//The hole
+          // this.addWindowHole(wall.windows.wallSystem, windowName, wallSystem, wall);//The hole
+          this.addWindowHole(windowName, wall);//The hole
         }.bind(this));
       }
 
@@ -568,76 +569,32 @@ function shaper() {
     return wall;
   }
 
-  this.addWindowHole = function(windowWallSystem, windowName, wallSystem, wall) {//eliminate windowWallSystem
-    // if (wall.windows.hasOwnProperty("wall")) {
-    //   windowWallSystem = wall.windows.wall.parent;
-    // }
-    if (windowWallSystem !== false) {
-      var window = this.windowRelativeOffset(windowWallSystem.windows, windowName);
-      // console.log(wall);
-      // var relativePlane = wallSystem.plane;
-      var relativePlane = wall.plane;
-      var fromPlane = windowWallSystem.plane;
-      fromPlane = wall.windows.wall.plane;
-    } else {
-      var window = this.windowRelativeOffset(wallSystem.windows, windowName);
-      // var relativePlane = {originOffset: [0, 0, 0]};
-      // var fromPlane = {originOffset: [0, 0, 0]};
-      var relativePlane = wall.plane;
-      var fromPlane = wall.plane;
-    }
+  this.addWindowHole = function(windowName, toWall) {
+    var fromWall = toWall.windows.wall;
+    var window = this.windowRelativeOffset(fromWall.parent.windows, windowName);
 
-    if (wall.plane.isFacingNorthSouth()) {//Wall faces the y direction
-      // console.log("here");
-      // console.log(window.offset);
-      // console.log(wall.offset);
-      // console.log(fromPlane.originOffset);
-      // console.log(relativePlane.originOffset);
+    if (toWall.plane.isFacingNorthSouth()) {//Wall faces the y direction
       var offset = [
-        // window.offset.z - wall.offset.z - relativePlane.originOffset[2],
-        // window.offset.y - wall.offset.y - relativePlane.originOffset[0]
-        // Math.max(window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2]), wall.offset.z),//fix this same as other direction
-        Math.max(window.offset.z + wall.windows.wall.offset.z +  fromPlane.originOffset[2] - (wall.offset.z + relativePlane.originOffset[2]), wall.offset.z),
-        window.offset.y - wall.offset.y - (relativePlane.originOffset[1] - fromPlane.originOffset[1])
+        Math.max(window.offset.z + fromWall.offset.z +  fromWall.plane.originOffset[2] - (toWall.offset.z + toWall.plane.originOffset[2]), toWall.offset.z),
+        window.offset.y + fromWall.offset.y +  fromWall.plane.originOffset[1] - (toWall.offset.y + toWall.plane.originOffset[1]),
       ];
       var size = [
         window.size.h,
         window.size.w
       ];
-      // console.log(offset);
-      // console.log(size);
-      // console.log(wall.size);
-      // console.log(offset[0]+size[0]);
-      // console.log(offset[1]+size[1]);
-      // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
     } else {//Wall faces the Y direction
-      // var offset = [
-      //   // window.offset.x - wall.offset.x - relativePlane.originOffset[0],
-      //   // window.offset.z - wall.offset.z - relativePlane.originOffset[2]
-      //   window.offset.x - wall.offset.x - (relativePlane.originOffset[0] - fromPlane.originOffset[0]),
-      //   window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
-      // ];
       var offset = [
-        // horizontal: toWall.plane.getHorizontal2(fromWall.plane.getHorizontal(window.offset.x) - (toWall.plane.originOffset[0] - fromWall.plane.originOffset[0])),
-        relativePlane.getProjectionHorizontalFrom(window.offset.x, fromPlane),
-        // window.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])old way
-        window.offset.z + wall.windows.wall.offset.z +  fromPlane.originOffset[2] - (wall.offset.z + relativePlane.originOffset[2])
+        toWall.plane.getProjectionHorizontalFrom(window.offset.x, fromWall.plane),
+        window.offset.z + fromWall.offset.z +  fromWall.plane.originOffset[2] - (toWall.offset.z + toWall.plane.originOffset[2])
       ];
       var size = [
-        Math.min(window.size.w, wall.size.w - offset[0]),
-        Math.min(window.size.h, wall.size.h - offset[1])
-        // window.size.h
+        Math.min(window.size.w, toWall.size.w - offset[0]),
+        Math.min(window.size.h, toWall.size.h - offset[1])
       ];
       if (offset[1] < 0) {
         size[1] += offset[1];
         offset[1] = 0;
       }
-      // console.log(offset);
-      // console.log(size);
-      // console.log(wall.size);
-      // console.log(offset[0]+size[0]);
-      // console.log(offset[1]+size[1]);
-      // console.log(Math.min(window.size.w, wall.size.w - offset[0]));
     }
     this.addHole(offset, size);
   };
