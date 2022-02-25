@@ -224,6 +224,7 @@ function shaper() {
     // console.log("main");
     // console.log(origin);
     // console.log(points);
+    // console.log(this.holes);
 
     var shape = new _3js.Shape();
     // shape.moveTo(0,0);
@@ -368,12 +369,11 @@ function shaper() {
       this.wallRelativeSize(wallSystem.surfaces, wall);
 
       if (wall.hasOwnProperty("windows")) {
+        wall.windows.names.forEach(function(windowName) {//The interior holes for windows
+          this.addWindowHole(windowName, wall);//The hole
+        }.bind(this));
         wall.windows.jambs.forEach(function(windowName) {//The interior holes and jambs for windows
           this.addWindowJamb(windowName, wall);//The jamb
-        }.bind(this));
-        wall.windows.names.forEach(function(windowName) {//The interior holes for windows
-          // this.addWindowHole(wall.windows.wallSystem, windowName, wallSystem, wall);//The hole
-          this.addWindowHole(windowName, wall);//The hole
         }.bind(this));
       }
 
@@ -595,17 +595,18 @@ function shaper() {
         size[1] += offset[1];
         offset[1] = 0;
       }
+      // console.log(offset);
+      // console.log(size);
     }
-    this.addHole(offset, size);
+    // this.addHole(offset, size);
+    toWall.addHole({size: size, offset: offset});
   };
 
   this.planeWall = function(wall) {
-    // console.log("here");
     var offset = [wall.offset.x, wall.offset.y, wall.offset.z];
     var rotation = [wall.rotation.x, wall.rotation.y, wall.rotation.z];
 
     if (wall.pointsInSpace.length == 4) {
-      console.log("here");
       return this.bevelWall(wall.pointsInSpace, offset, rotation, wall.color, wall.mirror);
     }
 
@@ -618,6 +619,11 @@ function shaper() {
       if (wall.offset.hasOwnProperty("horizontal")) {offset = [wall.offset.horizontal, 0, wall.offset.vertical];}
       if (wall.rotation.hasOwnProperty("horizontal")) {rotation = [wall.rotation.horizontal, 0, wall.rotation.vertical];}
     }
+    // console.log(points);
+    // console.log(rotation);
+    wall.holes.forEach(function(hole) {
+      this.addHole(hole.offset, hole.size);
+    }.bind(this));
     return this.bevelWall(points, offset, rotation, wall.color, wall.mirror);
   }.bind(this);
 
@@ -671,6 +677,9 @@ function shaper() {
       points[1] = [points[1][1], points[1][0], points[1][2]];
       points[2] = [points[2][1], points[2][0], points[2][2]];
     }
+    wall.holes.forEach(function(hole) {
+      this.addHole(hole.offset, hole.size);
+    }.bind(this));
     return this.bevelWall(points, offset, rotate, wall.color, wall.mirror);
   };
 

@@ -167,6 +167,7 @@ class Surface {
 	mirror = false;
 	parent = false;
 	pointsInSpace = [];
+	holes = [];
 	constructor(name) {
 		this.name = name;
 		return this;
@@ -235,6 +236,9 @@ class Surface {
 	addPointInSpace(point) {
 		this.pointsInSpace.push(point);
 		return this;
+	}
+	addHole(hole) {
+		this.holes.push(hole);
 	}
 	call(f) {
 		f(this);

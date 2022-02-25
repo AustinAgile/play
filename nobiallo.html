@@ -368,7 +368,6 @@
         .addWindow(new Window90x190("stairL2").setOffset({dx: 186, z: 750, window: "rightL2LR"}))
         .addWindow(new Window90x190("leftL2BR").setOffset({dx: 186, z: 750, window: "stairL2"}))
         .addWindow(new Window90x190("rightL2BR").setOffset({dx: 165, z: 750, window: "leftL2BR"}))
-        // .setExteriorMaterial(materials.cornice)
         .call(cornice, {dw: 0, dx: 0}, {angle:{left:-45, right:0}})
         // .call(shaper0.wallSystem)
       ;
@@ -412,7 +411,7 @@
           .setOffset({dx: -68+10, dy: -68+10})
           .setRotation({x: 0, y: 90, z: 0})
         )
-        .call(shaper0.wallSystem)
+        // .call(shaper0.wallSystem)
       ;
 
       var westWall = new doug.WallSystem("West Wall")
@@ -436,7 +435,7 @@
           // .setWindows(new doug.Windows(["w2"]))
         )
         // .call(cornice, {dw: 65-westWallWidth, dx: 0}, {angle:{left:-45-5/2, right:0}})
-        .call(shaper0.wallSystem);
+        // .call(shaper0.wallSystem);
       ;
       // westWall
       //   .setExteriorMaterial(materials.terracotta)
@@ -543,9 +542,7 @@
         )
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.first.rooms.living2.north)
           .setSize({w: living2NorthWallWidth, h: 348})
-          .setWindows(new doug.Windows(["entry"])
-          // .setJambsAll()
-          )
+          .setWindows(new doug.Windows(["entry"]))
         )
         .call(shaper0.wallSystem)
       ;
@@ -554,7 +551,6 @@
         .setPlane(planes.levels.first.rooms.bedroom.east)
         .setInteriorMaterial(materials.plaster)
         .addWindow(new Door95x205("door").setOffset({x: 40, z: 0}))
-        // .addWindow(new doug.Window("closet").setSize({w: 97, h: 205}).setOffset({x: 279, z: 0}))
         .addWindow(new doug.Window("closet").setSize({w: 97, h: 205}).setOffset({y: 279, z: 0}))
         .addWindow(new doug.Window("nookie").setSize({w: 137, h: 205}).setOffset({y: 10, z: 0}))
         .addInteriorSurface(new doug.Surface("east").setPlane(planes.levels.first.rooms.bedroom.east)
