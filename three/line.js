@@ -1,4 +1,5 @@
 import * as _3js from '../../three/build/three.module.js';
+
 function line(points, color) {
   const material = new _3js.LineBasicMaterial( { color: color } );
   var vec = [];

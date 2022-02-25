@@ -52,6 +52,40 @@ class Control {
     this.camera.position.z = 450 + this.radious * Math.sin( this.phi * Math.PI / 180 );
     this.camera.position.y = 500 + this.radious * Math.cos( this.theta * Math.PI / 180 ) * Math.cos( this.phi * Math.PI / 180 );
     this.camera.lookAt(750, 450, 500);
+    return
+
+    this.camera.position.set(750, 500+ 1*this.radious, 450);
+    // this.camera.position.set(80+536/2, 70+510/2, 282+342/2);//In living room
+    var target = new _3js.Vector3();
+    console.log(this.camera.getWorldPosition(target));
+    console.log(this.camera.getWorldQuaternion(new _3js.Quaternion()));
+    console.log(this.camera.getWorldScale(new _3js.Vector3()));
+    console.log(this.camera.getWorldDirection(new _3js.Vector3()));
+    console.log(this.camera.worldToLocal(new _3js.Vector3(0,0,1)));
+    // console.log(this.camera.localToWorld(new _3js.Vector3(0,1,0)));
+    // console.log(target);
+    // console.log(this.camera.position);
+    // console.log(this.camera.position.clone().normalize());
+    // var lookAt = new _3js.Vector3().addVectors(this.camera.position, this.camera.position.clone().normalize());
+    var lookAt = new _3js.Vector3().addVectors(this.camera.position, new _3js.Vector3(0,1,0));
+    this.camera.rotateX(90*Math.PI/180);
+    this.camera.updateMatrixWorld();
+    this.camera.lookAt(lookAt);
+    // this.camera.rotateZ(30*Math.PI/180);
+    // this.camera.translateX(500);
+    // this.camera.translateY(500);
+    // this.camera.translateZ(500);
+
+    // this.camera.position.x = 750 ;
+    // this.camera.position.y = 500+ 1.5*this.radious ;
+    // this.camera.position.z = 450;
+    // this.camera.lookAt(750, 501+ 1.5*this.radious, 450);
+
+    // this.camera.lookAt(
+    //   750 + this.radious * Math.sin( this.theta * Math.PI / 180 ) * Math.cos( this.phi * Math.PI / 180 ),
+    //   450 + this.radious * Math.sin( this.phi * Math.PI / 180 ),
+    //   500 + this.radious * Math.cos( this.theta * Math.PI / 180 ) * Math.cos( this.phi * Math.PI / 180 )
+    // );
   }
 
 }

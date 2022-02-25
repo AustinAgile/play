@@ -399,7 +399,8 @@ function shaper() {
       var offset = {
         // horizontal: toWall.plane.getHorizontal2(fromWall.plane.getHorizontal(window.offset.x) - (toWall.plane.originOffset[0] - fromWall.plane.originOffset[0])),
         horizontal: toWall.plane.getProjectionHorizontalFrom(window.offset.x, fromWall.plane),
-        vertical: window.offset.z - (toWall.plane.originOffset[2] - fromWall.plane.originOffset[2])
+        // vertical: window.offset.z - (toWall.plane.originOffset[2] - fromWall.plane.originOffset[2])old way
+        vertical: window.offset.z + fromWall.offset.z +  fromWall.plane.originOffset[2] - (toWall.offset.z + toWall.plane.originOffset[2])
       };
       var depth = this.distanceBetweenPointsInSpace(toWall.plane.getPointInSpace(offset.horizontal), fromWall.plane.getPointInSpace(window.offset.x));
       var rotation = {horizontal: {horizontal: -90, vertical: 0}, vertical: {horizontal: 0, vertical: -90}};
@@ -411,7 +412,8 @@ function shaper() {
     } else {//Facing North-South
       var offset = {
         horizontal: window.offset.y - (toWall.plane.originOffset[1] - fromWall.plane.originOffset[1]),
-        vertical: window.offset.z - (toWall.plane.originOffset[2] - fromWall.plane.originOffset[2])
+        // vertical: window.offset.z - (toWall.plane.originOffset[2] - fromWall.plane.originOffset[2])old way
+        vertical: window.offset.z + fromWall.offset.z +  fromWall.plane.originOffset[2] - (toWall.offset.z + toWall.plane.originOffset[2])
       };
       // console.log("toWall.offset.x="+toWall.offset.x);
       // console.log("toWall.plane.originOffset[0]="+toWall.plane.originOffset[0]);
@@ -577,8 +579,6 @@ function shaper() {
       var relativePlane = wall.plane;
       var fromPlane = windowWallSystem.plane;
       fromPlane = wall.windows.wall.plane;
-      // console.log(relativePlane);
-      // console.log(fromPlane);
     } else {
       var window = this.windowRelativeOffset(wallSystem.windows, windowName);
       // var relativePlane = {originOffset: [0, 0, 0]};
@@ -596,7 +596,8 @@ function shaper() {
       var offset = [
         // window.offset.z - wall.offset.z - relativePlane.originOffset[2],
         // window.offset.y - wall.offset.y - relativePlane.originOffset[0]
-        Math.max(window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2]), wall.offset.z),
+        // Math.max(window.offset.z - wall.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2]), wall.offset.z),//fix this same as other direction
+        Math.max(window.offset.z + wall.windows.wall.offset.z +  fromPlane.originOffset[2] - (wall.offset.z + relativePlane.originOffset[2]), wall.offset.z),
         window.offset.y - wall.offset.y - (relativePlane.originOffset[1] - fromPlane.originOffset[1])
       ];
       var size = [
@@ -619,7 +620,8 @@ function shaper() {
       var offset = [
         // horizontal: toWall.plane.getHorizontal2(fromWall.plane.getHorizontal(window.offset.x) - (toWall.plane.originOffset[0] - fromWall.plane.originOffset[0])),
         relativePlane.getProjectionHorizontalFrom(window.offset.x, fromPlane),
-        window.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])
+        // window.offset.z - (relativePlane.originOffset[2] - fromPlane.originOffset[2])old way
+        window.offset.z + wall.windows.wall.offset.z +  fromPlane.originOffset[2] - (wall.offset.z + relativePlane.originOffset[2])
       ];
       var size = [
         Math.min(window.size.w, wall.size.w - offset[0]),
