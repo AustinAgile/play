@@ -574,10 +574,19 @@ function shaper() {
     var window = this.windowRelativeOffset(fromWall.parent.windows, windowName);
 
     if (toWall.plane.isFacingNorthSouth()) {//Wall faces the y direction
+      // console.log(window.offset);
+      // console.log(fromWall.offset);
+      // console.log(fromWall.plane.originOffset);
+      // console.log(toWall.offset);
+      // console.log(toWall.plane.originOffset);
+      // console.log(window.offset.z + fromWall.offset.z +  fromWall.plane.originOffset[2] - (toWall.offset.z + toWall.plane.originOffset[2]), toWall.offset.z);
+      // console.log(toWall.offset.z);
       var offset = [
         Math.max(window.offset.z + fromWall.offset.z +  fromWall.plane.originOffset[2] - (toWall.offset.z + toWall.plane.originOffset[2]), toWall.offset.z),
         window.offset.y + fromWall.offset.y +  fromWall.plane.originOffset[1] - (toWall.offset.y + toWall.plane.originOffset[1]),
+        // window.offset.x + fromWall.offset.y +  fromWall.plane.originOffset[1] - (toWall.offset.y + toWall.plane.originOffset[1]),
       ];
+      // console.log(offset);
       var size = [
         window.size.h,
         window.size.w
