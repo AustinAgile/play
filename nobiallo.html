@@ -491,7 +491,6 @@
         }
       };
       crap.levels.first.living1 = new doug.WallSystem("Living L1")
-        // .setPlane(planes.levels.first.rooms.living.east)
         .setInteriorMaterial(materials.plaster)
         .addWindow(new doug.Window("door").setSize({w: 95, h: 205}).setOffset({x: 414, z: 0}))
         .addInteriorSurface(new doug.Surface("east").setPlane(planes.levels.first.rooms.living.east)
@@ -509,7 +508,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.first.rooms.living.north)
           .setSize({w: 510, h: 342})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.first.living2 = new doug.WallSystem("Living2 L1")
@@ -533,7 +531,6 @@
           .setSize({w: living2NorthWallWidth, h: 348})
           .setWindows(new doug.Windows(["entry"]))
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.first.bedroom = new doug.WallSystem("Bedroom L1")
@@ -589,7 +586,6 @@
           .setOffset({x: 65, y: 10+137-65/Math.tan(Math.PI/3), z: 0})
           .setRotation({x: 0, y: 0, z: 60})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.first.bathroom = new doug.WallSystem("Bedroom2L1")
@@ -610,7 +606,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.first.rooms.bedroom2.north)
           .setSize({w: 202-455*Math.tan(5*Math.PI/180), h: 333})
         )
-        // .call(shaper0.wallSystem)
       ;
       // console.log(455/Math.cos(5*Math.PI/180));
 
@@ -634,7 +629,6 @@
           .setSize({w: entryL1NorthWallWidth, h: rooms.L1.entry.h})
           .setWindows(new doug.Windows(["entry"]).setWall(crap.levels.first.bathroom.surfaces.south).setJambsAll())
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.first.kitchen = new doug.WallSystem("Kitchen")
@@ -654,7 +648,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.first.rooms.kitchen.north)
           .setSize({w: 406, h: 305})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.first.landing = new doug.WallSystem("Landing")
@@ -674,7 +667,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.first.rooms.landing.north)
           .setSize({w: 202, h: 320})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.ground.cellar1 = new doug.WallSystem("cellar1 L0")
@@ -694,7 +686,6 @@
           .setSize({w: rooms.L0.cellar1.y, h: rooms.L0.cellar1.h})
           .setWindows(new doug.Windows(["door"]))
         )
-        // .call(shaper0.wallSystem)
       ;
       // const lightBulb2 = new _3js.PointLight( 0xffffff, .5, 100, 2 );
       // // lightBulb2.position.set( rooms.L0.cellar1.w/2, rooms.L0.cellar1.y/2, 0.9*(rooms.L0.cellar1.h + rooms.L0.cellar1.z) );
@@ -723,7 +714,6 @@
           .setSize({w: rooms.L0.cellar2front.y, h: rooms.L0.cellar2front.h})
           .setWindows(new doug.Windows(["nook"]))
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.ground.cellar2back = new doug.WallSystem("cellar2 back L0")
@@ -758,11 +748,13 @@
           .setRotation({x: 0, y: 0, z: -90})
           .flip()
         )
-        // .call(shaper0.wallSystem)
+        .addNiche(new doug.Niche()
+          .setSize(w: 118, d: 55, h: 305)
+          .getNorth().setSize(w: 45).setOffset(x: 10)
+        )
       ;
 
       crap.levels.ground.hall = new doug.WallSystem("Hall L0")
-        .setPlane(planes.levels.ground.rooms.hall.east)
         .setInteriorMaterial(materials.plaster)
         .addWindow(new doug.Window("door").setSize({w: 83, h: 205}).setOffset({x: 18, z: 0}))
         .addWindow(new doug.Window("stair").setSize({w: 115+108, h: 437-272}).setOffset({x: 0, z: 272}))
@@ -781,7 +773,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.ground.rooms.hall.north)
           .setSize({w: 487, h: 437})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.ground.cellar3 = new doug.WallSystem("cellar3 L0")
@@ -799,7 +790,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.ground.rooms.cellar3.north)
           .setSize({w: 205, h: 288})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.second.bedroom1 = new doug.WallSystem("bedroom1L2").setPlane(planes.levels.second.rooms.bedroom1.south)//Fix this
@@ -820,11 +810,9 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.second.rooms.bedroom1.north)
           .setSize({w: rooms.L2.bedroom1.y, h: rooms.L2.bedroom1.h})
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.second.bathroom1 = new doug.WallSystem("bathroom1L2")
-        .setPlane(planes.levels.second.rooms.bathroom1.east)
         .setInteriorMaterial(materials.plaster)
         .addWindow(new doug.Window("door").setSize({w: 200, h: 205}).setOffset({y: 59, z: 0}))
         .addInteriorSurface(new doug.Surface("east").setPlane(planes.levels.second.rooms.bathroom1.east)
@@ -842,7 +830,6 @@
           .setSize({w: bathroom1L2NorthWallWidth, h: rooms.L2.bathroom1.h})
           .setWindows(new doug.Windows(["door"]))
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.second.bedroom2 = new doug.WallSystem("bedroom1L2").setPlane(planes.levels.second.rooms.bedroom2.west)
@@ -866,7 +853,6 @@
           .setSize({w: rooms.L2.bedroom2.y, h: rooms.L2.bedroom2.h})
           .setWindows(new doug.Windows(["nook2"]))
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.second.bathroom2 = new doug.WallSystem("bathroom2L2")
@@ -891,7 +877,6 @@
           .setSize({w: bathroom2L2NorthWallWidth, h: rooms.L2.bathroom2.h})
           .setWindows(new doug.Windows(["nook"]))
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.second.landing = new doug.WallSystem("landingL2")
@@ -913,7 +898,6 @@
           .setSize({w: landingL2NorthWallWidth, h: rooms.L2.landing.h})
           .setWindows(new doug.Windows(["door"]).setWall(crap.levels.second.bathroom2.surfaces.south).setJambsAll())
         )
-        // .call(shaper0.wallSystem)
       ;
 
       crap.levels.second.landingL3 = new doug.WallSystem("landingL3")
@@ -933,7 +917,6 @@
         .addInteriorSurface(new doug.Surface("north").setPlane(planes.levels.third.rooms.landing.north)
           .setSize({w: rooms.L3.landing.y, h: rooms.L3.landing.h})
         )
-        // .call(shaper0.wallSystem)
       ;
 
 
